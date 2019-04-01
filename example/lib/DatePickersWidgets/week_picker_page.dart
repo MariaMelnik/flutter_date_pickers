@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_pickers/date_pickers.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
 class WeekPickerPage extends StatefulWidget {
   @override
@@ -63,14 +63,4 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
       _selectedPeriod = newPeriod;
     });
   }
-}
-
-
-Widget buildWeekDatePicker (DateTime selectedDate, DateTime firstAllowedDate, DateTime lastAllowedDate, ValueChanged<DatePeriod> onNewSelected) {
-  return WeekPicker(
-      selectedDate: selectedDate,
-      onChanged: onNewSelected,
-      firstDate: firstAllowedDate,
-      lastDate: lastAllowedDate
-  );
 }

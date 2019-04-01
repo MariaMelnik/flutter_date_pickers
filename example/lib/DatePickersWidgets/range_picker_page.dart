@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_pickers/date_pickers.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
 class RangePickerPage extends StatefulWidget {
   @override
