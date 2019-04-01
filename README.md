@@ -1,10 +1,10 @@
 # flutter_date_pickers
 
 A set of date pickers:
-   * `DayPicker` for separete day selection
-   * `WeekPicker` for whole week selection
-   * `RangePicker` for random range selection
-   * `MonthPicker` for month selection
+   * `DayPicker` for one day
+   * `WeekPicker` for whole week
+   * `RangePicker` for random range
+   * `MonthPicker` for month
 
 ![](demoDatePickers.gif)
 
