@@ -7,5 +7,6 @@ class DatePickerKeys {
   final Key nextPageIconKey;
   final Key selectedPeriodKeys;
 
-  DatePickerKeys(this.previousPageIconKey, this.nextPageIconKey, this.selectedPeriodKeys);
+  DatePickerKeys(
+      this.previousPageIconKey, this.nextPageIconKey, this.selectedPeriodKeys);
 }

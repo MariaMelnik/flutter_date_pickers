@@ -8,7 +8,6 @@ import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:intl/intl.dart' as intl;
 
-
 // Styles for current displayed period (year): Theme.of(context).textTheme.subhead
 //
 // Styles for date picker cell:
@@ -19,22 +18,22 @@ import 'package:intl/intl.dart' as intl;
 //  for box decoration - color is Theme.of(context).accentColor and box shape is circle
 
 class MonthPicker extends StatefulWidget {
-
-  MonthPicker({
-    Key key,
-    @required this.selectedDate,
-    @required this.onChanged,
-    @required this.firstDate,
-    @required this.lastDate,
-    this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-    this.datePickerKeys
-  }) : assert(selectedDate != null),
+  MonthPicker(
+      {Key key,
+      @required this.selectedDate,
+      @required this.onChanged,
+      @required this.firstDate,
+      @required this.lastDate,
+      this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+      this.datePickerKeys})
+      : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) || selectedDate.isAtSameMomentAs(firstDate)),
-        assert(selectedDate.isBefore(lastDate) || selectedDate.isAtSameMomentAs(lastDate)),
+        assert(selectedDate.isAfter(firstDate) ||
+            selectedDate.isAtSameMomentAs(firstDate)),
+        assert(selectedDate.isBefore(lastDate) ||
+            selectedDate.isAtSameMomentAs(lastDate)),
         super(key: key);
-
 
   /// The currently selected date.
   ///
@@ -56,33 +55,29 @@ class MonthPicker extends StatefulWidget {
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
 
-
   @override
   State<StatefulWidget> createState() => _MonthPickerState();
 }
 
-
-
 class _MonthPickerState extends State<MonthPicker> {
   MaterialLocalizations localizations;
   TextDirection textDirection;
-
 
   DateTime _todayDate;
   DateTime _currentDisplayedYearDate;
   Timer _timer;
   PageController _monthPickerController;
 
-
   /// True if the earliest allowable year is displayed.
-  bool get _isDisplayingFirstYear => !_currentDisplayedYearDate.isAfter(DateTime(widget.firstDate.year));
+  bool get _isDisplayingFirstYear =>
+      !_currentDisplayedYearDate.isAfter(DateTime(widget.firstDate.year));
 
   /// True if the latest allowable year is displayed.
-  bool get _isDisplayingLastYear => !_currentDisplayedYearDate.isBefore(DateTime(widget.lastDate.year));
+  bool get _isDisplayingLastYear =>
+      !_currentDisplayedYearDate.isBefore(DateTime(widget.lastDate.year));
 
   DateTime _previousYearDate;
   DateTime _nextYearDate;
-
 
   @override
   void initState() {
@@ -104,7 +99,6 @@ class _MonthPickerState extends State<MonthPicker> {
     }
   }
 
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -112,13 +106,13 @@ class _MonthPickerState extends State<MonthPicker> {
     textDirection = Directionality.of(context);
   }
 
-
-
   void _updateCurrentDate() {
     _todayDate = DateTime.now();
-    final DateTime tomorrow = DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
+    final DateTime tomorrow =
+        DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
     Duration timeUntilTomorrow = tomorrow.difference(_todayDate);
-    timeUntilTomorrow += const Duration(seconds: 1); // so we don't miss it by rounding
+    timeUntilTomorrow +=
+        const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
     _timer = Timer(timeUntilTomorrow, () {
       setState(() {
@@ -153,23 +147,29 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleNextYear() {
     if (!_isDisplayingLastYear) {
-      SemanticsService.announce(intl.DateFormat.y().format(_nextYearDate), textDirection);
-      _monthPickerController.nextPage(duration: widget.datePickerLayoutSettings.pagesScrollDuration, curve: Curves.ease);
+      SemanticsService.announce(
+          intl.DateFormat.y().format(_nextYearDate), textDirection);
+      _monthPickerController.nextPage(
+          duration: widget.datePickerLayoutSettings.pagesScrollDuration,
+          curve: Curves.ease);
     }
   }
 
   void _handlePreviousYear() {
     if (!_isDisplayingFirstYear) {
-      SemanticsService.announce(intl.DateFormat.y().format(_previousYearDate), textDirection);
-      _monthPickerController.previousPage(duration: widget.datePickerLayoutSettings.pagesScrollDuration, curve: Curves.ease);
+      SemanticsService.announce(
+          intl.DateFormat.y().format(_previousYearDate), textDirection);
+      _monthPickerController.previousPage(
+          duration: widget.datePickerLayoutSettings.pagesScrollDuration,
+          curve: Curves.ease);
     }
   }
-
 
   void _handleYearPageChanged(int yearPage) {
     setState(() {
       _previousYearDate = _addYearsToYearDate(widget.firstDate, yearPage - 1);
-      _currentDisplayedYearDate = _addYearsToYearDate(widget.firstDate, yearPage);
+      _currentDisplayedYearDate =
+          _addYearsToYearDate(widget.firstDate, yearPage);
       _nextYearDate = _addYearsToYearDate(widget.firstDate, yearPage + 1);
     });
   }
@@ -200,7 +200,9 @@ class _MonthPickerState extends State<MonthPicker> {
               child: IconButton(
                 key: widget.datePickerKeys?.previousPageIconKey,
                 icon: const Icon(Icons.chevron_left),
-                tooltip: _isDisplayingFirstYear ? null : '${intl.DateFormat.y().format(_previousYearDate)}',
+                tooltip: _isDisplayingFirstYear
+                    ? null
+                    : '${intl.DateFormat.y().format(_previousYearDate)}',
                 onPressed: _isDisplayingFirstYear ? null : _handlePreviousYear,
               ),
             ),
@@ -213,7 +215,9 @@ class _MonthPickerState extends State<MonthPicker> {
               child: IconButton(
                 key: widget.datePickerKeys?.nextPageIconKey,
                 icon: const Icon(Icons.chevron_right),
-                tooltip: _isDisplayingLastYear ? null : '${intl.DateFormat.y().format(_nextYearDate)}',
+                tooltip: _isDisplayingLastYear
+                    ? null
+                    : '${intl.DateFormat.y().format(_nextYearDate)}',
                 onPressed: _isDisplayingLastYear ? null : _handleNextYear,
               ),
             ),
@@ -223,7 +227,6 @@ class _MonthPickerState extends State<MonthPicker> {
     );
   }
 }
-
 
 class _MonthPicker extends StatelessWidget {
   /// The month whose days are displayed by this picker.
@@ -252,42 +255,43 @@ class _MonthPicker extends StatelessWidget {
   ///  Key fo selected month (useful for integration tests)
   final Key selectedPeriodKey;
 
-
-  _MonthPicker({
-    @required this.displayedYear,
-    @required this.firstDate,
-    @required this.lastDate,
-    @required this.selectedDate,
-    @required this.currentDate,
-    @required this.onChanged,
-    @required this.datePickerLayoutSettings,
-    this.selectedPeriodKey,
-    Key key
-  }): assert (displayedYear != null),
+  _MonthPicker(
+      {@required this.displayedYear,
+      @required this.firstDate,
+      @required this.lastDate,
+      @required this.selectedDate,
+      @required this.currentDate,
+      @required this.onChanged,
+      @required this.datePickerLayoutSettings,
+      this.selectedPeriodKey,
+      Key key})
+      : assert(displayedYear != null),
         assert(selectedDate != null),
         assert(currentDate != null),
-        assert (firstDate != null),
+        assert(firstDate != null),
         assert(datePickerLayoutSettings != null),
-        assert (lastDate != null),
+        assert(lastDate != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) || selectedDate.isAtSameMomentAs(firstDate)),
+        assert(selectedDate.isAfter(firstDate) ||
+            selectedDate.isAtSameMomentAs(firstDate)),
         super(key: key);
-
 
   // we only wondering to know if month of passed day before the month of the firstDate or after the month of the lastDate
   // don't need to compare day and time
   bool _isDisabled(DateTime month) {
-    DateTime beginningOfTheFirstDateMonth = DateTime(firstDate.year, firstDate.month);
-    DateTime endOfTheLastDateMonth =  DateTime(lastDate.year, lastDate.month + 1).subtract(Duration(microseconds: 1));
+    DateTime beginningOfTheFirstDateMonth =
+        DateTime(firstDate.year, firstDate.month);
+    DateTime endOfTheLastDateMonth = DateTime(lastDate.year, lastDate.month + 1)
+        .subtract(Duration(microseconds: 1));
 
-    return month.isAfter(endOfTheLastDateMonth)
-        || month.isBefore(beginningOfTheFirstDateMonth);
+    return month.isAfter(endOfTheLastDateMonth) ||
+        month.isBefore(beginningOfTheFirstDateMonth);
   }
-
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final ThemeData themeData = Theme.of(context);
     final int monthsInYear = 12;
     final int year = displayedYear.year;
@@ -299,9 +303,9 @@ class _MonthPicker extends StatelessWidget {
       final int month = i + 1;
       final DateTime monthToBuild = DateTime(year, month, day);
 
-
       final bool disabled = _isDisabled(monthToBuild);
-      final bool isSelectedMonth = selectedDate.year == year && selectedDate.month == month;
+      final bool isSelectedMonth =
+          selectedDate.year == year && selectedDate.month == month;
 
       BoxDecoration decoration;
       TextStyle itemStyle = themeData.textTheme.body1;
@@ -309,15 +313,15 @@ class _MonthPicker extends StatelessWidget {
       if (isSelectedMonth) {
         // The selected month gets a circle background highlight, and a contrasting text color.
         itemStyle = themeData.accentTextTheme.body2;
-        decoration = BoxDecoration(
-            color: themeData.accentColor,
-            shape: BoxShape.circle
-        );
+        decoration =
+            BoxDecoration(color: themeData.accentColor, shape: BoxShape.circle);
       } else if (disabled) {
-        itemStyle = themeData.textTheme.body1.copyWith(color: themeData.disabledColor);
+        itemStyle =
+            themeData.textTheme.body1.copyWith(color: themeData.disabledColor);
       } else if (currentDate.year == year && currentDate.month == month) {
         // The current month gets a different text color.
-        itemStyle = themeData.textTheme.body2.copyWith(color: themeData.accentColor);
+        itemStyle =
+            themeData.textTheme.body2.copyWith(color: themeData.accentColor);
       }
 
       Widget monthWidget = Container(
@@ -330,10 +334,12 @@ class _MonthPicker extends StatelessWidget {
             // day of month before the rest of the date, as they are looking
             // for the day of month. To do that we prepend day of month to the
             // formatted full date.
-            label: '${localizations.formatDecimal(month)}, ${localizations.formatFullDate(monthToBuild)}',
+            label:
+                '${localizations.formatDecimal(month)}, ${localizations.formatFullDate(monthToBuild)}',
             selected: isSelectedMonth,
             child: ExcludeSemantics(
-              child: Text(intl.DateFormat.MMM().format(monthToBuild), style: itemStyle),
+              child: Text(intl.DateFormat.MMM().format(monthToBuild),
+                  style: itemStyle),
             ),
           ),
         ),

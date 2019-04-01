@@ -10,8 +10,6 @@ class MonthPickerSortKey extends OrdinalSortKey {
   const MonthPickerSortKey(double order) : super(order);
 }
 
-
-
 // Defines semantic traversal order of the top-level widgets inside the month
 // picker.
 class YearPickerSortKey extends OrdinalSortKey {
