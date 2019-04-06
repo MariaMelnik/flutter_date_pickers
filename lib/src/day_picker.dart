@@ -5,8 +5,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
+import 'package:flutter_date_pickers/src/utils.dart';
 
-// Styles for current displayed period (month): Theme.of(context).textTheme.subhead
+// Styles for current displayed period (month) title: Theme.of(context).textTheme.subhead
 //
 // Styles for date picker cell:
 // current date: Theme.of(context).textTheme.body2.copyWith(color: themeData.accentColor)
@@ -18,7 +19,7 @@ import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 // selectedDate must be between firstDate and lastDate
 
 class DayPicker extends StatefulWidget {
-  /// Creates a month picker.
+  /// Creates a day picker.
   DayPicker(
       {Key key,
       @required this.selectedDate,
@@ -30,10 +31,8 @@ class DayPicker extends StatefulWidget {
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) ||
-            selectedDate.isAtSameMomentAs(firstDate)),
-        assert(selectedDate.isBefore(lastDate) ||
-            selectedDate.isAtSameMomentAs(lastDate)),
+        assert(!selectedDate.isBefore(firstDate)),
+        assert(!selectedDate.isAfter(lastDate)),
         super(key: key);
 
   /// The currently selected date.
@@ -72,11 +71,11 @@ class _DayPickerState extends State<DayPicker> {
   Timer _timer;
   PageController _dayPickerController;
 
-  /// True if the earliest allowable month is displayed.
+  /// True if the first permitted month is displayed.
   bool get _isDisplayingFirstMonth => !_currentDisplayedMonthDate
       .isAfter(DateTime(widget.firstDate.year, widget.firstDate.month));
 
-  /// True if the latest allowable month is displayed.
+  /// True if the last permitted month is displayed.
   bool get _isDisplayingLastMonth => !_currentDisplayedMonthDate
       .isBefore(DateTime(widget.lastDate.year, widget.lastDate.month));
 
@@ -130,7 +129,7 @@ class _DayPickerState extends State<DayPicker> {
 
   /// Add months to a month truncated date.
   DateTime _addMonthsToMonthDate(DateTime monthDate, int monthsToAdd) {
-    // year is switched automatically if new month > 12
+    // year is switched automatically if new month >= 12
     return DateTime(monthDate.year, monthDate.month + monthsToAdd);
   }
 
@@ -197,37 +196,41 @@ class _DayPickerState extends State<DayPicker> {
               onPageChanged: _handleMonthPageChanged,
             ),
           ),
-          PositionedDirectional(
-            top: 0.0,
-            start: 8.0,
-            child: Semantics(
-              sortKey: MonthPickerSortKey.previousMonth,
-              child: IconButton(
-                key: widget.datePickerKeys?.previousPageIconKey,
-                icon: const Icon(Icons.chevron_left),
-                tooltip: _isDisplayingFirstMonth
-                    ? null
-                    : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
-                onPressed:
-                    _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+          SizedBox(
+            height: widget.datePickerLayoutSettings.dayPickerRowHeight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0), //match _DayPicker main layout padding
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Semantics(
+                    sortKey: MonthPickerSortKey.previousMonth,
+                    child: IconButton(
+                      key: widget.datePickerKeys?.previousPageIconKey,
+                      icon: const Icon(Icons.chevron_left),
+                      tooltip: _isDisplayingFirstMonth
+                          ? null
+                          : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                      onPressed:
+                      _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+                    ),
+                  ),
+                  Semantics(
+                    sortKey: MonthPickerSortKey.nextMonth,
+                    child: IconButton(
+                      key: widget.datePickerKeys?.nextPageIconKey,
+                      icon: const Icon(Icons.chevron_right),
+                      tooltip: _isDisplayingLastMonth
+                          ? null
+                          : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                      onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          PositionedDirectional(
-            top: 0.0,
-            end: 8.0,
-            child: Semantics(
-              sortKey: MonthPickerSortKey.nextMonth,
-              child: IconButton(
-                key: widget.datePickerKeys?.nextPageIconKey,
-                icon: const Icon(Icons.chevron_right),
-                tooltip: _isDisplayingLastMonth
-                    ? null
-                    : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
-                onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
-              ),
-            ),
-          ),
+          )
         ],
       ),
     );
@@ -404,7 +407,7 @@ class _DayPicker extends StatelessWidget {
     final DateTime beginOfTheFirstDay =
         DateTime(firstDate.year, firstDate.month, firstDate.day);
     final DateTime endOfTheLastDay =
-        DateTime(lastDate.year, lastDate.month, lastDate.day, 23, 59, 59, 999);
+        DateTime(lastDate.year, lastDate.month, lastDate.day + 1).subtract(Duration(microseconds: 1));
 
     return day.isAfter(endOfTheLastDay) || day.isBefore(beginOfTheFirstDay);
   }
@@ -432,7 +435,8 @@ class _DayPicker extends StatelessWidget {
         // offset for the first day of month
         labels.add(Container());
       } else {
-        final DateTime dayToBuild = DateTime(year, month, day);
+        DateTime dayToBuild = DateTime(year, month, day);
+        if (DatePickerUtils.sameDate(dayToBuild, firstDate)) dayToBuild = firstDate;
 
         BoxDecoration decoration;
         TextStyle itemStyle;
