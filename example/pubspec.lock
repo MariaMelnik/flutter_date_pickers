@@ -48,6 +48,13 @@ packages:
       relative: true
     source: path
     version: "0.0.2"
+  flutter_material_color_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_material_color_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter

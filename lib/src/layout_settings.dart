@@ -6,34 +6,38 @@ const Duration _kPageScrollDuration = const Duration(milliseconds: 200);
 const double _kDayPickerRowHeight = 42.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 const double _kMonthPickerPortraitWidth = 330.0;
+const EdgeInsetsGeometry _kContentPadding = const EdgeInsets.symmetric(horizontal: 8.0);
 
 
 class DatePickerLayoutSettings {
-  // Duration for scroll to previous or next page
+  /// Duration for scroll to previous or next page
   final Duration pagesScrollDuration;
   final double dayPickerRowHeight;
   final double monthPickerPortraitWidth;
-  final int mxDayPickerRowCount;
+  final int maxDayPickerRowCount;
+  final EdgeInsetsGeometry contentPadding;
 
 
   _DayPickerGridDelegate get dayPickerGridDelegate =>
-      _DayPickerGridDelegate(dayPickerRowHeight, mxDayPickerRowCount);
+      _DayPickerGridDelegate(dayPickerRowHeight, maxDayPickerRowCount);
 
 
   // Two extra rows: one for the day-of-week header and one for the month header.
   double get maxDayPickerHeight =>
-      dayPickerRowHeight * (mxDayPickerRowCount + 2);
+      dayPickerRowHeight * (maxDayPickerRowCount + 2);
 
 
   const DatePickerLayoutSettings(
       {this.pagesScrollDuration = _kPageScrollDuration,
       this.dayPickerRowHeight = _kDayPickerRowHeight,
       this.monthPickerPortraitWidth = _kMonthPickerPortraitWidth,
-      this.mxDayPickerRowCount = _kMaxDayPickerRowCount})
+      this.maxDayPickerRowCount = _kMaxDayPickerRowCount,
+      this.contentPadding = _kContentPadding})
       : assert(pagesScrollDuration != null),
         assert(dayPickerRowHeight != null),
         assert(monthPickerPortraitWidth != null),
-        assert(mxDayPickerRowCount != null);
+        assert(maxDayPickerRowCount != null),
+        assert(contentPadding != null);
 }
 
 

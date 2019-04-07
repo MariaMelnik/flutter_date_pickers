@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_date_pickers/src/date_picker_styles.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
@@ -27,7 +28,8 @@ class DayPicker extends StatefulWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerKeys})
+      this.datePickerKeys,
+      this.datePickerStyles})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -51,6 +53,9 @@ class DayPicker extends StatefulWidget {
 
   /// Layout settings what can be customized by user
   final DatePickerLayoutSettings datePickerLayoutSettings;
+
+  /// Styles what can be customized by user
+  final DatePickerStyles datePickerStyles;
 
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
@@ -145,6 +150,7 @@ class _DayPickerState extends State<DayPicker> {
       displayedMonth: targetDate,
       datePickerLayoutSettings: widget.datePickerLayoutSettings,
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
+      datePickerStyles: widget.datePickerStyles,
     );
   }
 
@@ -199,7 +205,7 @@ class _DayPickerState extends State<DayPicker> {
           SizedBox(
             height: widget.datePickerLayoutSettings.dayPickerRowHeight,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0), //match _DayPicker main layout padding
+              padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -271,6 +277,9 @@ class _DayPicker extends StatelessWidget {
   ///  Key fo selected month (useful for integration tests)
   final Key selectedPeriodKey;
 
+  /// Styles what can be customized by user
+  final DatePickerStyles datePickerStyles;
+
   /// Creates a week picker.
   _DayPicker(
       {Key key,
@@ -281,7 +290,8 @@ class _DayPicker extends StatelessWidget {
       @required this.lastDate,
       @required this.displayedMonth,
       @required this.datePickerLayoutSettings,
-      this.selectedPeriodKey})
+      @required this.selectedPeriodKey,
+      @required this.datePickerStyles})
       : assert(selectedDate != null),
         assert(currentDate != null),
         assert(onChanged != null),
@@ -447,20 +457,20 @@ class _DayPicker extends StatelessWidget {
             selectedDate.day == day;
 
         if (isSelectedDay) {
-          // The selected day gets a circle background highlight, and a contrasting text color.
-          itemStyle = themeData.accentTextTheme.body2;
-          decoration = BoxDecoration(
+          // The selected day gets a circle background highlight, and a contrasting text color by default.
+          itemStyle = datePickerStyles?.selectedDateStyle ?? themeData.accentTextTheme.body2;
+          decoration = datePickerStyles?.selectedSingleDateDecoration ?? BoxDecoration(
             color: themeData.accentColor,
             shape: BoxShape.circle,
           );
         } else if (disabled) {
-          itemStyle = themeData.textTheme.body1
+          itemStyle = datePickerStyles?.disabledDateStyle ?? themeData.textTheme.body1
               .copyWith(color: themeData.disabledColor);
         } else if (currentDate.year == year &&
             currentDate.month == month &&
             currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle =
+          itemStyle = datePickerStyles?.currentDateStyle ??
               themeData.textTheme.body2.copyWith(color: themeData.accentColor);
         }
 
@@ -497,7 +507,7 @@ class _DayPicker extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: datePickerLayoutSettings.contentPadding,
       child: Column(
         children: <Widget>[
           Container(
@@ -507,7 +517,7 @@ class _DayPicker extends StatelessWidget {
                 child: Text(
                   localizations.formatMonthYear(displayedMonth),
                   key: selectedPeriodKey,
-                  style: themeData.textTheme.subhead,
+                  style: datePickerStyles?.displayedPeriodTitle ?? themeData.textTheme.subhead,
                 ),
               ),
             ),
