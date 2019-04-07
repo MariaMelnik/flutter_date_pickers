@@ -81,26 +81,28 @@ class _DayPickerPageState extends State<DayPickerPage> {
         ),
         Container(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text("Selected date styles", style: Theme.of(context).textTheme.subhead,),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Row(children: <Widget>[
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
                     _selectedTextRow(),
                     SizedBox(width: 12.0,),
                     _selectedBackground()
                   ],),
-                )
+                ),
+                Text("Selected: $_selectedDate")
               ],
             ),
           ),
         ),
 
 
-        Text("Selected: $_selectedDate")
       ],
     );
   }
