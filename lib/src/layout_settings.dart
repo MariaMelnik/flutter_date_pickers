@@ -1,5 +1,6 @@
-import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/rendering.dart';
 
 // layout defaults
 const Duration _kPageScrollDuration = const Duration(milliseconds: 200);
@@ -7,7 +8,6 @@ const double _kDayPickerRowHeight = 42.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 const double _kMonthPickerPortraitWidth = 330.0;
 const EdgeInsetsGeometry _kContentPadding = const EdgeInsets.symmetric(horizontal: 8.0);
-
 
 class DatePickerLayoutSettings {
   /// Duration for scroll to previous or next page
@@ -17,15 +17,12 @@ class DatePickerLayoutSettings {
   final int maxDayPickerRowCount;
   final EdgeInsetsGeometry contentPadding;
 
-
-  _DayPickerGridDelegate get dayPickerGridDelegate =>
+  SliverGridDelegate get dayPickerGridDelegate =>
       _DayPickerGridDelegate(dayPickerRowHeight, maxDayPickerRowCount);
-
 
   // Two extra rows: one for the day-of-week header and one for the month header.
   double get maxDayPickerHeight =>
       dayPickerRowHeight * (maxDayPickerRowCount + 2);
-
 
   const DatePickerLayoutSettings(
       {this.pagesScrollDuration = _kPageScrollDuration,
@@ -40,22 +37,19 @@ class DatePickerLayoutSettings {
         assert(contentPadding != null);
 }
 
-
 class _DayPickerGridDelegate extends SliverGridDelegate {
-  final double dayPickerRowHeight;
-  final int maxDayPickerRowCount;
-
+  final double _dayPickerRowHeight;
+  final int _maxDayPickerRowCount;
 
   const _DayPickerGridDelegate(
-      this.dayPickerRowHeight, this.maxDayPickerRowCount);
-
+      this._dayPickerRowHeight, this._maxDayPickerRowCount);
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
     const int columnCount = DateTime.daysPerWeek;
     final double tileWidth = constraints.crossAxisExtent / columnCount;
-    final double tileHeight = math.min(dayPickerRowHeight,
-        constraints.viewportMainAxisExtent / (maxDayPickerRowCount + 1));
+    final double tileHeight = math.min(_dayPickerRowHeight,
+        constraints.viewportMainAxisExtent / (_maxDayPickerRowCount + 1));
     return SliverGridRegularTileLayout(
       crossAxisCount: columnCount,
       mainAxisStride: tileHeight,
@@ -67,5 +61,5 @@ class _DayPickerGridDelegate extends SliverGridDelegate {
   }
 
   @override
-  bool shouldRelayout(_DayPickerGridDelegate oldDelegate) => false;
+  bool shouldRelayout(SliverGridDelegate oldDelegate) => false;
 }
