@@ -472,6 +472,9 @@ class _DayPicker extends StatelessWidget {
           // The current day gets a different text color.
           itemStyle = datePickerStyles?.currentDateStyle ??
               themeData.textTheme.body2.copyWith(color: themeData.accentColor);
+        } else {
+          //todo: expose to datePickerStyles
+          itemStyle = themeData.textTheme.body1;
         }
 
         Widget dayWidget = Container(

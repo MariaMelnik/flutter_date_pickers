@@ -12,12 +12,8 @@ class _DayPickerPageState extends State<DayPickerPage> {
   DateTime _firstDate;
   DateTime _lastDate;
 
-  Color displayedPeriodTitleColor;
-  Color currentDateStyleColor;
-  Color disabledDateStyleColor;
   Color selectedDateStyleColor;
   Color selectedSingleDateDecorationColor;
-  Color defaultDateStyleColor;
 
   @override
   void initState() {
@@ -33,12 +29,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
     super.didChangeDependencies();
 
     // defaults for styles
-    displayedPeriodTitleColor = Theme.of(context).textTheme.subhead.color;
-    currentDateStyleColor = Theme.of(context).accentColor;
-    disabledDateStyleColor = Theme.of(context).disabledColor;
     selectedDateStyleColor = Theme.of(context).accentTextTheme.body2.color;
-    selectedSingleDateDecorationColor = Theme.of(context).accentColor;
-    defaultDateStyleColor = DefaultTextStyle.of(context).style.color;
     selectedSingleDateDecorationColor = Theme.of(context).accentColor;
   }
 
@@ -46,18 +37,6 @@ class _DayPickerPageState extends State<DayPickerPage> {
   Widget build(BuildContext context) {
     // add selected colors to default settings
     dp.DatePickerStyles styles = dp.DatePickerStyles(
-        displayedPeriodTitle: Theme.of(context)
-            .textTheme
-            .subhead
-            .copyWith(color: displayedPeriodTitleColor),
-        currentDateStyle: Theme.of(context)
-            .textTheme
-            .body2
-            .copyWith(color: currentDateStyleColor),
-        disabledDateStyle: Theme.of(context)
-            .textTheme
-            .body1
-            .copyWith(color: disabledDateStyleColor),
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
             .body2
@@ -81,28 +60,37 @@ class _DayPickerPageState extends State<DayPickerPage> {
         ),
         Container(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Selected date styles", style: Theme.of(context).textTheme.subhead,),
+                Text(
+                  "Selected date styles",
+                  style: Theme.of(context).textTheme.subhead,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                    _selectedTextRow(),
-                    SizedBox(width: 12.0,),
-                    _selectedBackground()
-                  ],),
+                      _colorSelectorBtn("Text", selectedDateStyleColor,
+                          _showSelectedDateDialog),
+                      SizedBox(
+                        width: 12.0,
+                      ),
+                      _colorSelectorBtn(
+                          "Background",
+                          selectedSingleDateDecorationColor,
+                          _showSelectedBackgroundColorDialog),
+                    ],
+                  ),
                 ),
                 Text("Selected: $_selectedDate")
               ],
             ),
           ),
         ),
-
-
       ],
     );
   }
@@ -135,48 +123,27 @@ class _DayPickerPageState extends State<DayPickerPage> {
       });
   }
 
-
-  Widget _selectedTextRow(){
+  Widget _colorSelectorBtn(
+      String title, Color color, Function showDialogFunction) {
     return Expanded(
       child: Row(
         children: <Widget>[
-          Expanded(child: Text(
-            "Text",
-            overflow: TextOverflow.ellipsis,
-          )),
           GestureDetector(
-            onTap: _showSelectedDateDialog,
+            onTap: showDialogFunction,
             child: Container(
               height: 42.0,
               width: 42.0,
-              decoration: BoxDecoration(
-                  color: selectedDateStyleColor, shape: BoxShape.circle),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _selectedBackground(){
-    return Expanded(
-      child: Row(
-        children: <Widget>[
+          ),
+          SizedBox(
+            width: 8.0,
+          ),
           Expanded(
               child: Text(
-                "Background",
-                overflow: TextOverflow.ellipsis,
-              )),
-          GestureDetector(
-            onTap: _showSelectedBackgroundColorDialog,
-            child: Container(
-              height: 42.0,
-              width: 42.0,
-              decoration: BoxDecoration(
-                  color: selectedSingleDateDecorationColor,
-                  shape: BoxShape.circle),
-            ),
-          )
+            title,
+            overflow: TextOverflow.ellipsis,
+          )),
         ],
       ),
     );

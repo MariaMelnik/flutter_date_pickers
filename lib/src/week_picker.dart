@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_date_pickers/src/date_picker_styles.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_period.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
@@ -27,7 +28,8 @@ class WeekPicker extends StatefulWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerKeys})
+      this.datePickerKeys,
+      this.datePickerStyles})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -56,6 +58,9 @@ class WeekPicker extends StatefulWidget {
 
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
+
+  /// Styles what can be customized by user
+  final DatePickerRangeStyles datePickerStyles;
 
   @override
   _WeekPickerState createState() => _WeekPickerState();
@@ -137,16 +142,18 @@ class _WeekPickerState extends State<WeekPicker> {
   Widget _buildItems(BuildContext context, int index) {
     final DateTime targetDate = _addMonthsToMonthDate(widget.firstDate, index);
     return _WeekPicker(
-        key: ValueKey<DateTime>(targetDate),
-        selectedDate: widget.selectedDate,
-        currentDate: _todayDate,
-        onChanged: widget.onChanged,
-        firstDate: widget.firstDate,
-        lastDate: widget.lastDate,
-        displayedMonth: targetDate,
-        datePickerLayoutSettings: widget.datePickerLayoutSettings,
-        selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
-        firstDayOfWeekIndex: localizations.firstDayOfWeekIndex);
+      key: ValueKey<DateTime>(targetDate),
+      selectedDate: widget.selectedDate,
+      currentDate: _todayDate,
+      onChanged: widget.onChanged,
+      firstDate: widget.firstDate,
+      lastDate: widget.lastDate,
+      displayedMonth: targetDate,
+      datePickerLayoutSettings: widget.datePickerLayoutSettings,
+      selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
+      firstDayOfWeekIndex: localizations.firstDayOfWeekIndex,
+      datePickerStyles: widget.datePickerStyles,
+    );
   }
 
   void _handleNextMonth() {
@@ -265,9 +272,6 @@ class _WeekPicker extends StatelessWidget {
   /// The month whose days are displayed by this picker.
   final DateTime displayedMonth;
 
-  /// Optional user supplied predicate function to customize selectable days.
-  final SelectableDayPredicate selectableDayPredicate;
-
   /// Layout settings what can be customized by user
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
@@ -276,6 +280,9 @@ class _WeekPicker extends StatelessWidget {
 
   // according to MaterialLocalization.firstDayOfWeekIndex
   final int firstDayOfWeekIndex;
+
+  /// Styles what can be customized by user
+  final DatePickerRangeStyles datePickerStyles;
 
   final DateTime firstDayOfSelectedWeek;
   final DateTime lastDayOfSelectedWeek;
@@ -291,8 +298,8 @@ class _WeekPicker extends StatelessWidget {
       @required this.displayedMonth,
       @required this.datePickerLayoutSettings,
       @required this.firstDayOfWeekIndex,
-      this.selectableDayPredicate,
-      this.selectedPeriodKey})
+      @required this.selectedPeriodKey,
+      @required this.datePickerStyles})
       : assert(selectedDate != null),
         assert(currentDate != null),
         assert(onChanged != null),
@@ -458,7 +465,8 @@ class _WeekPicker extends StatelessWidget {
   }
 
   // returns decoration for selected date with applied border radius if it needs for passed date
-  BoxDecoration _getSelectedDecoration(DateTime date, Color accentColor) {
+  BoxDecoration _getSelectedDecoration(
+      DateTime date, Color defaultAccentColor) {
     assert(_isDayOfSelectedWeek(date));
 
     BoxDecoration result;
@@ -475,30 +483,35 @@ class _WeekPicker extends StatelessWidget {
 
     if (DatePickerUtils.sameDate(date, firstNotDisabledDayOfSelectedWeek) &&
         DatePickerUtils.sameDate(date, lastNotDisabledDayOfSelectedWeek)) {
-      result = BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      );
+      result = datePickerStyles.selectedSingleDateDecoration ??
+          BoxDecoration(
+            color: defaultAccentColor,
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          );
     } else if (DatePickerUtils.sameDate(date, firstDayOfSelectedWeek) ||
         DatePickerUtils.sameDate(date, firstDate)) {
-      result = BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
-      );
+      result = datePickerStyles.selectedPeriodStartDecoration ??
+          BoxDecoration(
+            color: defaultAccentColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                bottomLeft: Radius.circular(10.0)),
+          );
     } else if (DatePickerUtils.sameDate(date, lastDayOfSelectedWeek) ||
         DatePickerUtils.sameDate(date, lastDate)) {
-      result = BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10.0),
-            bottomRight: Radius.circular(10.0)),
-      );
+      result = datePickerStyles.selectedPeriodLastDecoration ??
+          BoxDecoration(
+            color: defaultAccentColor,
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10.0),
+                bottomRight: Radius.circular(10.0)),
+          );
     } else {
-      result = BoxDecoration(
-        color: accentColor,
-        shape: BoxShape.rectangle,
-      );
+      result = datePickerStyles.selectedPeriodMiddleDecoration ??
+          BoxDecoration(
+            color: defaultAccentColor,
+            shape: BoxShape.rectangle,
+          );
     }
 
     return result;
@@ -531,7 +544,8 @@ class _WeekPicker extends StatelessWidget {
     final DateTime beginOfTheFirstDay =
         DateTime(firstDate.year, firstDate.month, firstDate.day);
     final DateTime endOfTheLastDay =
-        DateTime(lastDate.year, lastDate.month, lastDate.day, 23, 59, 59, 999);
+        DateTime(lastDate.year, lastDate.month, lastDate.day + 1)
+            .subtract(Duration(microseconds: 1));
 
     return day.isAfter(endOfTheLastDay) || day.isBefore(beginOfTheFirstDay);
   }
@@ -578,17 +592,19 @@ class _WeekPicker extends StatelessWidget {
 
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color.
-          itemStyle = themeData.accentTextTheme.body2;
+          itemStyle = datePickerStyles?.selectedDateStyle ??
+              themeData.accentTextTheme.body2;
           decoration = _getSelectedDecoration(
               DateTime(year, month, day), themeData.accentColor);
         } else if (disabled) {
-          itemStyle = themeData.textTheme.body1
-              .copyWith(color: themeData.disabledColor);
+          itemStyle = datePickerStyles?.disabledDateStyle ??
+              themeData.textTheme.body1
+                  .copyWith(color: themeData.disabledColor);
         } else if (currentDate.year == year &&
             currentDate.month == month &&
             currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle =
+          itemStyle = datePickerStyles?.currentDateStyle ??
               themeData.textTheme.body2.copyWith(color: themeData.accentColor);
         } else {
           itemStyle = themeData.textTheme.body1;
@@ -630,7 +646,7 @@ class _WeekPicker extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: datePickerLayoutSettings.contentPadding,
       child: Column(
         children: <Widget>[
           Container(
@@ -640,7 +656,8 @@ class _WeekPicker extends StatelessWidget {
                 child: Text(
                   localizations.formatMonthYear(displayedMonth),
                   key: selectedPeriodKey,
-                  style: themeData.textTheme.subhead,
+                  style: datePickerStyles?.displayedPeriodTitle ??
+                      themeData.textTheme.subhead,
                 ),
               ),
             ),
