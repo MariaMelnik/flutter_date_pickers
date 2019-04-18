@@ -140,6 +140,11 @@ class _DayPickerState extends State<DayPicker> {
 
   Widget _buildItems(BuildContext context, int index) {
     final DateTime targetDate = _addMonthsToMonthDate(widget.firstDate, index);
+
+    final ThemeData theme = Theme.of(context);
+    DatePickerStyles styles = widget.datePickerStyles ?? DatePickerStyles();
+    styles = styles.fulfillWithTheme(theme);
+
     return _DayPicker(
       key: ValueKey<DateTime>(targetDate),
       selectedDate: widget.selectedDate,
@@ -150,7 +155,7 @@ class _DayPickerState extends State<DayPicker> {
       displayedMonth: targetDate,
       datePickerLayoutSettings: widget.datePickerLayoutSettings,
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
-      datePickerStyles: widget.datePickerStyles,
+      datePickerStyles: styles,
     );
   }
 
@@ -458,23 +463,17 @@ class _DayPicker extends StatelessWidget {
 
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color by default.
-          itemStyle = datePickerStyles?.selectedDateStyle ?? themeData.accentTextTheme.body2;
-          decoration = datePickerStyles?.selectedSingleDateDecoration ?? BoxDecoration(
-            color: themeData.accentColor,
-            shape: BoxShape.circle,
-          );
+          itemStyle = datePickerStyles?.selectedDateStyle;
+          decoration = datePickerStyles?.selectedSingleDateDecoration;
         } else if (disabled) {
-          itemStyle = datePickerStyles?.disabledDateStyle ?? themeData.textTheme.body1
-              .copyWith(color: themeData.disabledColor);
+          itemStyle = datePickerStyles?.disabledDateStyle;
         } else if (currentDate.year == year &&
             currentDate.month == month &&
             currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle = datePickerStyles?.currentDateStyle ??
-              themeData.textTheme.body2.copyWith(color: themeData.accentColor);
+          itemStyle = datePickerStyles.currentDateStyle;
         } else {
-          //todo: expose to datePickerStyles
-          itemStyle = themeData.textTheme.body1;
+          itemStyle = datePickerStyles.defaultDateTextStyle;
         }
 
         Widget dayWidget = Container(
@@ -520,7 +519,7 @@ class _DayPicker extends StatelessWidget {
                 child: Text(
                   localizations.formatMonthYear(displayedMonth),
                   key: selectedPeriodKey,
-                  style: datePickerStyles?.displayedPeriodTitle ?? themeData.textTheme.subhead,
+                  style: datePickerStyles.displayedPeriodTitle,
                 ),
               ),
             ),
