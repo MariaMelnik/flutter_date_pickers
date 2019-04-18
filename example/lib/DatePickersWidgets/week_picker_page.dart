@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_date_picker/color_picker_dialog.dart';
+import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
 class WeekPickerPage extends StatefulWidget {
@@ -96,18 +97,24 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          _colorSelectorBtn(
-              "Start", selectedPeriodStartColor, _showSelectedStartColorDialog),
+          ColorSelectorBtn(
+            title: "Start",
+            color: selectedPeriodStartColor,
+            showDialogFunction: _showSelectedStartColorDialog),
           SizedBox(
             width: 12.0,
           ),
-          _colorSelectorBtn("Middle", selectedPeriodMiddleColor,
-              _showSelectedMiddleColorDialog),
+          ColorSelectorBtn(
+              title: "Middle",
+              color: selectedPeriodMiddleColor,
+              showDialogFunction: _showSelectedMiddleColorDialog),
           SizedBox(
             width: 12.0,
           ),
-          _colorSelectorBtn(
-              "End", selectedPeriodLastColor, _showSelectedEndColorDialog),
+          ColorSelectorBtn(
+              title: "End",
+              color: selectedPeriodLastColor,
+              showDialogFunction: _showSelectedEndColorDialog),
         ],
       ),
     );
@@ -176,32 +183,6 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
       setState(() {
         selectedPeriodMiddleColor = newSelectedColor;
       });
-  }
-
-  Widget _colorSelectorBtn(
-      String title, Color color, Function showDialogFunction) {
-    return Expanded(
-      child: Row(
-        children: <Widget>[
-          GestureDetector(
-            onTap: showDialogFunction,
-            child: Container(
-              height: 24.0,
-              width: 24.0,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-          ),
-          SizedBox(
-            width: 8.0,
-          ),
-          Expanded(
-              child: Text(
-            title,
-            overflow: TextOverflow.ellipsis,
-          )),
-        ],
-      ),
-    );
   }
 
   void _onSelectedDateChanged(DatePeriod newPeriod) {

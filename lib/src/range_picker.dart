@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/date_period.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
@@ -28,7 +29,8 @@ class RangePicker extends StatefulWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerKeys})
+      this.datePickerKeys,
+      this.datePickerStyles})
       : assert(selectedPeriod != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -57,6 +59,9 @@ class RangePicker extends StatefulWidget {
 
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
+
+  /// Styles what can be customized by user
+  final DatePickerRangeStyles datePickerStyles;
 
   @override
   _RangePickerState createState() => _RangePickerState();
@@ -140,6 +145,12 @@ class _RangePickerState extends State<RangePicker> {
 
   Widget _buildItems(BuildContext context, int index) {
     final DateTime targetDate = _addMonthsToMonthDate(widget.firstDate, index);
+
+    final ThemeData theme = Theme.of(context);
+    DatePickerRangeStyles styles = widget.datePickerStyles ?? DatePickerRangeStyles();
+    styles = styles.fulfillWithTheme(theme);
+
+
     return _RangePicker(
       key: ValueKey<DateTime>(targetDate),
       selectedPeriod: widget.selectedPeriod,
@@ -150,6 +161,7 @@ class _RangePickerState extends State<RangePicker> {
       displayedMonth: targetDate,
       datePickerLayoutSettings: widget.datePickerLayoutSettings,
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
+      datePickerStyles: styles,
     );
   }
 
@@ -272,6 +284,9 @@ class _RangePicker extends StatelessWidget {
   ///  Key fo selected month (useful for integration tests)
   final Key selectedPeriodKey;
 
+  /// Styles what can be customized by user
+  final DatePickerRangeStyles datePickerStyles;
+
   /// Creates a week picker.
   _RangePicker(
       {Key key,
@@ -282,7 +297,8 @@ class _RangePicker extends StatelessWidget {
       @required this.lastDate,
       @required this.displayedMonth,
       @required this.datePickerLayoutSettings,
-      this.selectedPeriodKey})
+      @required this.selectedPeriodKey,
+      @required this.datePickerStyles})
       : assert(selectedPeriod != null),
         assert(currentDate != null),
         assert(onChanged != null),
@@ -439,32 +455,17 @@ class _RangePicker extends StatelessWidget {
 
     if (DatePickerUtils.sameDate(date, firstNotDisabledDayOfSelectedPeriod) &&
         DatePickerUtils.sameDate(date, lastNotDisabledDayOfSelectedPeriod)) {
-      result = BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      );
+      result = datePickerStyles.selectedSingleDateDecoration;
     } else if (DatePickerUtils.sameDate(
             date, firstNotDisabledDayOfSelectedPeriod) ||
         DatePickerUtils.sameDate(date, firstDate)) {
-      result = BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
-      );
+      result = datePickerStyles.selectedPeriodStartDecoration;
     } else if (DatePickerUtils.sameDate(
             date, lastNotDisabledDayOfSelectedPeriod) ||
         DatePickerUtils.sameDate(date, lastDate)) {
-      result = BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10.0),
-            bottomRight: Radius.circular(10.0)),
-      );
+      result = datePickerStyles.selectedPeriodLastDecoration;
     } else {
-      result = BoxDecoration(
-        color: accentColor,
-        shape: BoxShape.rectangle,
-      );
+      result = datePickerStyles.selectedPeriodMiddleDecoration;
     }
 
     return result;
@@ -527,8 +528,7 @@ class _RangePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
     final int daysInMonth = getDaysInMonth(year, month);
@@ -556,19 +556,20 @@ class _RangePicker extends StatelessWidget {
         final bool isSelectedDay = _isDayOfSelectedPeriod(dayToBuild);
 
         if (isSelectedDay) {
-          // The selected day gets a circle background highlight, and a contrasting text color.
-          itemStyle = themeData.accentTextTheme.body2;
+          // The selected day gets a circle background highlight, and a contrasting text color by default.
+          itemStyle = datePickerStyles.selectedDateStyle;
           decoration = _getSelectedDecoration(
               DateTime(year, month, day), themeData.accentColor);
         } else if (disabled) {
-          itemStyle = themeData.textTheme.body1
-              .copyWith(color: themeData.disabledColor);
+          itemStyle = datePickerStyles.disabledDateStyle;
         } else if (currentDate.year == year &&
             currentDate.month == month &&
             currentDate.day == day) {
           // The current day gets a different text color.
           itemStyle =
-              themeData.textTheme.body2.copyWith(color: themeData.accentColor);
+              datePickerStyles.currentDateStyle;
+        } else {
+          itemStyle = datePickerStyles.defaultDateTextStyle;
         }
 
         Widget dayWidget = Container(
