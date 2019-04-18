@@ -463,10 +463,10 @@ class _DayPicker extends StatelessWidget {
 
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color by default.
-          itemStyle = datePickerStyles?.selectedDateStyle;
-          decoration = datePickerStyles?.selectedSingleDateDecoration;
+          itemStyle = datePickerStyles.selectedDateStyle;
+          decoration = datePickerStyles.selectedSingleDateDecoration;
         } else if (disabled) {
-          itemStyle = datePickerStyles?.disabledDateStyle;
+          itemStyle = datePickerStyles.disabledDateStyle;
         } else if (currentDate.year == year &&
             currentDate.month == month &&
             currentDate.day == day) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_date_picker/color_picker_dialog.dart';
+import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart' as dp;
 
 class DayPickerPage extends StatefulWidget {
@@ -74,15 +75,16 @@ class _DayPickerPageState extends State<DayPickerPage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      _colorSelectorBtn("Text", selectedDateStyleColor,
-                          _showSelectedDateDialog),
+                      ColorSelectorBtn(title: "Text", color: selectedDateStyleColor,
+                          showDialogFunction: _showSelectedDateDialog, colorBtnSize: 42.0,),
                       SizedBox(
                         width: 12.0,
                       ),
-                      _colorSelectorBtn(
-                          "Background",
-                          selectedSingleDateDecorationColor,
-                          _showSelectedBackgroundColorDialog),
+                      ColorSelectorBtn(
+                          title: "Background",
+                          color: selectedSingleDateDecorationColor,
+                          showDialogFunction: _showSelectedBackgroundColorDialog,
+                      colorBtnSize: 42.0,),
                     ],
                   ),
                 ),
@@ -121,32 +123,6 @@ class _DayPickerPageState extends State<DayPickerPage> {
       setState(() {
         selectedSingleDateDecorationColor = newSelectedColor;
       });
-  }
-
-  Widget _colorSelectorBtn(
-      String title, Color color, Function showDialogFunction) {
-    return Expanded(
-      child: Row(
-        children: <Widget>[
-          GestureDetector(
-            onTap: showDialogFunction,
-            child: Container(
-              height: 42.0,
-              width: 42.0,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-          ),
-          SizedBox(
-            width: 8.0,
-          ),
-          Expanded(
-              child: Text(
-            title,
-            overflow: TextOverflow.ellipsis,
-          )),
-        ],
-      ),
-    );
   }
 
   void _onSelectedDateChanged(DateTime newDate) {

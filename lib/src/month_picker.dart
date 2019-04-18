@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
@@ -25,7 +26,8 @@ class MonthPicker extends StatefulWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerKeys})
+      this.datePickerKeys,
+      this.datePickerStyles})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -54,6 +56,9 @@ class MonthPicker extends StatefulWidget {
 
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
+
+  /// Styles what can be customized by user
+  final DatePickerStyles datePickerStyles;
 
   @override
   State<StatefulWidget> createState() => _MonthPickerState();
@@ -132,6 +137,11 @@ class _MonthPickerState extends State<MonthPicker> {
 
   Widget _buildItems(BuildContext context, int index) {
     final DateTime year = _addYearsToYearDate(widget.firstDate, index);
+
+    final ThemeData theme = Theme.of(context);
+    DatePickerStyles styles = widget.datePickerStyles ?? DatePickerStyles();
+    styles = styles.fulfillWithTheme(theme);
+
     return _MonthPicker(
       key: ValueKey<DateTime>(year),
       selectedDate: widget.selectedDate,
@@ -142,6 +152,7 @@ class _MonthPickerState extends State<MonthPicker> {
       datePickerLayoutSettings: widget.datePickerLayoutSettings,
       displayedYear: year,
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
+      datePickerStyles: styles,
     );
   }
 
@@ -255,6 +266,9 @@ class _MonthPicker extends StatelessWidget {
   ///  Key fo selected month (useful for integration tests)
   final Key selectedPeriodKey;
 
+  /// Styles what can be customized by user
+  final DatePickerStyles datePickerStyles;
+
   _MonthPicker(
       {@required this.displayedYear,
       @required this.firstDate,
@@ -263,7 +277,8 @@ class _MonthPicker extends StatelessWidget {
       @required this.currentDate,
       @required this.onChanged,
       @required this.datePickerLayoutSettings,
-      this.selectedPeriodKey,
+      @required this.selectedPeriodKey,
+      @required this.datePickerStyles,
       Key key})
       : assert(displayedYear != null),
         assert(selectedDate != null),
@@ -312,16 +327,15 @@ class _MonthPicker extends StatelessWidget {
 
       if (isSelectedMonth) {
         // The selected month gets a circle background highlight, and a contrasting text color.
-        itemStyle = themeData.accentTextTheme.body2;
-        decoration =
-            BoxDecoration(color: themeData.accentColor, shape: BoxShape.circle);
+        itemStyle = datePickerStyles.selectedDateStyle;
+        decoration = datePickerStyles.selectedSingleDateDecoration;
       } else if (disabled) {
-        itemStyle =
-            themeData.textTheme.body1.copyWith(color: themeData.disabledColor);
+        itemStyle = datePickerStyles.disabledDateStyle;
       } else if (currentDate.year == year && currentDate.month == month) {
         // The current month gets a different text color.
-        itemStyle =
-            themeData.textTheme.body2.copyWith(color: themeData.accentColor);
+        itemStyle = datePickerStyles.currentDateStyle;
+      } else {
+        itemStyle = datePickerStyles.defaultDateTextStyle;
       }
 
       Widget monthWidget = Container(
@@ -370,7 +384,7 @@ class _MonthPicker extends StatelessWidget {
                 child: Text(
                   intl.DateFormat.y().format(displayedYear),
                   key: selectedPeriodKey,
-                  style: themeData.textTheme.subhead,
+                  style: datePickerStyles.displayedPeriodTitle,
                 ),
               ),
             ),

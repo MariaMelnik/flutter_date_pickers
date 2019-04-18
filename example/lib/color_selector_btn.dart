@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// default with and height for the button container
+const double _kBtnSize = 24.0;
 
 // round colored button with title to select some style color
 class ColorSelectorBtn extends StatelessWidget{
@@ -11,11 +13,14 @@ class ColorSelectorBtn extends StatelessWidget{
   // onTap callback
   final Function showDialogFunction;
 
+  final double colorBtnSize;
+
   const ColorSelectorBtn({
     Key key,
     @required this.title,
     @required this.color,
-    @required this.showDialogFunction
+    @required this.showDialogFunction,
+    this.colorBtnSize = _kBtnSize
   }) : super(key: key);
 
   @override
@@ -26,8 +31,8 @@ class ColorSelectorBtn extends StatelessWidget{
           GestureDetector(
             onTap: showDialogFunction,
             child: Container(
-              height: 24.0,
-              width: 24.0,
+              height: colorBtnSize,
+              width: colorBtnSize,
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
           ),
