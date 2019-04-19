@@ -147,9 +147,9 @@ class _RangePickerState extends State<RangePicker> {
     final DateTime targetDate = _addMonthsToMonthDate(widget.firstDate, index);
 
     final ThemeData theme = Theme.of(context);
-    DatePickerRangeStyles styles = widget.datePickerStyles ?? DatePickerRangeStyles();
+    DatePickerRangeStyles styles =
+        widget.datePickerStyles ?? DatePickerRangeStyles();
     styles = styles.fulfillWithTheme(theme);
-
 
     return _RangePicker(
       key: ValueKey<DateTime>(targetDate),
@@ -528,7 +528,8 @@ class _RangePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
     final int daysInMonth = getDaysInMonth(year, month);
@@ -566,8 +567,7 @@ class _RangePicker extends StatelessWidget {
             currentDate.month == month &&
             currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle =
-              datePickerStyles.currentDateStyle;
+          itemStyle = datePickerStyles.currentDateStyle;
         } else {
           itemStyle = datePickerStyles.defaultDateTextStyle;
         }

@@ -75,16 +75,21 @@ class _DayPickerPageState extends State<DayPickerPage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      ColorSelectorBtn(title: "Text", color: selectedDateStyleColor,
-                          showDialogFunction: _showSelectedDateDialog, colorBtnSize: 42.0,),
+                      ColorSelectorBtn(
+                        title: "Text",
+                        color: selectedDateStyleColor,
+                        showDialogFunction: _showSelectedDateDialog,
+                        colorBtnSize: 42.0,
+                      ),
                       SizedBox(
                         width: 12.0,
                       ),
                       ColorSelectorBtn(
-                          title: "Background",
-                          color: selectedSingleDateDecorationColor,
-                          showDialogFunction: _showSelectedBackgroundColorDialog,
-                      colorBtnSize: 42.0,),
+                        title: "Background",
+                        color: selectedSingleDateDecorationColor,
+                        showDialogFunction: _showSelectedBackgroundColorDialog,
+                        colorBtnSize: 42.0,
+                      ),
                     ],
                   ),
                 ),

@@ -26,32 +26,37 @@ class DatePickerStyles {
       this.selectedSingleDateDecoration,
       this.defaultDateTextStyle});
 
-
   /// Return new [DatePickerStyles] object where fields with null values set with defaults from passed theme
-  DatePickerStyles fulfillWithTheme(ThemeData theme){
+  DatePickerStyles fulfillWithTheme(ThemeData theme) {
     Color accentColor = theme.accentColor;
 
-    TextStyle _displayedPeriodTitle = displayedPeriodTitle ?? theme.textTheme.subhead;
-    TextStyle _currentDateStyle = currentDateStyle ?? theme.textTheme.body2.copyWith(color: theme.accentColor);;
-    TextStyle _disabledDateStyle = disabledDateStyle ?? theme.textTheme.body1.copyWith(color: theme.disabledColor);;
-    TextStyle _selectedDateStyle = selectedDateStyle ?? theme.accentTextTheme.body2;
-    TextStyle _defaultDateTextStyle = defaultDateTextStyle ?? theme.textTheme.body1;
-    BoxDecoration _selectedSingleDateDecoration = selectedSingleDateDecoration ?? BoxDecoration(
-        color: accentColor,
-        borderRadius: BorderRadius.all(Radius.circular(10.0))
-    );
+    TextStyle _displayedPeriodTitle =
+        displayedPeriodTitle ?? theme.textTheme.subhead;
+    TextStyle _currentDateStyle = currentDateStyle ??
+        theme.textTheme.body2.copyWith(color: theme.accentColor);
+    ;
+    TextStyle _disabledDateStyle = disabledDateStyle ??
+        theme.textTheme.body1.copyWith(color: theme.disabledColor);
+    ;
+    TextStyle _selectedDateStyle =
+        selectedDateStyle ?? theme.accentTextTheme.body2;
+    TextStyle _defaultDateTextStyle =
+        defaultDateTextStyle ?? theme.textTheme.body1;
+    BoxDecoration _selectedSingleDateDecoration =
+        selectedSingleDateDecoration ??
+            BoxDecoration(
+                color: accentColor,
+                borderRadius: BorderRadius.all(Radius.circular(10.0)));
 
-     return DatePickerStyles(
-       disabledDateStyle: _disabledDateStyle,
-       currentDateStyle: _currentDateStyle,
-       displayedPeriodTitle: _displayedPeriodTitle,
-       selectedDateStyle: _selectedDateStyle,
-       selectedSingleDateDecoration: _selectedSingleDateDecoration,
-       defaultDateTextStyle: _defaultDateTextStyle
-    );
+    return DatePickerStyles(
+        disabledDateStyle: _disabledDateStyle,
+        currentDateStyle: _currentDateStyle,
+        displayedPeriodTitle: _displayedPeriodTitle,
+        selectedDateStyle: _selectedDateStyle,
+        selectedSingleDateDecoration: _selectedSingleDateDecoration,
+        defaultDateTextStyle: _defaultDateTextStyle);
   }
 }
-
 
 /// Styles for date pickers which allow select some range (e.g. [RangePicker], [WeekPicker]).
 class DatePickerRangeStyles extends DatePickerStyles {
@@ -67,40 +72,46 @@ class DatePickerRangeStyles extends DatePickerStyles {
   final BoxDecoration selectedPeriodMiddleDecoration;
 
   /// Return new [DatePickerRangeStyles] object where fields with null values set with defaults from passed theme
-  DatePickerRangeStyles fulfillWithTheme(ThemeData theme){
+  DatePickerRangeStyles fulfillWithTheme(ThemeData theme) {
     Color accentColor = theme.accentColor;
 
     DatePickerStyles commonStyles = super.fulfillWithTheme(theme);
 
-    final BoxDecoration _selectedPeriodStartDecoration = selectedPeriodStartDecoration ?? BoxDecoration(
-      color: accentColor,
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
-    );
+    final BoxDecoration _selectedPeriodStartDecoration =
+        selectedPeriodStartDecoration ??
+            BoxDecoration(
+              color: accentColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0)),
+            );
 
-    final BoxDecoration _selectedPeriodLastDecoration = selectedPeriodLastDecoration ?? BoxDecoration(
-      color: accentColor,
-      borderRadius: BorderRadius.only(
-          topRight: Radius.circular(10.0),
-          bottomRight: Radius.circular(10.0)),
-    );
+    final BoxDecoration _selectedPeriodLastDecoration =
+        selectedPeriodLastDecoration ??
+            BoxDecoration(
+              color: accentColor,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0)),
+            );
 
-    final BoxDecoration _selectedPeriodMiddleDecoration = selectedPeriodMiddleDecoration ?? BoxDecoration(
-      color: accentColor,
-      shape: BoxShape.rectangle,
-    );
+    final BoxDecoration _selectedPeriodMiddleDecoration =
+        selectedPeriodMiddleDecoration ??
+            BoxDecoration(
+              color: accentColor,
+              shape: BoxShape.rectangle,
+            );
 
     return DatePickerRangeStyles(
-      disabledDateStyle: commonStyles.disabledDateStyle,
-      currentDateStyle: commonStyles.currentDateStyle,
-      displayedPeriodTitle: commonStyles.displayedPeriodTitle,
-      selectedDateStyle: commonStyles.selectedDateStyle,
-      selectedSingleDateDecoration: commonStyles.selectedSingleDateDecoration,
-      defaultDateTextStyle: commonStyles.defaultDateTextStyle,
-      selectedPeriodStartDecoration: _selectedPeriodStartDecoration,
-      selectedPeriodMiddleDecoration: _selectedPeriodMiddleDecoration,
-      selectedPeriodLastDecoration: _selectedPeriodLastDecoration
-    );
+        disabledDateStyle: commonStyles.disabledDateStyle,
+        currentDateStyle: commonStyles.currentDateStyle,
+        displayedPeriodTitle: commonStyles.displayedPeriodTitle,
+        selectedDateStyle: commonStyles.selectedDateStyle,
+        selectedSingleDateDecoration: commonStyles.selectedSingleDateDecoration,
+        defaultDateTextStyle: commonStyles.defaultDateTextStyle,
+        selectedPeriodStartDecoration: _selectedPeriodStartDecoration,
+        selectedPeriodMiddleDecoration: _selectedPeriodMiddleDecoration,
+        selectedPeriodLastDecoration: _selectedPeriodLastDecoration);
   }
 
   const DatePickerRangeStyles(

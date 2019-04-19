@@ -143,7 +143,8 @@ class _WeekPickerState extends State<WeekPicker> {
     final DateTime targetDate = _addMonthsToMonthDate(widget.firstDate, index);
 
     final ThemeData theme = Theme.of(context);
-    DatePickerRangeStyles styles = widget.datePickerStyles ?? DatePickerRangeStyles();
+    DatePickerRangeStyles styles =
+        widget.datePickerStyles ?? DatePickerRangeStyles();
     styles = styles.fulfillWithTheme(theme);
 
     return _WeekPicker(

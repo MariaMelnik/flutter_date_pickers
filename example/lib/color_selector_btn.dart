@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 const double _kBtnSize = 24.0;
 
 // round colored button with title to select some style color
-class ColorSelectorBtn extends StatelessWidget{
+class ColorSelectorBtn extends StatelessWidget {
   // title near color button
   final String title;
 
@@ -15,13 +15,13 @@ class ColorSelectorBtn extends StatelessWidget{
 
   final double colorBtnSize;
 
-  const ColorSelectorBtn({
-    Key key,
-    @required this.title,
-    @required this.color,
-    @required this.showDialogFunction,
-    this.colorBtnSize = _kBtnSize
-  }) : super(key: key);
+  const ColorSelectorBtn(
+      {Key key,
+      @required this.title,
+      @required this.color,
+      @required this.showDialogFunction,
+      this.colorBtnSize = _kBtnSize})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +41,9 @@ class ColorSelectorBtn extends StatelessWidget{
           ),
           Expanded(
               child: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-              )),
+            title,
+            overflow: TextOverflow.ellipsis,
+          )),
         ],
       ),
     );

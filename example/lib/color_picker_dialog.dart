@@ -18,7 +18,8 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
     super.initState();
 
     _mainColor = !materialColors.contains(widget.selectedColor)
-        ? Colors.blue // pre-select color if [widget.selectedColor] is not in main material colors palette
+        ? Colors
+            .blue // pre-select color if [widget.selectedColor] is not in main material colors palette
         : widget.selectedColor;
   }
 

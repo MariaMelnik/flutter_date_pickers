@@ -98,9 +98,9 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ColorSelectorBtn(
-            title: "Start",
-            color: selectedPeriodStartColor,
-            showDialogFunction: _showSelectedStartColorDialog),
+              title: "Start",
+              color: selectedPeriodStartColor,
+              showDialogFunction: _showSelectedStartColorDialog),
           SizedBox(
             width: 12.0,
           ),

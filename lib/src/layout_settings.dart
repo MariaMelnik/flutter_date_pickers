@@ -7,7 +7,8 @@ const Duration _kPageScrollDuration = const Duration(milliseconds: 200);
 const double _kDayPickerRowHeight = 42.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 const double _kMonthPickerPortraitWidth = 330.0;
-const EdgeInsetsGeometry _kContentPadding = const EdgeInsets.symmetric(horizontal: 8.0);
+const EdgeInsetsGeometry _kContentPadding =
+    const EdgeInsets.symmetric(horizontal: 8.0);
 
 class DatePickerLayoutSettings {
   /// Duration for scroll to previous or next page

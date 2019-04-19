@@ -39,7 +39,6 @@ class _RangePickerPageState extends State<RangePickerPage> {
     selectedPeriodStartColor = Theme.of(context).accentColor;
   }
 
-
   @override
   Widget build(BuildContext context) {
     // add selected colors to default settings
@@ -65,16 +64,17 @@ class _RangePickerPageState extends State<RangePickerPage> {
       children: <Widget>[
         Expanded(
           child: RangePicker(
-              selectedPeriod: _selectedPeriod,
-              onChanged: _onSelectedDateChanged,
-              firstDate: _firstDate,
-              lastDate: _lastDate,
-          datePickerStyles: styles,),
+            selectedPeriod: _selectedPeriod,
+            onChanged: _onSelectedDateChanged,
+            firstDate: _firstDate,
+            lastDate: _lastDate,
+            datePickerStyles: styles,
+          ),
         ),
         Container(
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -92,7 +92,6 @@ class _RangePickerPageState extends State<RangePickerPage> {
     );
   }
 
-
   // block witch show information about selected date and boundaries of the selected period
   Widget _selectedBlock() {
     return Column(
@@ -100,13 +99,13 @@ class _RangePickerPageState extends State<RangePickerPage> {
       children: <Widget>[
         _selectedPeriod != null
             ? Column(children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text("Selected period boundaries:"),
-          ),
-          Text(_selectedPeriod.start.toString()),
-          Text(_selectedPeriod.end.toString()),
-        ])
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                  child: Text("Selected period boundaries:"),
+                ),
+                Text(_selectedPeriod.start.toString()),
+                Text(_selectedPeriod.end.toString()),
+              ])
             : Container()
       ],
     );
@@ -142,14 +141,13 @@ class _RangePickerPageState extends State<RangePickerPage> {
     );
   }
 
-
   // select background color for the first date of the selected period
   void _showSelectedStartColorDialog() async {
     Color newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-          selectedColor: selectedPeriodStartColor,
-        ));
+              selectedColor: selectedPeriodStartColor,
+            ));
 
     if (newSelectedColor != null)
       setState(() {
@@ -157,14 +155,13 @@ class _RangePickerPageState extends State<RangePickerPage> {
       });
   }
 
-
   // select background color for the last date of the selected period
   void _showSelectedEndColorDialog() async {
     Color newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-          selectedColor: selectedPeriodLastColor,
-        ));
+              selectedColor: selectedPeriodLastColor,
+            ));
 
     if (newSelectedColor != null)
       setState(() {
@@ -172,14 +169,13 @@ class _RangePickerPageState extends State<RangePickerPage> {
       });
   }
 
-
   // select background color for the middle dates of the selected period
   void _showSelectedMiddleColorDialog() async {
     Color newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-          selectedColor: selectedPeriodMiddleColor,
-        ));
+              selectedColor: selectedPeriodMiddleColor,
+            ));
 
     if (newSelectedColor != null)
       setState(() {
