@@ -88,7 +88,7 @@ class _MonthPickerState extends State<MonthPicker> {
   void initState() {
     super.initState();
     // Initially display the pre-selected date.
-    final int yearPage = _yearDelta(widget.firstDate, widget.selectedDate);
+    final int yearPage = DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
     _monthPickerController = PageController(initialPage: yearPage);
     _handleYearPageChanged(yearPage);
     _updateCurrentDate();
@@ -98,7 +98,7 @@ class _MonthPickerState extends State<MonthPicker> {
   void didUpdateWidget(MonthPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
-      final int yearPage = _yearDelta(widget.firstDate, widget.selectedDate);
+      final int yearPage = DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
       _monthPickerController = PageController(initialPage: yearPage);
       _handleYearPageChanged(yearPage);
     }
@@ -124,10 +124,6 @@ class _MonthPickerState extends State<MonthPicker> {
         _updateCurrentDate();
       });
     });
-  }
-
-  static int _yearDelta(DateTime startDate, DateTime endDate) {
-    return (endDate.year - startDate.year);
   }
 
   /// Add years to a year truncated date.
@@ -198,7 +194,7 @@ class _MonthPickerState extends State<MonthPicker> {
               key: ValueKey<DateTime>(widget.selectedDate),
               controller: _monthPickerController,
               scrollDirection: Axis.horizontal,
-              itemCount: _yearDelta(widget.firstDate, widget.lastDate) + 1,
+              itemCount: DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) + 1,
               itemBuilder: _buildItems,
               onPageChanged: _handleYearPageChanged,
             ),

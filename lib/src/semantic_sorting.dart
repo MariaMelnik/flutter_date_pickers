@@ -1,7 +1,7 @@
-// Defines semantic traversal order of the top-level widgets inside the day or week
-// picker.
 import 'package:flutter/semantics.dart';
 
+// Defines semantic traversal order of the top-level widgets inside the day or week
+// picker.
 class MonthPickerSortKey extends OrdinalSortKey {
   static const MonthPickerSortKey previousMonth = const MonthPickerSortKey(1.0);
   static const MonthPickerSortKey nextMonth = const MonthPickerSortKey(2.0);

@@ -37,7 +37,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
   @override
   Widget build(BuildContext context) {
     // add selected colors to default settings
-    dp.DatePickerStyles styles = dp.DatePickerStyles(
+    dp.DatePickerStyles styles = dp.DatePickerRangeStyles(
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
             .body2
@@ -57,6 +57,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
             firstDate: _firstDate,
             lastDate: _lastDate,
             datePickerStyles: styles,
+            datePickerLayoutSettings: dp.DatePickerLayoutSettings(maxDayPickerRowCount: 2),
           ),
         ),
         Container(

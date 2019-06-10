@@ -34,10 +34,8 @@ class DatePickerStyles {
         displayedPeriodTitle ?? theme.textTheme.subhead;
     TextStyle _currentDateStyle = currentDateStyle ??
         theme.textTheme.body2.copyWith(color: theme.accentColor);
-    ;
     TextStyle _disabledDateStyle = disabledDateStyle ??
         theme.textTheme.body1.copyWith(color: theme.disabledColor);
-    ;
     TextStyle _selectedDateStyle =
         selectedDateStyle ?? theme.accentTextTheme.body2;
     TextStyle _defaultDateTextStyle =
