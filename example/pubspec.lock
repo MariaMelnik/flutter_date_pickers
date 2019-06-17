@@ -48,6 +48,11 @@ packages:
       relative: true
     source: path
     version: "0.0.3"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_material_color_picker:
     dependency: "direct main"
     description:
