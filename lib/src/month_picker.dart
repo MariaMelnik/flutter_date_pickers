@@ -301,8 +301,9 @@ class _MonthPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final Locale locale = Localizations.localeOf(context);
+
     final ThemeData themeData = Theme.of(context);
     final int monthsInYear = 12;
     final int year = displayedYear.year;
@@ -348,7 +349,7 @@ class _MonthPicker extends StatelessWidget {
                 '${localizations.formatDecimal(month)}, ${localizations.formatFullDate(monthToBuild)}',
             selected: isSelectedMonth,
             child: ExcludeSemantics(
-              child: Text(intl.DateFormat.MMM().format(monthToBuild),
+              child: Text(intl.DateFormat.MMM(locale.languageCode).format(monthToBuild),
                   style: itemStyle),
             ),
           ),

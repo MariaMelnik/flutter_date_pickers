@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'DatePickersWidgets/month_picker_page.dart';
 import 'DatePickersWidgets/day_picker_page.dart';
@@ -11,6 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+         supportedLocales: [
+           const Locale('en', 'US'), // American English
+           const Locale('ru', 'RU'), // Russian
+      ],
       debugShowCheckedModeBanner: false,
       title: 'Date pickers demo',
       theme: ThemeData(
