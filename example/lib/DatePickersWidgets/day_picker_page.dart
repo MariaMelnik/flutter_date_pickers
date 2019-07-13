@@ -50,6 +50,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
           ? Axis.vertical
           : Axis.horizontal,
       children: <Widget>[
+        SizedBox(height: 24.0,),
         Expanded(
           child: dp.DayPicker(
             selectedDate: _selectedDate,
@@ -99,6 +100,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
             ),
           ),
         ),
+        SizedBox(height: 46.0,) //hack for pushing up text behind CupertinoTabBar
       ],
     );
   }

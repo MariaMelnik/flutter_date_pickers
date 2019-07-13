@@ -60,6 +60,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
           ? Axis.vertical
           : Axis.horizontal,
       children: <Widget>[
+        SizedBox(height: 24.0,),
         Expanded(
           child: WeekPicker(
             selectedDate: _selectedDate,
@@ -86,6 +87,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
             ),
           ),
         ),
+        SizedBox(height: 46.0,) //hack for pushing up text behind CupertinoTabBar
       ],
     );
   }

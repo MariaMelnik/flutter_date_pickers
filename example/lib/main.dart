@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -11,7 +12,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
          supportedLocales: [
            const Locale('en', 'US'), // American English
@@ -19,9 +20,9 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       title: 'Date pickers demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
-      ),
+//      theme: ThemeData(
+//        primarySwatch: Colors.blueGrey,
+//      ),
       home: MyHomePage(title: 'flutter_date_pickers Demo'),
     );
   }
@@ -67,32 +68,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(letterSpacing: 1.15),
-        ),
-      ),
-      body: datePickers[_selectedTab],
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-            canvasColor: Colors.blueGrey,
-            textTheme: Theme.of(context).textTheme.copyWith(
-                caption: TextStyle(color: Colors.white.withOpacity(0.5)))),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Day")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Week")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Range")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Month")),
-          ],
-          fixedColor: Colors.yellow,
+    return CupertinoTabScaffold(
+        resizeToAvoidBottomInset: false,
+        tabBar: CupertinoTabBar(
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.date_range), title: Text("Day")),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.date_range), title: Text("Week")),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.date_range), title: Text("Range")),
+            ],
           currentIndex: _selectedTab,
           onTap: (newIndex) {
             setState(() {
@@ -100,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             });
           },
         ),
-      ),
+      tabBuilder: (_, index) => datePickers[_selectedTab],
     );
   }
 }

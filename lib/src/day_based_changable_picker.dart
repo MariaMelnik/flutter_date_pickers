@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
@@ -187,24 +188,41 @@ class _DayBasedChangablePicker<T> extends State<DayBasedChangablePicker<T>> {
                 children: <Widget>[
                   Semantics(
                     sortKey: MonthPickerSortKey.previousMonth,
-                    child: IconButton(
+//                    child: IconButton(
+//                      key: widget.datePickerKeys?.previousPageIconKey,
+//                      icon: const Icon(Icons.chevron_left),
+//                      tooltip: _isDisplayingFirstMonth
+//                          ? null
+//                          : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+//                      onPressed:
+//                      _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+//                    ),
+                    child: CupertinoButton(
                       key: widget.datePickerKeys?.previousPageIconKey,
-                      icon: const Icon(Icons.chevron_left),
-                      tooltip: _isDisplayingFirstMonth
-                          ? null
-                          : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                      child: const Icon(Icons.chevron_left),
+//                      tooltip: _isDisplayingFirstMonth
+//                          ? null
+//                          : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
                       onPressed:
                       _isDisplayingFirstMonth ? null : _handlePreviousMonth,
                     ),
                   ),
                   Semantics(
                     sortKey: MonthPickerSortKey.nextMonth,
-                    child: IconButton(
+//                    child: IconButton(
+//                      key: widget.datePickerKeys?.nextPageIconKey,
+//                      icon: const Icon(Icons.chevron_right),
+//                      tooltip: _isDisplayingLastMonth
+//                          ? null
+//                          : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+//                      onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
+//                    ),
+                    child: CupertinoButton(
                       key: widget.datePickerKeys?.nextPageIconKey,
-                      icon: const Icon(Icons.chevron_right),
-                      tooltip: _isDisplayingLastMonth
-                          ? null
-                          : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                      child: const Icon(Icons.chevron_right),
+//                      tooltip: _isDisplayingLastMonth
+//                          ? null
+//                          : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
                       onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
                     ),
                   ),

@@ -62,6 +62,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
           ? Axis.vertical
           : Axis.horizontal,
       children: <Widget>[
+        SizedBox(height: 24.0,),
         Expanded(
           child: RangePicker(
             selectedPeriod: _selectedPeriod,
@@ -88,6 +89,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
             ),
           ),
         ),
+        SizedBox(height: 46.0,) //hack for pushing up text behind CupertinoTabBar
       ],
     );
   }
