@@ -42,7 +42,7 @@ class DayPicker extends StatelessWidget {
   /// This date is highlighted in the picker.
   final DateTime selectedDate;
 
-  /// Called when the user picks a week.
+  /// Called when the user picks a day.
   final ValueChanged<DateTime> onChanged;
 
   /// The earliest date the user is permitted to pick.
