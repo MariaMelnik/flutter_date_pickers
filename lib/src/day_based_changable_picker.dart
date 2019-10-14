@@ -6,6 +6,7 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/basic_day_based_widget.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
+import 'package:flutter_date_pickers/src/typedefs.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
 
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
@@ -18,6 +19,9 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
 
   /// Called when the user picks a week.
   final ValueChanged<T> onChanged;
+
+  /// Called when the error was thrown after user selection.
+  final OnSelectionError onSelectionError;
 
   /// The earliest date the user is permitted to pick.
   final DateTime firstDate;
@@ -37,14 +41,14 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
   /// Logic for date selections.
   final ISelectablePicker selectablePicker;
 
-  const DayBasedChangablePicker({Key key, this.selectedDate, this.onChanged, this.firstDate, this.lastDate, this.datePickerLayoutSettings, this.datePickerStyles, this.datePickerKeys, this.selectablePicker}) : super(key: key);
+  const DayBasedChangablePicker({Key key, this.selectedDate, this.onChanged, this.firstDate, this.lastDate, this.datePickerLayoutSettings, this.datePickerStyles, this.datePickerKeys, this.selectablePicker, this.onSelectionError}) : super(key: key);
 
   @override
-  State<DayBasedChangablePicker<T>> createState() => _DayBasedChangablePicker<T>();
+  State<DayBasedChangablePicker<T>> createState() => _DayBasedChangablePickerState<T>();
 }
 
 
-class _DayBasedChangablePicker<T> extends State<DayBasedChangablePicker<T>> {
+class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>> {
   MaterialLocalizations localizations;
   TextDirection textDirection;
 
@@ -113,8 +117,11 @@ class _DayBasedChangablePicker<T> extends State<DayBasedChangablePicker<T>> {
     DatePickerStyles styles = widget.datePickerStyles ?? DatePickerStyles();
     styles = styles.fulfillWithTheme(theme);
 
-
-    widget.selectablePicker.onUpdate.listen((newSelectedDate) => widget.onChanged(newSelectedDate));
+    widget.selectablePicker.onUpdate
+        .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
+        .onError((e) => widget.onSelectionError != null
+          ? widget.onSelectionError(e)
+          : print(e.toString()));
 
     return DayBasedPicker(
       key: ValueKey<DateTime>(targetDate),

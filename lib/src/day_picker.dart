@@ -29,7 +29,8 @@ class DayPicker extends StatelessWidget {
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerKeys,
-      this.datePickerStyles})
+      this.datePickerStyles,
+      this.selectableDayPredicate})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -60,12 +61,16 @@ class DayPicker extends StatelessWidget {
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
 
+  /// Function returns if day can be selected or not.
+  final SelectableDayPredicate selectableDayPredicate;
+
   @override
   Widget build(BuildContext context){
     ISelectablePicker<DateTime> daySelectablePicker = DaySelectable(
-        selectedDate,
-        firstDate,
-        lastDate
+      selectedDate,
+      firstDate,
+      lastDate,
+      selectableDayPredicate: selectableDayPredicate
     );
 
     return DayBasedChangablePicker<DateTime>(

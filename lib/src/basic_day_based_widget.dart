@@ -44,7 +44,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
         @required this.selectedPeriodKey,
         @required this.datePickerStyles,
         @required this.selectablePicker})
-      :        assert(currentDate != null),
+      : assert(currentDate != null),
         assert(displayedMonth != null),
         assert(datePickerLayoutSettings != null),
         assert(!firstDate.isAfter(lastDate)),

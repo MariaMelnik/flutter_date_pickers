@@ -67,6 +67,8 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
             firstDate: _firstDate,
             lastDate: _lastDate,
             datePickerStyles: styles,
+            onSelectionError: _onSelectionError,
+            selectableDayPredicate: _isSelectableCustom,
           ),
         ),
         Container(
@@ -190,5 +192,13 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
       _selectedDate = newPeriod.start;
       _selectedPeriod = newPeriod;
     });
+  }
+
+  void _onSelectionError(Object e){
+    if (e is UnselectablePeriodException) print("catch error: ${e}");
+  }
+
+  bool _isSelectableCustom (DateTime day) {
+    return day.weekday < 6;
   }
 }

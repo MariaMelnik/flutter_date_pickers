@@ -58,6 +58,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
             lastDate: _lastDate,
             datePickerStyles: styles,
             datePickerLayoutSettings: dp.DatePickerLayoutSettings(maxDayPickerRowCount: 2),
+            selectableDayPredicate: _isSelectableCustom,
           ),
         ),
         Container(
@@ -135,5 +136,9 @@ class _DayPickerPageState extends State<DayPickerPage> {
     setState(() {
       _selectedDate = newDate;
     });
+  }
+
+  bool _isSelectableCustom (DateTime day) {
+    return day.weekday < 6;
   }
 }

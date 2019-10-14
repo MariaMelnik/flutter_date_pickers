@@ -6,6 +6,7 @@ import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_period.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
+import 'package:flutter_date_pickers/src/typedefs.dart';
 
 // Styles for current displayed period (month): Theme.of(context).textTheme.subhead
 //
@@ -27,7 +28,9 @@ class WeekPicker extends StatelessWidget {
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerKeys,
-      this.datePickerStyles})
+      this.datePickerStyles,
+      this.selectableDayPredicate,
+      this.onSelectionError})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -45,6 +48,9 @@ class WeekPicker extends StatelessWidget {
   /// Called when the user picks a week.
   final ValueChanged<DatePeriod> onChanged;
 
+  /// Called when the error was thrown after user selection.
+  final OnSelectionError onSelectionError;
+
   /// The earliest date the user is permitted to pick.
   final DateTime firstDate;
 
@@ -60,6 +66,8 @@ class WeekPicker extends StatelessWidget {
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
 
+  /// Function returns if day can be selected or not.
+  final SelectableDayPredicate selectableDayPredicate;
 
   @override
   Widget build(BuildContext context){
@@ -69,7 +77,8 @@ class WeekPicker extends StatelessWidget {
         selectedDate,
         localizations.firstDayOfWeekIndex,
         firstDate,
-        lastDate
+        lastDate,
+        selectableDayPredicate: selectableDayPredicate
     );
 
     return DayBasedChangablePicker<DatePeriod>(
@@ -78,6 +87,7 @@ class WeekPicker extends StatelessWidget {
       firstDate: firstDate,
       lastDate: lastDate,
       onChanged: onChanged,
+      onSelectionError: onSelectionError,
       datePickerLayoutSettings: datePickerLayoutSettings,
       datePickerStyles: datePickerStyles,
       datePickerKeys: datePickerKeys,

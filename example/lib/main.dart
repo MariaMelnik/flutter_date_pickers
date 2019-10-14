@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
       ),
       home: MyHomePage(title: 'flutter_date_pickers Demo'),
+//      locale: Locale('ru', 'RU'),
     );
   }
 }
