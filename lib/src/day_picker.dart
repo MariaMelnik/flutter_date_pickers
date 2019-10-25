@@ -28,12 +28,13 @@ class DayPicker extends StatelessWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+      this.datePickerStyles = const DatePickerRangeStyles(),
       this.datePickerKeys,
-      this.datePickerStyles,
       this.selectableDayPredicate})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
+        assert(!lastDate.isBefore(firstDate)),
         assert(!selectedDate.isBefore(firstDate)),
         assert(!selectedDate.isAfter(lastDate)),
         super(key: key);

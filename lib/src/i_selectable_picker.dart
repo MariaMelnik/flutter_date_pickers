@@ -21,6 +21,10 @@ abstract class ISelectablePicker<T> {
 
   @protected
   StreamController<T> onUpdateController = StreamController<T>.broadcast();
+
+  /// Stream with new selected (T) event.
+  ///
+  /// Throws [UnselectablePeriodException] if there is any custom disabled date in selected.
   Stream<T> get onUpdate => onUpdateController.stream;
 
   ISelectablePicker(this.firstDate, this.lastDate, this._selectableDayPredicate);
@@ -30,17 +34,14 @@ abstract class ISelectablePicker<T> {
   /// Call when user tap on the day cell.
   void onDayTapped(DateTime selectedDate);
 
-  /// Returns if passed day is disabled.
+  /// Returns if given day is disabled.
   ///
-  /// Returns weather passed day before the beginning of the [firstDay] or after the end of the [lastDay].
+  /// Returns weather given day before the beginning of the [firstDay] or after the end of the [lastDay].
   /// If [_selectableDayPredicate] is set checks it as well.
   @protected
   bool isDisabled(DateTime day) {
-    final DateTime beginOfTheFirstDay =
-    DateTime(firstDate.year, firstDate.month, firstDate.day);
-    final DateTime endOfTheLastDay =
-    DateTime(lastDate.year, lastDate.month, lastDate.day + 1)
-        .subtract(Duration(microseconds: 1));
+    final DateTime beginOfTheFirstDay = DatePickerUtils.startOfTheDay(firstDate);
+    final DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(lastDate);
     final bool customDisabled = _selectableDayPredicate != null
       ? !_selectableDayPredicate(day)
       : false;
@@ -59,10 +60,18 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
   DateTime _firstDayOfSelectedWeek;
   DateTime _lastDayOfSelectedWeek;
 
-  // according to MaterialLocalization.firstDayOfWeekIndex
+  // It is int from 0 to 6 where 0 points to Sunday and 6 points to Saturday.
+  // According to MaterialLocalization.firstDayOfWeekIndex.
   final int _firstDayOfWeekIndex;
 
-  WeekSelectable(DateTime selectedDate, this._firstDayOfWeekIndex, DateTime firstDate, DateTime lastDate, {SelectableDayPredicate selectableDayPredicate}) : super(firstDate, lastDate, selectableDayPredicate) {
+  WeekSelectable(
+      DateTime selectedDate,
+      this._firstDayOfWeekIndex,
+      DateTime firstDate,
+      DateTime lastDate,
+      {SelectableDayPredicate selectableDayPredicate}
+    ) : super(firstDate, lastDate, selectableDayPredicate)
+  {
     DatePeriod selectedWeek = _getNewSelectedPeriod(selectedDate);
     _firstDayOfSelectedWeek = selectedWeek.start;
     _lastDayOfSelectedWeek = selectedWeek.end;
@@ -75,13 +84,11 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
     if (isDisabled(date)) {
       result = DayType.disabled;
     } else if (_isDaySelected(date)) {
-      DateTime firstNotDisabledDayOfSelectedWeek =
-      _firstDayOfSelectedWeek.isBefore(firstDate)
+      DateTime firstNotDisabledDayOfSelectedWeek = _firstDayOfSelectedWeek.isBefore(firstDate)
           ? firstDate
           : _firstDayOfSelectedWeek;
 
-      DateTime lastNotDisabledDayOfSelectedWeek =
-      _lastDayOfSelectedWeek.isAfter(lastDate)
+      DateTime lastNotDisabledDayOfSelectedWeek = _lastDayOfSelectedWeek.isAfter(lastDate)
           ? lastDate
           : _lastDayOfSelectedWeek;
 
@@ -120,18 +127,16 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
   DatePeriod _getNewSelectedPeriod(DateTime tappedDay) {
     DatePeriod newPeriod;
 
-    DateTime firstDayOfTappedWeek =
-    DatePickerUtils.getFirstDayOfWeek(tappedDay, _firstDayOfWeekIndex);
-    DateTime lastDayOfTappedWeek =
-    DatePickerUtils.getLastDayOfWeek(tappedDay, _firstDayOfWeekIndex);
+    DateTime firstDayOfTappedWeek = DatePickerUtils.getFirstDayOfWeek(tappedDay, _firstDayOfWeekIndex);
+    DateTime lastDayOfTappedWeek = DatePickerUtils.getLastDayOfWeek(tappedDay, _firstDayOfWeekIndex);
 
-    DateTime firstNotDisabledDayOfSelectedWeek =
-    firstDayOfTappedWeek.isBefore(firstDate)
+    DateTime firstNotDisabledDayOfSelectedWeek = firstDayOfTappedWeek.isBefore(firstDate)
         ? firstDate
         : firstDayOfTappedWeek;
 
-    DateTime lastNotDisabledDayOfSelectedWeek =
-    lastDayOfTappedWeek.isAfter(lastDate) ? lastDate : lastDayOfTappedWeek;
+    DateTime lastNotDisabledDayOfSelectedWeek = lastDayOfTappedWeek.isAfter(lastDate)
+        ? lastDate
+        : lastDayOfTappedWeek;
 
     newPeriod = DatePeriod(
         firstNotDisabledDayOfSelectedWeek, lastNotDisabledDayOfSelectedWeek);
@@ -163,7 +168,12 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
 class DaySelectable extends ISelectablePicker<DateTime> {
   DateTime selectedDate;
 
-  DaySelectable(this.selectedDate, DateTime firstDate, DateTime lastDate, {SelectableDayPredicate selectableDayPredicate}) : super(firstDate, lastDate, selectableDayPredicate);
+  DaySelectable(
+      this.selectedDate,
+      DateTime firstDate,
+      DateTime lastDate,
+      {SelectableDayPredicate selectableDayPredicate}
+  ) : super(firstDate, lastDate, selectableDayPredicate);
 
   @override
   DayType getDayType(DateTime date) {
@@ -197,7 +207,12 @@ class DaySelectable extends ISelectablePicker<DateTime> {
 class RangeSelectable extends ISelectablePicker<DatePeriod>{
   DatePeriod selectedPeriod;
 
-  RangeSelectable(this.selectedPeriod, DateTime firstDate, DateTime lastDate, {SelectableDayPredicate selectableDayPredicate}) : super(firstDate, lastDate, selectableDayPredicate);
+  RangeSelectable(
+      this.selectedPeriod,
+      DateTime firstDate,
+      DateTime lastDate,
+      {SelectableDayPredicate selectableDayPredicate}
+   ) : super(firstDate, lastDate, selectableDayPredicate);
 
   @override
   DayType getDayType(DateTime date) {
@@ -237,17 +252,17 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
     return onUpdateController.add(newPeriod);
   }
 
-  // return new selected period according to tapped date
+  // Returns new selected period according to tapped date.
   DatePeriod _getNewSelectedPeriod(DateTime tappedDate) {
     // check if was selected only one date and we should generate period
-    bool sameDate =
-    DatePickerUtils.sameDate(selectedPeriod.start, selectedPeriod.end);
+    bool sameDate = DatePickerUtils.sameDate(selectedPeriod.start, selectedPeriod.end);
     DatePeriod newPeriod;
 
+    // Was selected one-day-period.
+    // With new user tap will be generated 2 dates as a period.
     if (sameDate) {
       // if user tap on the already selected single day
-      bool selectedAlreadySelectedDay =
-      DatePickerUtils.sameDate(tappedDate, selectedPeriod.end);
+      bool selectedAlreadySelectedDay = DatePickerUtils.sameDate(tappedDate, selectedPeriod.end);
       bool isSelectedFirstDay = DatePickerUtils.sameDate(tappedDate, firstDate);
       bool isSelectedLastDay = DatePickerUtils.sameDate(tappedDate, lastDate);
 
@@ -255,25 +270,27 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
         if (isSelectedFirstDay && isSelectedLastDay)
           newPeriod = DatePeriod(firstDate, lastDate);
         else if (isSelectedFirstDay)
-          newPeriod = DatePeriod(firstDate, firstDate);
+          newPeriod = DatePeriod(firstDate, DatePickerUtils.endOfTheDay(firstDate));
         else if (isSelectedLastDay)
-          newPeriod = DatePeriod(tappedDate, lastDate);
+          newPeriod = DatePeriod(DatePickerUtils.startOfTheDay(lastDate), lastDate);
         else
-          newPeriod = DatePeriod(tappedDate, tappedDate);
+          newPeriod = DatePeriod(DatePickerUtils.startOfTheDay(tappedDate), DatePickerUtils.endOfTheDay(tappedDate));
       } else {
-        DateTime startOfTheSelectedDay = DateTime(selectedPeriod.start.year,
-            selectedPeriod.start.month, selectedPeriod.start.day);
+        DateTime startOfTheSelectedDay = DatePickerUtils.startOfTheDay(selectedPeriod.start);
 
         if (!tappedDate.isAfter(startOfTheSelectedDay)) {
           newPeriod = DatePickerUtils.sameDate(tappedDate, firstDate)
               ? DatePeriod(firstDate, selectedPeriod.end)
-              : DatePeriod(tappedDate, selectedPeriod.end);
+              : DatePeriod(DatePickerUtils.startOfTheDay(tappedDate), selectedPeriod.end);
         } else {
           newPeriod = DatePickerUtils.sameDate(tappedDate, lastDate)
               ? DatePeriod(selectedPeriod.start, lastDate)
-              : DatePeriod(selectedPeriod.start, tappedDate);
+              : DatePeriod(selectedPeriod.start,  DatePickerUtils.endOfTheDay(tappedDate));
         }
       }
+
+      // Was selected 2 dates as a period.
+      // With new user tap new one-day-period will be generated.
     } else {
       bool sameAsFirst = DatePickerUtils.sameDate(tappedDate, firstDate);
       bool sameAsLast = DatePickerUtils.sameDate(tappedDate, lastDate);
@@ -281,15 +298,14 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
       if (sameAsFirst && sameAsLast)
         newPeriod = DatePeriod(firstDate, lastDate);
       else if (sameAsFirst)
-        newPeriod = DatePeriod(firstDate, firstDate);
+        newPeriod = DatePeriod(firstDate, DatePickerUtils.endOfTheDay(firstDate));
       else if (sameAsLast)
-        newPeriod = DatePeriod(tappedDate, lastDate);
+        newPeriod = DatePeriod(DatePickerUtils.startOfTheDay(tappedDate), lastDate);
       else
-        newPeriod = DatePeriod(tappedDate, tappedDate);
+        newPeriod = DatePeriod(DatePickerUtils.startOfTheDay(tappedDate), DatePickerUtils.endOfTheDay(tappedDate));
     }
 
     return newPeriod;
   }
-
 }
 

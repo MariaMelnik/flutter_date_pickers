@@ -5,6 +5,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/basic_day_based_widget.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
+import 'package:flutter_date_pickers/src/month_navigation_row.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 import 'package:flutter_date_pickers/src/typedefs.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
@@ -17,7 +18,7 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
   /// This date is highlighted in the picker.
   final DateTime selectedDate;
 
-  /// Called when the user picks a week.
+  /// Called when the user picks a new T.
   final ValueChanged<T> onChanged;
 
   /// Called when the error was thrown after user selection.
@@ -41,7 +42,20 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
   /// Logic for date selections.
   final ISelectablePicker selectablePicker;
 
-  const DayBasedChangablePicker({Key key, this.selectedDate, this.onChanged, this.firstDate, this.lastDate, this.datePickerLayoutSettings, this.datePickerStyles, this.datePickerKeys, this.selectablePicker, this.onSelectionError}) : super(key: key);
+  const DayBasedChangablePicker({
+    Key key,
+    this.selectedDate,
+    this.onChanged,
+    this.firstDate,
+    this.lastDate,
+    @required this.datePickerLayoutSettings,
+    @required this.datePickerStyles,
+    this.datePickerKeys,
+    this.selectablePicker,
+    this.onSelectionError
+  }) : assert(datePickerLayoutSettings != null),
+       assert(datePickerStyles != null),
+       super(key: key);
 
   @override
   State<DayBasedChangablePicker<T>> createState() => _DayBasedChangablePickerState<T>();
@@ -56,6 +70,9 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
   DateTime _currentDisplayedMonthDate;
   DateTime _previousMonthDate;
   DateTime _nextMonthDate;
+
+  // Styles from widget fulfilled with current Theme.
+  DatePickerStyles _resultStyles;
 
   Timer _timer;
   PageController _dayPickerController;
@@ -93,15 +110,16 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
     super.didChangeDependencies();
     localizations = MaterialLocalizations.of(context);
     textDirection = Directionality.of(context);
+
+    final ThemeData theme = Theme.of(context);
+    _resultStyles = widget.datePickerStyles.fulfillWithTheme(theme);
   }
 
   void _updateCurrentDate() {
     _todayDate = DateTime.now();
-    final DateTime tomorrow =
-    DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
+    final DateTime tomorrow = DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
     Duration timeUntilTomorrow = tomorrow.difference(_todayDate);
-    timeUntilTomorrow +=
-    const Duration(seconds: 1); // so we don't miss it by rounding
+    timeUntilTomorrow += const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
     _timer = Timer(timeUntilTomorrow, () {
       setState(() {
@@ -110,12 +128,8 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
     });
   }
 
-  Widget _buildItems(BuildContext context, int index) {
+  Widget _buildCalendar(BuildContext context, int index) {
     final DateTime targetDate = DatePickerUtils.addMonthsToMonthDate(widget.firstDate, index);
-
-    final ThemeData theme = Theme.of(context);
-    DatePickerStyles styles = widget.datePickerStyles ?? DatePickerStyles();
-    styles = styles.fulfillWithTheme(theme);
 
     widget.selectablePicker.onUpdate
         .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
@@ -132,7 +146,7 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
       displayedMonth: targetDate,
       datePickerLayoutSettings: widget.datePickerLayoutSettings,
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
-      datePickerStyles: styles,
+      datePickerStyles: _resultStyles,
     );
   }
 
@@ -171,54 +185,44 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
     return SizedBox(
       width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
       height: widget.datePickerLayoutSettings.maxDayPickerHeight,
-      child: Stack(
+      child: Column(
         children: <Widget>[
-          Semantics(
-            sortKey: MonthPickerSortKey.calendar,
-            child: PageView.builder(
-              key: ValueKey<DateTime>(widget.selectedDate),
-              controller: _dayPickerController,
-              scrollDirection: Axis.horizontal,
-              itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
-              itemBuilder: _buildItems,
-              onPageChanged: _handleMonthPageChanged,
-            ),
-          ),
           SizedBox(
             height: widget.datePickerLayoutSettings.dayPickerRowHeight,
             child: Padding(
-              padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Semantics(
-                    sortKey: MonthPickerSortKey.previousMonth,
-                    child: IconButton(
-                      key: widget.datePickerKeys?.previousPageIconKey,
-                      icon: const Icon(Icons.chevron_left),
-                      tooltip: _isDisplayingFirstMonth
-                          ? null
-                          : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
-                      onPressed:
-                      _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+                padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
+                  child: MonthNavigationRow(
+                    previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
+                    nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
+                    previousMonthTooltip: _isDisplayingFirstMonth
+                      ? null
+                      : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                    nextMonthTooltip: _isDisplayingLastMonth
+                      ? null
+                      : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                    onPreviousMonthTapped: _handlePreviousMonth,
+                    onNextMonthTapped: _handleNextMonth,
+                    title: Text(
+                      localizations.formatMonthYear(_currentDisplayedMonthDate),
+                      key: widget.datePickerKeys?.selectedPeriodKeys,
+                      style: _resultStyles.displayedPeriodTitle,
                     ),
                   ),
-                  Semantics(
-                    sortKey: MonthPickerSortKey.nextMonth,
-                    child: IconButton(
-                      key: widget.datePickerKeys?.nextPageIconKey,
-                      icon: const Icon(Icons.chevron_right),
-                      tooltip: _isDisplayingLastMonth
-                          ? null
-                          : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
-                      onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
-                    ),
-                  ),
-                ],
+            ),
+          ),
+          Expanded(
+            child: Semantics(
+              sortKey: MonthPickerSortKey.calendar,
+              child: PageView.builder(
+                key: ValueKey<DateTime>(widget.selectedDate),
+                controller: _dayPickerController,
+                scrollDirection: Axis.horizontal,
+                itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
+                itemBuilder: _buildCalendar,
+                onPageChanged: _handleMonthPageChanged,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

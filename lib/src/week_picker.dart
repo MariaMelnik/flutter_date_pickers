@@ -27,17 +27,16 @@ class WeekPicker extends StatelessWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+      this.datePickerStyles = const DatePickerRangeStyles(),
       this.datePickerKeys,
-      this.datePickerStyles,
       this.selectableDayPredicate,
       this.onSelectionError})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) ||
-            selectedDate.isAtSameMomentAs(firstDate)),
-        assert(selectedDate.isBefore(lastDate) ||
-            selectedDate.isAtSameMomentAs(lastDate)),
+        assert(!lastDate.isBefore(firstDate)),
+        assert(!selectedDate.isBefore(firstDate)),
+        assert(!selectedDate.isAfter(lastDate)),
         super(key: key);
 
   /// The currently selected date.

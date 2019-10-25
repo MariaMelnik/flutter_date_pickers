@@ -49,6 +49,8 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
         assert(datePickerLayoutSettings != null),
         assert(!firstDate.isAfter(lastDate)),
         assert(selectablePicker != null),
+        assert(datePickerLayoutSettings != null),
+        assert(datePickerStyles != null),
         super(key: key);
 
 
@@ -157,19 +159,6 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
       padding: datePickerLayoutSettings.contentPadding,
       child: Column(
         children: <Widget>[
-          Container(
-            height: datePickerLayoutSettings.dayPickerRowHeight,
-            child: Center(
-              child: ExcludeSemantics(
-                child: Text(
-                  localizations.formatMonthYear(displayedMonth),
-                  key: selectedPeriodKey,
-                  style: datePickerStyles?.displayedPeriodTitle ??
-                      themeData.textTheme.subhead,
-                ),
-              ),
-            ),
-          ),
           Flexible(
             child: GridView.custom(
               gridDelegate: datePickerLayoutSettings.dayPickerGridDelegate,
