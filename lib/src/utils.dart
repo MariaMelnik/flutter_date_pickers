@@ -68,8 +68,10 @@ class DatePickerUtils {
   }
 
 
-  // firstDayIndex is from 0 to 6 where 0 points to Sunday and 6 points to Saturday
-  // (according to MaterialLocalization.firstDayIfWeekIndex)
+  /// Returns start of the first day of the week with given day.
+  ///
+  /// Start of the week calculated using firstDayIndex which is int from 0 to 6 where 0 points to Sunday and 6 points to Saturday.
+  /// (according to MaterialLocalization.firstDayIfWeekIndex)
   static DateTime getFirstDayOfWeek(DateTime day, int firstDayIndex) {
     // from 1 to 7 where 1 points to Monday and 7 points to Sunday
     int weekday = day.weekday;
@@ -81,13 +83,14 @@ class DatePickerUtils {
     if (diff < 0) diff = 7 + diff;
 
     DateTime firstDayOfWeek = day.subtract(Duration(days: diff));
-    firstDayOfWeek =
-        DateTime(firstDayOfWeek.year, firstDayOfWeek.month, firstDayOfWeek.day);
+    firstDayOfWeek = startOfTheDay(firstDayOfWeek);
     return firstDayOfWeek;
   }
 
-  // firstDayIndex is from 0 to 6 where 0 points to Sunday and 6 points to Saturday
-  // (according to MaterialLocalization.firstDayIfWeekIndex)
+  /// Returns end of the last day of the week with given day.
+  ///
+  /// Start of the week calculated using firstDayIndex which is int from 0 to 6 where 0 points to Sunday and 6 points to Saturday.
+  /// (according to MaterialLocalization.firstDayIfWeekIndex)
   static DateTime getLastDayOfWeek(DateTime day, int firstDayIndex) {
     // from 1 to 7 where 1 points to Monday and 7 points to Sunday
     int weekday = day.weekday;
@@ -102,8 +105,21 @@ class DatePickerUtils {
     if (diff < 0) diff = 7 + diff;
 
     DateTime lastDayOfWeek = day.add(Duration(days: diff));
-    lastDayOfWeek = DateTime(lastDayOfWeek.year, lastDayOfWeek.month, lastDayOfWeek.day + 1).subtract(Duration(milliseconds: 1));
+    lastDayOfWeek = endOfTheDay(lastDayOfWeek);
     return lastDayOfWeek;
   }
 
+  /// Returns end of the given day.
+  ///
+  /// End time is 1 millisecond before start of the next day.
+  static DateTime endOfTheDay(DateTime date) {
+    return DateTime(date.year, date.month, date.day).add(Duration(days: 1)).subtract(Duration(milliseconds: 1));
+  }
+
+  /// Returns start of the given day.
+  ///
+  /// Start time is 00:00:00.
+  static DateTime startOfTheDay(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
 }

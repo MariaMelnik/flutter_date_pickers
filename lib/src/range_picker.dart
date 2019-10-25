@@ -29,14 +29,13 @@ class RangePicker extends StatelessWidget {
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerKeys,
-      this.datePickerStyles})
+      this.datePickerStyles = const DatePickerRangeStyles()})
       : assert(selectedPeriod != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedPeriod.start.isAfter(firstDate) ||
-            selectedPeriod.start.isAtSameMomentAs(firstDate)),
-        assert(selectedPeriod.end.isBefore(lastDate) ||
-            selectedPeriod.end.isAtSameMomentAs(lastDate)),
+        assert(!lastDate.isBefore(firstDate)),
+        assert(!selectedPeriod.start.isBefore(firstDate)),
+        assert(!selectedPeriod.end.isAfter(lastDate)),
         super(key: key);
 
   /// The currently selected period.
