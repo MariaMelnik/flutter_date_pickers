@@ -209,7 +209,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
   }
 
   EventDecoration _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events?.map<DateTime>((Event e) => e.date).toList();
+    List<DateTime> eventsDates = widget.events?.map<DateTime>((Event e) => e.date)?.toList();
     bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year && date.month == d.month && d.day == date.day) ?? false;
 
     BoxDecoration roundedBorder = BoxDecoration(

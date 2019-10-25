@@ -69,7 +69,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
   /// If there is only one date selected [DatePickerStyles.selectedSingleDateDecoration] will be used.
   final BoxDecoration selectedPeriodMiddleDecoration;
 
-  /// Return new [DatePickerRangeStyles] object where fields with null values set with defaults from passed theme
+  /// Return new [DatePickerRangeStyles] object where fields with null values set with defaults from given theme.
   DatePickerRangeStyles fulfillWithTheme(ThemeData theme) {
     Color accentColor = theme.accentColor;
 

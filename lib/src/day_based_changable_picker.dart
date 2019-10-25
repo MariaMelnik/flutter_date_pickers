@@ -111,6 +111,11 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
       _dayPickerController = PageController(initialPage: monthPage);
       _handleMonthPageChanged(monthPage);
     }
+
+    if (widget.datePickerStyles != oldWidget.datePickerStyles) {
+      final ThemeData theme = Theme.of(context);
+      _resultStyles = widget.datePickerStyles.fulfillWithTheme(theme);
+    }
   }
 
   @override
@@ -121,6 +126,62 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
 
     final ThemeData theme = Theme.of(context);
     _resultStyles = widget.datePickerStyles.fulfillWithTheme(theme);
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
+      height: widget.datePickerLayoutSettings.maxDayPickerHeight,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: widget.datePickerLayoutSettings.dayPickerRowHeight,
+            child: Padding(
+              padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
+              child: MonthNavigationRow(
+                previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
+                nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
+                previousMonthTooltip: _isDisplayingFirstMonth
+                    ? null
+                    : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                nextMonthTooltip: _isDisplayingLastMonth
+                    ? null
+                    : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                onPreviousMonthTapped: _handlePreviousMonth,
+                onNextMonthTapped: _handleNextMonth,
+                title: Text(
+                  localizations.formatMonthYear(_currentDisplayedMonthDate),
+                  key: widget.datePickerKeys?.selectedPeriodKeys,
+                  style: _resultStyles.displayedPeriodTitle,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Semantics(
+              sortKey: MonthPickerSortKey.calendar,
+              child: PageView.builder(
+                key: ValueKey<DateTime>(widget.selectedDate),
+                controller: _dayPickerController,
+                scrollDirection: Axis.horizontal,
+                itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
+                itemBuilder: _buildCalendar,
+                onPageChanged: _handleMonthPageChanged,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _dayPickerController?.dispose();
+    super.dispose();
   }
 
   void _updateCurrentDate() {
@@ -187,60 +248,5 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
           DatePickerUtils.addMonthsToMonthDate(widget.firstDate, monthPage);
       _nextMonthDate = DatePickerUtils.addMonthsToMonthDate(widget.firstDate, monthPage + 1);
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
-      height: widget.datePickerLayoutSettings.maxDayPickerHeight,
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: widget.datePickerLayoutSettings.dayPickerRowHeight,
-            child: Padding(
-                padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
-                  child: MonthNavigationRow(
-                    previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
-                    nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
-                    previousMonthTooltip: _isDisplayingFirstMonth
-                      ? null
-                      : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
-                    nextMonthTooltip: _isDisplayingLastMonth
-                      ? null
-                      : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
-                    onPreviousMonthTapped: _handlePreviousMonth,
-                    onNextMonthTapped: _handleNextMonth,
-                    title: Text(
-                      localizations.formatMonthYear(_currentDisplayedMonthDate),
-                      key: widget.datePickerKeys?.selectedPeriodKeys,
-                      style: _resultStyles.displayedPeriodTitle,
-                    ),
-                  ),
-            ),
-          ),
-          Expanded(
-            child: Semantics(
-              sortKey: MonthPickerSortKey.calendar,
-              child: PageView.builder(
-                key: ValueKey<DateTime>(widget.selectedDate),
-                controller: _dayPickerController,
-                scrollDirection: Axis.horizontal,
-                itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
-                itemBuilder: _buildCalendar,
-                onPageChanged: _handleMonthPageChanged,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _dayPickerController?.dispose();
-    super.dispose();
   }
 }
