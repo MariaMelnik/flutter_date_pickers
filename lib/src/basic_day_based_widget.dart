@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/date_picker_mixin.dart';
 import 'package:flutter_date_pickers/src/day_type.dart';
+import 'package:flutter_date_pickers/src/event_decoration.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
 
@@ -33,6 +34,12 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
 
+  /// Builder to get event decoration for each date.
+  ///
+  /// All event styles are overriden by selected styles
+  /// except days with dayType is [DayType.notSelected].
+  final EventDecorationBuilder eventDecorationBuilder;
+
   /// Creates a week picker.
   DayBasedPicker(
       {Key key,
@@ -43,7 +50,9 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
         @required this.datePickerLayoutSettings,
         @required this.selectedPeriodKey,
         @required this.datePickerStyles,
-        @required this.selectablePicker})
+        @required this.selectablePicker,
+        this.eventDecorationBuilder
+      })
       : assert(currentDate != null),
         assert(displayedMonth != null),
         assert(datePickerLayoutSettings != null),
@@ -114,13 +123,20 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
           decoration = _getSelectedDecoration(dayType);
         } else if (dayType == DayType.disabled) {
           itemStyle = datePickerStyles.disabledDateStyle;
-        } else if (currentDate.year == year &&
-            currentDate.month == month &&
-            currentDate.day == day) {
+        } else if (DatePickerUtils.sameDate(currentDate, dayToBuild)) {
           // The current day gets a different text color.
           itemStyle = datePickerStyles.currentDateStyle;
         } else {
           itemStyle = datePickerStyles.defaultDateTextStyle;
+        }
+
+        // Checks do we need to merge decoration and textStyle with [EventDecoration].
+        // Merge only in cases if [dayType] is DayType.notSelected.
+        // If day is current day it is also gets event decoration instead of decoration for current date.
+        if (dayType == DayType.notSelected && eventDecorationBuilder != null) {
+          EventDecoration eDecoration = eventDecorationBuilder(dayToBuild);
+          decoration = eDecoration?.boxDecoration ?? decoration;
+          itemStyle = eDecoration?.textStyle ?? itemStyle;
         }
 
         Widget dayWidget = Container(

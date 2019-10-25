@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/date_picker_styles.dart';
+import 'package:flutter_date_pickers/src/event_decoration.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
@@ -30,7 +31,8 @@ class DayPicker extends StatelessWidget {
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerStyles = const DatePickerRangeStyles(),
       this.datePickerKeys,
-      this.selectableDayPredicate})
+      this.selectableDayPredicate,
+      this.eventDecorationBuilder})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -65,6 +67,12 @@ class DayPicker extends StatelessWidget {
   /// Function returns if day can be selected or not.
   final SelectableDayPredicate selectableDayPredicate;
 
+  /// Builder to get event decoration for each date.
+  ///
+  /// All event styles are overriden by selected styles
+  /// except days with dayType is [DayType.notSelected].
+  final EventDecorationBuilder eventDecorationBuilder;
+
   @override
   Widget build(BuildContext context){
     ISelectablePicker<DateTime> daySelectablePicker = DaySelectable(
@@ -83,6 +91,7 @@ class DayPicker extends StatelessWidget {
       datePickerLayoutSettings: datePickerLayoutSettings,
       datePickerStyles: datePickerStyles,
       datePickerKeys: datePickerKeys,
+      eventDecorationBuilder: eventDecorationBuilder,
     );
   }
 }

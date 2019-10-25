@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/basic_day_based_widget.dart';
+import 'package:flutter_date_pickers/src/event_decoration.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/month_navigation_row.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
@@ -42,6 +43,12 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
   /// Logic for date selections.
   final ISelectablePicker selectablePicker;
 
+  /// Builder to get event decoration for each date.
+  ///
+  /// All event styles are overriden by selected styles
+  /// except days with dayType is [DayType.notSelected].
+  final EventDecorationBuilder eventDecorationBuilder;
+
   const DayBasedChangablePicker({
     Key key,
     this.selectedDate,
@@ -52,7 +59,8 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
     @required this.datePickerStyles,
     this.datePickerKeys,
     this.selectablePicker,
-    this.onSelectionError
+    this.onSelectionError,
+    this.eventDecorationBuilder
   }) : assert(datePickerLayoutSettings != null),
        assert(datePickerStyles != null),
        super(key: key);
@@ -147,6 +155,7 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
       datePickerLayoutSettings: widget.datePickerLayoutSettings,
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
       datePickerStyles: _resultStyles,
+      eventDecorationBuilder: widget.eventDecorationBuilder,
     );
   }
 

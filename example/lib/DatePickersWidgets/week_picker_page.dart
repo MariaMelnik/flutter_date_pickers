@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_date_picker/DatePickersWidgets/event.dart';
 import 'package:flutter_date_picker/color_picker_dialog.dart';
 import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
 class WeekPickerPage extends StatefulWidget {
+  final List<Event> events;
+
+  const WeekPickerPage({Key key, this.events}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _WeekPickerPageState();
 }
@@ -69,6 +74,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
             datePickerStyles: styles,
             onSelectionError: _onSelectionError,
             selectableDayPredicate: _isSelectableCustom,
+            eventDecorationBuilder: _eventDecorationBuilder,
           ),
         ),
         Container(
@@ -200,5 +206,24 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
 
   bool _isSelectableCustom (DateTime day) {
     return day.weekday < 6;
+  }
+
+  EventDecoration _eventDecorationBuilder(DateTime date) {
+    List<DateTime> eventsDates = widget.events?.map<DateTime>((Event e) => e.date).toList();
+    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year && date.month == d.month && d.day == date.day) ?? false;
+
+    BoxDecoration roundedBorder = BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(
+          color: Colors.blue,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(3.0))
+    );
+
+    TextStyle whiteText = Theme.of(context).textTheme.body1.copyWith(color: Colors.white);
+
+    return isEventDate
+        ? EventDecoration(boxDecoration: roundedBorder, textStyle: whiteText)
+        : null;
   }
 }

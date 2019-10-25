@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_date_picker/DatePickersWidgets/event.dart';
 import 'package:flutter_date_picker/color_picker_dialog.dart';
 import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
 class RangePickerPage extends StatefulWidget {
+  final List<Event> events;
+
+  const RangePickerPage({Key key, this.events}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _RangePickerPageState();
 }
@@ -69,6 +74,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
             firstDate: _firstDate,
             lastDate: _lastDate,
             datePickerStyles: styles,
+            eventDecorationBuilder: _eventDecorationBuilder,
           ),
         ),
         Container(
@@ -187,5 +193,21 @@ class _RangePickerPageState extends State<RangePickerPage> {
     setState(() {
       _selectedPeriod = newPeriod;
     });
+  }
+
+  EventDecoration _eventDecorationBuilder(DateTime date) {
+    List<DateTime> eventsDates = widget.events?.map<DateTime>((Event e) => e.date).toList();
+    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year && date.month == d.month && d.day == date.day) ?? false;
+
+    BoxDecoration roundedBorder = BoxDecoration(
+        border: Border.all(
+          color: Colors.green,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(3.0))
+    );
+
+    return isEventDate
+        ? EventDecoration(boxDecoration: roundedBorder)
+        : null;
   }
 }

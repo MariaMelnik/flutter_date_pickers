@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_date_picker/DatePickersWidgets/event.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'DatePickersWidgets/month_picker_page.dart';
@@ -22,15 +23,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: MyHomePage(title: 'flutter_date_pickers Demo'),
+      home: MyHomePage(
+        title: 'flutter_date_pickers Demo',
+      ),
 //      locale: Locale('ru', 'RU'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -45,9 +49,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int _selectedTab;
 
   final List<Widget> datePickers = <Widget>[
-    DayPickerPage(),
-    WeekPickerPage(),
-    RangePickerPage(),
+    DayPickerPage(events: events,),
+    WeekPickerPage(events: events,),
+    RangePickerPage(events: events,),
     MonthPickerPage()
   ];
 
@@ -105,3 +109,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 }
+
+final List<Event> events = [
+  Event(DateTime.now(), "Today event"),
+  Event(DateTime.now().subtract(Duration(days: 3)), "Ev1"),
+  Event(DateTime.now().subtract(Duration(days: 13)), "Ev2"),
+  Event(DateTime.now().subtract(Duration(days: 30)), "Ev3"),
+  Event(DateTime.now().add(Duration(days: 3)), "Ev4"),
+  Event(DateTime.now().add(Duration(days: 13)), "Ev5"),
+  Event(DateTime.now().add(Duration(days: 30)), "Ev6"),
+];

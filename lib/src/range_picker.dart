@@ -28,8 +28,9 @@ class RangePicker extends StatelessWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+      this.datePickerStyles = const DatePickerRangeStyles(),
       this.datePickerKeys,
-      this.datePickerStyles = const DatePickerRangeStyles()})
+      this.eventDecorationBuilder})
       : assert(selectedPeriod != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -61,6 +62,12 @@ class RangePicker extends StatelessWidget {
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
 
+  /// Builder to get event decoration for each date.
+  ///
+  /// All event styles are overriden by selected styles
+  /// except days with dayType is [DayType.notSelected].
+  final EventDecorationBuilder eventDecorationBuilder;
+
   @override
   Widget build(BuildContext context){
 
@@ -79,6 +86,7 @@ class RangePicker extends StatelessWidget {
       datePickerLayoutSettings: datePickerLayoutSettings,
       datePickerStyles: datePickerStyles,
       datePickerKeys: datePickerKeys,
+      eventDecorationBuilder: eventDecorationBuilder,
     );
   }
 }
