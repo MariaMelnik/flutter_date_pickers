@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_picker/DatePickersWidgets/event.dart';
+import 'package:flutter_date_picker/event.dart';
 import 'package:flutter_date_picker/color_picker_dialog.dart';
 import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart' as dp;

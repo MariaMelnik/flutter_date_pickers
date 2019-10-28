@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_picker/DatePickersWidgets/event.dart';
+import 'package:flutter_date_picker/event.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'DatePickersWidgets/month_picker_page.dart';

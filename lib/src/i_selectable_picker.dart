@@ -145,8 +145,10 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
 
 
   bool _isDaySelected(DateTime date) {
-    return !(date.isBefore(_firstDayOfSelectedWeek) ||
-        date.isAfter(_lastDayOfSelectedWeek));
+    DateTime startOfTheStartDay = DatePickerUtils.startOfTheDay(_firstDayOfSelectedWeek);
+    DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(_lastDayOfSelectedWeek);
+    return !(date.isBefore(startOfTheStartDay) ||
+        date.isAfter(endOfTheLastDay));
   }
 
   List<DateTime> _disabledDatesInPeriod(DatePeriod period) {
@@ -241,8 +243,10 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
   }
 
   bool _isDaySelected(DateTime date) {
-    return !(date.isBefore(selectedPeriod.start) ||
-        date.isAfter(selectedPeriod.end));
+    DateTime startOfTheStartDay = DatePickerUtils.startOfTheDay(selectedPeriod.start);
+    DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(selectedPeriod.end);
+    return !(date.isBefore(startOfTheStartDay) ||
+        date.isAfter(endOfTheLastDay));
   }
 
   @override
