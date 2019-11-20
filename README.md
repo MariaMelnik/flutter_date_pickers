@@ -39,7 +39,7 @@ only for range date pickers (WeekPicker, RangePicker)
 | BoxDecoration selectedPeriodMiddleDecoration | Decoration for the date of the selected range which is not first date and not end date of this range |
 
 ## How to make some dates not selectable date picker
-By default only dates before startDate and after endDate is not selectable. But you can set custom disabled days.
+By default only dates before `firstDate` and after `lastDate` are not selectable. But you can set custom disabled days.
 `DayPicker`, `WeekPicker` and `RangePicker` take a `SelectableDayPredicate selectableDayPredicate`
 where you can specify function which returns if some date is disabled or not.
 
@@ -48,14 +48,14 @@ If some date is disabled for selection it gets `disabledDateStyle`.
 If selected range or week pretends to include such disabled date `UnselectablePeriodException` occurs.
 To handle it - pass `onSelectionError` callback to date picker.
 
-## How to give special decorations for some dates
+## How to make special decorations for some dates
 By default cells are decorated with `datePickerStyles` slyles (or default if no styles was passed to date picker).
 If you need special decoration for some days use `eventDecorationBuilder`.
 Currently only for `DayPicker`, `WeekPicker` and `RangePicker`.
 
 - If date is not selected basic styles will be merged with styles from `eventDecorationBuilder`.
 - If date is current date styles from `eventDecorationBuilder` win (if there are).
-- Otherwise basic styles win.
+- Otherwise basic styles (`datePickerStyles`) win.
 
 ## What time I will get after selection?
 If one day selected:
@@ -66,7 +66,7 @@ If range/week selected:
  for end you will get end of the day (23:59:59.999) by default. If selected `lastDate` - you will get time of it.
 
 If month selected:
-  you will get start(00:00:00) of the 1 day of month by default.
+  you will get start (00:00:00) of the 1 day of month by default.
   If selected month same as month of the `firstDate` - you will get `firstDate`.
 
 ## Usage
