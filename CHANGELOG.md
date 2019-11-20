@@ -1,3 +1,3 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.5] - Added support for custom day decoration.
+Added support for custom disabled days.
 
-* TODO: Describe initial release.
