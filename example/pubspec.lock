@@ -47,12 +47,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.3"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
+    version: "0.0.5"
   flutter_material_color_picker:
     dependency: "direct main"
     description:
@@ -71,7 +66,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.8"
+    version: "0.16.0"
   matcher:
     dependency: transitive
     description:
