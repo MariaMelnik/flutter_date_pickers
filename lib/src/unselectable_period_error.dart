@@ -9,6 +9,6 @@ class UnselectablePeriodException implements Exception {
   String toString() {
     return "UnselectablePeriodException: ${customDisabledDates.length} dates inside selected period "
         "can't be selected according custom rules (selectable pridicate). "
-        "Check 'customDisabledDates' property to get full list of such dates.";
+        "Check 'customDisabledDates' property to get entire list of such dates.";
   }
 }

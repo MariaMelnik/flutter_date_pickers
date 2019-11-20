@@ -19,6 +19,8 @@ import 'package:flutter_date_pickers/src/typedefs.dart';
 //  for box decoration - color is Theme.of(context).accentColor and box shape is circle
 
 // selectedDate must be between firstDate and lastDate
+
+/// Date picker for selection a week.
 class WeekPicker extends StatelessWidget {
   /// Creates a month picker.
   WeekPicker(
@@ -50,6 +52,7 @@ class WeekPicker extends StatelessWidget {
   final ValueChanged<DatePeriod> onChanged;
 
   /// Called when the error was thrown after user selection.
+  /// (e.g. when user selected a week with one or more days what can't be selected)
   final OnSelectionError onSelectionError;
 
   /// The earliest date the user is permitted to pick.

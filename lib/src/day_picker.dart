@@ -20,6 +20,7 @@ import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
 
 // selectedDate must be between firstDate and lastDate
 
+/// Date picker for selection one day.
 class DayPicker extends StatelessWidget {
   /// Creates a day picker.
   DayPicker(
@@ -59,7 +60,7 @@ class DayPicker extends StatelessWidget {
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
   /// Styles what can be customized by user
-  final DatePickerRangeStyles datePickerStyles;
+  final DatePickerStyles datePickerStyles;
 
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;

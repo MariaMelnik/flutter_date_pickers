@@ -6,6 +6,7 @@ import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
+import 'package:flutter_date_pickers/src/typedefs.dart';
 
 
 // Styles for current displayed period: Theme.of(context).textTheme.subhead
@@ -19,6 +20,7 @@ import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
 
 // selectedPeriod must be between firstDate and lastDate
 
+/// Date picker for range selection.
 class RangePicker extends StatelessWidget {
   /// Creates a month picker.
   RangePicker(
@@ -30,7 +32,9 @@ class RangePicker extends StatelessWidget {
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerStyles = const DatePickerRangeStyles(),
       this.datePickerKeys,
-      this.eventDecorationBuilder})
+      this.selectableDayPredicate,
+        this.onSelectionError,
+        this.eventDecorationBuilder})
       : assert(selectedPeriod != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -47,6 +51,10 @@ class RangePicker extends StatelessWidget {
   /// Called when the user picks a week.
   final ValueChanged<DatePeriod> onChanged;
 
+  /// Called when the error was thrown after user selection.
+  /// (e.g. when user selected a range with one or more days what can't be selected)
+  final OnSelectionError onSelectionError;
+
   /// The earliest date the user is permitted to pick.
   final DateTime firstDate;
 
@@ -62,6 +70,9 @@ class RangePicker extends StatelessWidget {
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
 
+  /// Function returns if day can be selected or not.
+  final SelectableDayPredicate selectableDayPredicate;
+
   /// Builder to get event decoration for each date.
   ///
   /// All event styles are overriden by selected styles
@@ -74,7 +85,8 @@ class RangePicker extends StatelessWidget {
     ISelectablePicker<DatePeriod> rangeSelectablePicker = RangeSelectable(
         selectedPeriod,
         firstDate,
-        lastDate
+        lastDate,
+        selectableDayPredicate: selectableDayPredicate
     );
 
     return DayBasedChangablePicker<DatePeriod>(
@@ -83,6 +95,7 @@ class RangePicker extends StatelessWidget {
       firstDate: firstDate,
       lastDate: lastDate,
       onChanged: onChanged,
+      onSelectionError: onSelectionError,
       datePickerLayoutSettings: datePickerLayoutSettings,
       datePickerStyles: datePickerStyles,
       datePickerKeys: datePickerKeys,
