@@ -205,7 +205,8 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
   }
 
   bool _isSelectableCustom (DateTime day) {
-    return day.weekday < 6;
+//    return day.weekday < 6;
+    return day.day != DateTime.now().add(Duration(days: 7)).day ;
   }
 
   EventDecoration _eventDecorationBuilder(DateTime date) {

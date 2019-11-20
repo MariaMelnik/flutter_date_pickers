@@ -9,7 +9,7 @@ A set of date pickers:
    * `RangePicker` for random range
    * `MonthPicker` for month
 
-![](demoDatePickers.gif)
+![](demoDatePickers2.gif)
 
 ## How to style date picker
 Every date picker constructor take a style object as a parameter (if no styles passed - defaults will be used).
@@ -38,7 +38,36 @@ only for range date pickers (WeekPicker, RangePicker)
 | BoxDecoration selectedPeriodLastDecoration | decoration for the first date of the selected range |
 | BoxDecoration selectedPeriodMiddleDecoration | Decoration for the date of the selected range which is not first date and not end date of this range |
 
+## How to make some dates not selectable date picker
+By default only dates before startDate and after endDate is not selectable. But you can set custom disabled days.
+`DayPicker`, `WeekPicker` and `RangePicker` take a `SelectableDayPredicate selectableDayPredicate`
+where you can specify function which returns if some date is disabled or not.
 
+If some date is disabled for selection it gets `disabledDateStyle`.
+
+If selected range or week pretends to include such disabled date `UnselectablePeriodException` occurs.
+To handle it - pass `onSelectionError` callback to date picker.
+
+## How to give special decorations for some dates
+By default cells are decorated with `datePickerStyles` slyles (or default if no styles was passed to date picker).
+If you need special decoration for some days use `eventDecorationBuilder`.
+Currently only for `DayPicker`, `WeekPicker` and `RangePicker`.
+
+- If date is not selected basic styles will be merged with styles from `eventDecorationBuilder`.
+- If date is current date styles from `eventDecorationBuilder` win (if there are).
+- Otherwise basic styles win.
+
+## What time I will get after selection?
+If one day selected:
+ you will get start of the day (00:00:00) by default. If selected `firstDate` - you will get time of it.
+
+If range/week selected:
+ for start you will get start of the day (00:00:00) by default. If selected `firstDate` - you will get time of it.
+ for end you will get end of the day (23:59:59.999) by default. If selected `lastDate` - you will get time of it.
+
+If month selected:
+  you will get start(00:00:00) of the 1 day of month by default.
+  If selected month same as month of the `firstDate` - you will get `firstDate`.
 
 ## Usage
 

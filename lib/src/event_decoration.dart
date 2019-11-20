@@ -8,5 +8,5 @@ class EventDecoration {
   final BoxDecoration boxDecoration;
   final TextStyle textStyle;
 
-  EventDecoration({this.boxDecoration, this.textStyle});
+  const EventDecoration({this.boxDecoration, this.textStyle});
 }
