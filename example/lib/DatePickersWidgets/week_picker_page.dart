@@ -201,7 +201,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
   }
 
   void _onSelectionError(Object e){
-    if (e is UnselectablePeriodException) print("catch error: ${e}");
+    if (e is UnselectablePeriodException) print("catch error: $e");
   }
 
   bool _isSelectableCustom (DateTime day) {
