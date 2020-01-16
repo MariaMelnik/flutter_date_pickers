@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/date_picker_keys.dart';
+import 'package:flutter_date_pickers/src/layout_settings.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:intl/intl.dart' as intl;
@@ -88,7 +88,8 @@ class _MonthPickerState extends State<MonthPicker> {
   void initState() {
     super.initState();
     // Initially display the pre-selected date.
-    final int yearPage = DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
+    final int yearPage =
+        DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
     _monthPickerController = PageController(initialPage: yearPage);
     _handleYearPageChanged(yearPage);
     _updateCurrentDate();
@@ -98,7 +99,8 @@ class _MonthPickerState extends State<MonthPicker> {
   void didUpdateWidget(MonthPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
-      final int yearPage = DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
+      final int yearPage =
+          DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
       _monthPickerController = PageController(initialPage: yearPage);
       _handleYearPageChanged(yearPage);
     }
@@ -194,7 +196,9 @@ class _MonthPickerState extends State<MonthPicker> {
               key: ValueKey<DateTime>(widget.selectedDate),
               controller: _monthPickerController,
               scrollDirection: Axis.horizontal,
-              itemCount: DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) + 1,
+              itemCount:
+                  DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) +
+                      1,
               itemBuilder: _buildItems,
               onPageChanged: _handleYearPageChanged,
             ),
@@ -301,7 +305,8 @@ class _MonthPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final Locale locale = Localizations.localeOf(context);
 
     final ThemeData themeData = Theme.of(context);
@@ -349,7 +354,8 @@ class _MonthPicker extends StatelessWidget {
                 '${localizations.formatDecimal(month)}, ${localizations.formatFullDate(monthToBuild)}',
             selected: isSelectedMonth,
             child: ExcludeSemantics(
-              child: Text(intl.DateFormat.MMM(locale.languageCode).format(monthToBuild),
+              child: Text(
+                  intl.DateFormat.MMM(locale.languageCode).format(monthToBuild),
                   style: itemStyle),
             ),
           ),

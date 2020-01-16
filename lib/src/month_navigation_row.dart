@@ -12,16 +12,16 @@ class MonthNavigationRow extends StatelessWidget {
   /// Usually [Text] widget.
   final Widget title;
 
-  const MonthNavigationRow({
-    Key key,
-    this.previousPageIconKey,
-    this.nextPageIconKey,
-    this.onNextMonthTapped,
-    this.onPreviousMonthTapped,
-    this.nextMonthTooltip,
-    this.previousMonthTooltip,
-    this.title
-  }) : super(key: key);
+  const MonthNavigationRow(
+      {Key key,
+      this.previousPageIconKey,
+      this.nextPageIconKey,
+      this.onNextMonthTapped,
+      this.onPreviousMonthTapped,
+      this.nextMonthTooltip,
+      this.previousMonthTooltip,
+      this.title})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

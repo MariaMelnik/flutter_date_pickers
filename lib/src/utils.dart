@@ -14,7 +14,6 @@ class DatePickerUtils {
         dateTimeOne.month == dateTimeTwo.month;
   }
 
-
   // Do not use this directly - call getDaysInMonth instead.
   static const List<int> _daysInMonth = const <int>[
     31,
@@ -31,7 +30,6 @@ class DatePickerUtils {
     31
   ];
 
-
   /// Returns the number of days in a month, according to the proleptic
   /// Gregorian calendar.
   ///
@@ -46,7 +44,6 @@ class DatePickerUtils {
     return _daysInMonth[month - 1];
   }
 
-
   /// Returns number of months between [startDate] and [endDate]
   static int monthDelta(DateTime startDate, DateTime endDate) {
     return (endDate.year - startDate.year) * 12 +
@@ -54,19 +51,16 @@ class DatePickerUtils {
         startDate.month;
   }
 
-
   /// Add months to a month truncated date.
   static DateTime addMonthsToMonthDate(DateTime monthDate, int monthsToAdd) {
     // year is switched automatically if new month > 12
     return DateTime(monthDate.year, monthDate.month + monthsToAdd);
   }
 
-
   /// Returns number of years between [startDate] and [endDate]
   static int yearDelta(DateTime startDate, DateTime endDate) {
     return (endDate.year - startDate.year);
   }
-
 
   /// Returns start of the first day of the week with given day.
   ///
@@ -113,7 +107,9 @@ class DatePickerUtils {
   ///
   /// End time is 1 millisecond before start of the next day.
   static DateTime endOfTheDay(DateTime date) {
-    return DateTime(date.year, date.month, date.day).add(Duration(days: 1)).subtract(Duration(milliseconds: 1));
+    return DateTime(date.year, date.month, date.day)
+        .add(Duration(days: 1))
+        .subtract(Duration(milliseconds: 1));
   }
 
   /// Returns start of the given day.

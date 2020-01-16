@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
+import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/date_picker_styles.dart';
+import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
 import 'package:flutter_date_pickers/src/event_decoration.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/layout_settings.dart';
-import 'package:flutter_date_pickers/src/date_picker_keys.dart';
-import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
-
 
 // Styles for current displayed period (month) title: Theme.of(context).textTheme.subhead
 //
@@ -75,13 +74,10 @@ class DayPicker extends StatelessWidget {
   final EventDecorationBuilder eventDecorationBuilder;
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     ISelectablePicker<DateTime> daySelectablePicker = DaySelectable(
-      selectedDate,
-      firstDate,
-      lastDate,
-      selectableDayPredicate: selectableDayPredicate
-    );
+        selectedDate, firstDate, lastDate,
+        selectableDayPredicate: selectableDayPredicate);
 
     return DayBasedChangablePicker<DateTime>(
       selectablePicker: daySelectablePicker,
