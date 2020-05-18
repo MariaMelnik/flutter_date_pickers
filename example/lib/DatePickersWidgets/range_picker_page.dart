@@ -75,6 +75,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
             lastDate: _lastDate,
             datePickerStyles: styles,
             eventDecorationBuilder: _eventDecorationBuilder,
+            selectableDayPredicate: _isSelectableCustom,
           ),
         ),
         Container(
@@ -209,5 +210,10 @@ class _RangePickerPageState extends State<RangePickerPage> {
     return isEventDate
         ? EventDecoration(boxDecoration: roundedBorder)
         : null;
+  }
+
+  bool _isSelectableCustom (DateTime day) {
+//    return day.weekday < 6;
+    return day.day != DateTime.now().add(Duration(days: 7)).day ;
   }
 }

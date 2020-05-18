@@ -251,9 +251,12 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
 
   @override
   void onDayTapped(DateTime selectedDate) {
-    DatePeriod newPeriod =  _getNewSelectedPeriod(selectedDate);
+    DatePeriod newPeriod = _getNewSelectedPeriod(selectedDate);
+    List<DateTime> customDisabledDays = _disabledDatesInPeriod(newPeriod);
 
-    return onUpdateController.add(newPeriod);
+    customDisabledDays.isEmpty
+        ? onUpdateController.add(newPeriod)
+        : onUpdateController.addError(UnselectablePeriodException(customDisabledDays));
   }
 
   // Returns new selected period according to tapped date.
@@ -310,6 +313,21 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
     }
 
     return newPeriod;
+  }
+
+
+  List<DateTime> _disabledDatesInPeriod(DatePeriod period) {
+    List<DateTime> result = List<DateTime>();
+
+    var date = period.start;
+
+    while(!date.isAfter(period.end)) {
+      if (isDisabled(date)) result.add(date);
+
+      date = date.add(Duration(days: 1));
+    }
+
+    return result;
   }
 }
 

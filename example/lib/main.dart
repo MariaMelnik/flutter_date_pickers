@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_date_picker/event.dart';
-//import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'DatePickersWidgets/month_picker_page.dart';
 import 'DatePickersWidgets/day_picker_page.dart';
 import 'DatePickersWidgets/range_picker_page.dart';
 import 'DatePickersWidgets/week_picker_page.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-//      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-//         supportedLocales: [
-//           const Locale('en', 'US'), // American English
-//           const Locale('ru', 'RU'), // Russian
-//      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+         supportedLocales: [
+           const Locale('en', 'US'), // American English
+           const Locale('ru', 'RU'), // Russian
+           const Locale("pt") // Portuguese
+      ],
       debugShowCheckedModeBanner: false,
       title: 'Date pickers demo',
       theme: ThemeData(
@@ -26,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
         title: 'flutter_date_pickers Demo',
       ),
-//      locale: Locale('ru', 'RU'),
+      locale: Locale('en', 'US'),
     );
   }
 }
