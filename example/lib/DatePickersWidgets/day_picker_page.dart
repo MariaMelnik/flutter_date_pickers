@@ -34,7 +34,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
     super.didChangeDependencies();
 
     // defaults for styles
-    selectedDateStyleColor = Theme.of(context).accentTextTheme.body2.color;
+    selectedDateStyleColor = Theme.of(context).accentTextTheme.bodyText1.color;
     selectedSingleDateDecorationColor = Theme.of(context).accentColor;
   }
 
@@ -44,7 +44,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
     dp.DatePickerStyles styles = dp.DatePickerRangeStyles(
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
-            .body2
+            .bodyText1
             .copyWith(color: selectedDateStyleColor),
         selectedSingleDateDecoration: BoxDecoration(
             color: selectedSingleDateDecorationColor, shape: BoxShape.circle));
@@ -75,7 +75,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
               children: <Widget>[
                 Text(
                   "Selected date styles",
-                  style: Theme.of(context).textTheme.subhead,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),

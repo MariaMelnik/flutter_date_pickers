@@ -86,7 +86,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
               children: <Widget>[
                 Text(
                   "Selected date styles",
-                  style: Theme.of(context).textTheme.subhead,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 _stylesBlock(),
                 _selectedBlock()
@@ -221,7 +221,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
         borderRadius: BorderRadius.all(Radius.circular(3.0))
     );
 
-    TextStyle whiteText = Theme.of(context).textTheme.body1.copyWith(color: Colors.white);
+    TextStyle whiteText = Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white);
 
     return isEventDate
         ? EventDecoration(boxDecoration: roundedBorder, textStyle: whiteText)

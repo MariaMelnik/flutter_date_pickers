@@ -31,7 +31,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
     super.didChangeDependencies();
 
     // defaults for styles
-    selectedDateStyleColor = Theme.of(context).accentTextTheme.body2.color;
+    selectedDateStyleColor = Theme.of(context).accentTextTheme.bodyText1.color;
     selectedSingleDateDecorationColor = Theme.of(context).accentColor;
   }
 
@@ -41,7 +41,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
     dp.DatePickerStyles styles = dp.DatePickerStyles(
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
-            .body2
+            .bodyText1
             .copyWith(color: selectedDateStyleColor),
         selectedSingleDateDecoration: BoxDecoration(
             color: selectedSingleDateDecorationColor, shape: BoxShape.circle));
@@ -69,7 +69,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
               children: <Widget>[
                 Text(
                   "Selected date styles",
-                  style: Theme.of(context).textTheme.subhead,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),

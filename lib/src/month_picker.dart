@@ -320,7 +320,7 @@ class _MonthPicker extends StatelessWidget {
           selectedDate.year == year && selectedDate.month == month;
 
       BoxDecoration decoration;
-      TextStyle itemStyle = themeData.textTheme.body1;
+      TextStyle itemStyle = themeData.textTheme.bodyText2;
 
       if (isSelectedMonth) {
         // The selected month gets a circle background highlight, and a contrasting text color.

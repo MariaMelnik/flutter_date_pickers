@@ -31,15 +31,15 @@ class DatePickerStyles {
     Color accentColor = theme.accentColor;
 
     TextStyle _displayedPeriodTitle =
-        displayedPeriodTitle ?? theme.textTheme.subhead;
+        displayedPeriodTitle ?? theme.textTheme.subtitle1;
     TextStyle _currentDateStyle = currentDateStyle ??
-        theme.textTheme.body2.copyWith(color: theme.accentColor);
+        theme.textTheme.bodyText1.copyWith(color: theme.accentColor);
     TextStyle _disabledDateStyle = disabledDateStyle ??
-        theme.textTheme.body1.copyWith(color: theme.disabledColor);
+        theme.textTheme.bodyText2.copyWith(color: theme.disabledColor);
     TextStyle _selectedDateStyle =
-        selectedDateStyle ?? theme.accentTextTheme.body2;
+        selectedDateStyle ?? theme.accentTextTheme.bodyText1;
     TextStyle _defaultDateTextStyle =
-        defaultDateTextStyle ?? theme.textTheme.body1;
+        defaultDateTextStyle ?? theme.textTheme.bodyText2;
     BoxDecoration _selectedSingleDateDecoration =
         selectedSingleDateDecoration ??
             BoxDecoration(
