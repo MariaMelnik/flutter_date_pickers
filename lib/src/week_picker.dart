@@ -91,7 +91,7 @@ class WeekPicker extends StatelessWidget {
         selectableDayPredicate: selectableDayPredicate
     );
 
-    return DayBasedChangablePicker<DatePeriod>(
+    return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: weekSelectablePicker,
       selectedDate: selectedDate,
       firstDate: firstDate,

@@ -89,7 +89,7 @@ class RangePicker extends StatelessWidget {
         selectableDayPredicate: selectableDayPredicate
     );
 
-    return DayBasedChangablePicker<DatePeriod>(
+    return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: rangeSelectablePicker,
       selectedDate: selectedPeriod.start,
       firstDate: firstDate,

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Common styles for date pickers.
 ///
-/// To define more styles for date pickers which allow select some range (e.g. [RangePicker], [WeekPicker]) use [DatePickerRangeStyles].
+/// To define more styles for date pickers which allow select some range
+/// (e.g. [RangePicker], [WeekPicker]) use [DatePickerRangeStyles].
 class DatePickerStyles {
   /// Used for title of displayed period (e.g. month for day picker and year for month picker).
   final TextStyle displayedPeriodTitle;
@@ -26,7 +27,7 @@ class DatePickerStyles {
       this.selectedSingleDateDecoration,
       this.defaultDateTextStyle});
 
-  /// Return new [DatePickerStyles] object where fields with null values set with defaults from passed theme
+  /// Return new [DatePickerStyles] object where fields with null values set with defaults from theme.
   DatePickerStyles fulfillWithTheme(ThemeData theme) {
     Color accentColor = theme.accentColor;
 
@@ -44,7 +45,7 @@ class DatePickerStyles {
         selectedSingleDateDecoration ??
             BoxDecoration(
                 color: accentColor,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)));
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)));
 
     return DatePickerStyles(
         disabledDateStyle: _disabledDateStyle,
@@ -79,7 +80,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
         selectedPeriodStartDecoration ??
             BoxDecoration(
               color: accentColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   bottomLeft: Radius.circular(10.0)),
             );
@@ -88,7 +89,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
         selectedPeriodLastDecoration ??
             BoxDecoration(
               color: accentColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10.0),
                   bottomRight: Radius.circular(10.0)),
             );

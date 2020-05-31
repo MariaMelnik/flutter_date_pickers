@@ -83,7 +83,7 @@ class DayPicker extends StatelessWidget {
       selectableDayPredicate: selectableDayPredicate
     );
 
-    return DayBasedChangablePicker<DateTime>(
+    return DayBasedChangeablePicker<DateTime>(
       selectablePicker: daySelectablePicker,
       selectedDate: selectedDate,
       firstDate: firstDate,

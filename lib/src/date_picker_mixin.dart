@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-mixin CommonDatePickerFunctions{
+mixin CommonDatePickerFunctions {
 
   /// Builds widgets showing abbreviated days of week. The first widget in the
   /// returned list corresponds to the first day of week for the current locale.

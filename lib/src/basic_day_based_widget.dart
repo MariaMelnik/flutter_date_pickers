@@ -40,7 +40,6 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
-  /// Creates a week picker.
   DayBasedPicker(
       {Key key,
         @required this.currentDate,
@@ -63,7 +62,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
         super(key: key);
 
 
-  // returns decoration for selected date with applied border radius if it needs for passed date
+  // Returns decoration for selected date with applied border radius if it needs for passed date.
   BoxDecoration _getSelectedDecoration(DayType dayType) {
 
     BoxDecoration result;
@@ -100,15 +99,15 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
       if (day > daysInMonth) break;
       if (day < 1) {
         // offset for the first day of month
-        labels.add(Container());
+        labels.add(const SizedBox.shrink());
       } else {
         DateTime dayToBuild = DateTime(year, month, day);
 
-        // if dayToBuild is the first day we need to save original time for it
+        // If dayToBuild is the first day we need to save original time for it.
         if (DatePickerUtils.sameDate(dayToBuild, firstDate))
           dayToBuild = firstDate;
 
-        // if dayToBuild is the last day we need to save original time for it
+        // If dayToBuild is the last day we need to save original time for it.
         if (DatePickerUtils.sameDate(dayToBuild, lastDate))
           dayToBuild = lastDate;
 

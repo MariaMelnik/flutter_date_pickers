@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
         title: 'flutter_date_pickers Demo',
       ),
-      locale: Locale('en', 'US'),
+//      locale: Locale('en', 'US'),
     );
   }
 }

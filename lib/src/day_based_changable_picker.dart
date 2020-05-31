@@ -13,7 +13,7 @@ import 'package:flutter_date_pickers/src/utils.dart';
 
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
 /// Allows select previous/next month.
-class DayBasedChangablePicker<T> extends StatefulWidget {
+class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// The currently selected date.
   ///
   /// This date is highlighted in the picker.
@@ -49,7 +49,7 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
-  const DayBasedChangablePicker({
+  const DayBasedChangeablePicker({
     Key key,
     this.selectedDate,
     this.onChanged,
@@ -66,11 +66,11 @@ class DayBasedChangablePicker<T> extends StatefulWidget {
        super(key: key);
 
   @override
-  State<DayBasedChangablePicker<T>> createState() => _DayBasedChangablePickerState<T>();
+  State<DayBasedChangeablePicker<T>> createState() => _DayBasedChangeablePickerState<T>();
 }
 
 
-class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>> {
+class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T>> {
   MaterialLocalizations localizations;
   TextDirection textDirection;
 
@@ -104,7 +104,7 @@ class _DayBasedChangablePickerState<T> extends State<DayBasedChangablePicker<T>>
   }
 
   @override
-  void didUpdateWidget(DayBasedChangablePicker oldWidget) {
+  void didUpdateWidget(DayBasedChangeablePicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
       final int monthPage = DatePickerUtils.monthDelta(widget.firstDate, widget.selectedDate);
