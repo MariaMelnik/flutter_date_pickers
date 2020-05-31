@@ -154,8 +154,7 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleNextYear() {
     if (!_isDisplayingLastYear) {
-      SemanticsService.announce(
-          intl.DateFormat.y().format(_nextYearDate), textDirection);
+      SemanticsService.announce(localizations.formatYear(_nextYearDate), textDirection);
       _monthPickerController.nextPage(
           duration: widget.datePickerLayoutSettings.pagesScrollDuration,
           curve: Curves.ease);
@@ -164,8 +163,7 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handlePreviousYear() {
     if (!_isDisplayingFirstYear) {
-      SemanticsService.announce(
-          intl.DateFormat.y().format(_previousYearDate), textDirection);
+      SemanticsService.announce(localizations.formatYear(_previousYearDate), textDirection);
       _monthPickerController.previousPage(
           duration: widget.datePickerLayoutSettings.pagesScrollDuration,
           curve: Curves.ease);
@@ -209,7 +207,7 @@ class _MonthPickerState extends State<MonthPicker> {
                 icon: const Icon(Icons.chevron_left),
                 tooltip: _isDisplayingFirstYear
                     ? null
-                    : '${intl.DateFormat.y().format(_previousYearDate)}',
+                    : '${localizations.formatYear(_previousYearDate)}',
                 onPressed: _isDisplayingFirstYear ? null : _handlePreviousYear,
               ),
             ),
@@ -224,7 +222,7 @@ class _MonthPickerState extends State<MonthPicker> {
                 icon: const Icon(Icons.chevron_right),
                 tooltip: _isDisplayingLastYear
                     ? null
-                    : '${intl.DateFormat.y().format(_nextYearDate)}',
+                    : '${localizations.formatYear(_nextYearDate)}',
                 onPressed: _isDisplayingLastYear ? null : _handleNextYear,
               ),
             ),
@@ -304,6 +302,16 @@ class _MonthPicker extends StatelessWidget {
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final Locale locale = Localizations.localeOf(context);
 
+    bool localeExist = true;
+
+    try {
+      localeExist = intl.DateFormat.localeExists(locale.languageCode);
+    } catch (e) {
+      localeExist = false;
+    }
+
+    String localeChecked = localeExist ? locale.languageCode : "en_US";
+
     final ThemeData themeData = Theme.of(context);
     final int monthsInYear = 12;
     final int year = displayedYear.year;
@@ -335,6 +343,8 @@ class _MonthPicker extends StatelessWidget {
         itemStyle = datePickerStyles.defaultDateTextStyle;
       }
 
+      String monthStr = intl.DateFormat.MMM(localeChecked).format(monthToBuild);
+
       Widget monthWidget = Container(
         decoration: decoration,
         child: Center(
@@ -349,7 +359,8 @@ class _MonthPicker extends StatelessWidget {
                 '${localizations.formatDecimal(month)}, ${localizations.formatFullDate(monthToBuild)}',
             selected: isSelectedMonth,
             child: ExcludeSemantics(
-              child: Text(intl.DateFormat.MMM(locale.languageCode).format(monthToBuild),
+              child: Text(
+                  monthStr,
                   style: itemStyle),
             ),
           ),
@@ -379,7 +390,7 @@ class _MonthPicker extends StatelessWidget {
             child: Center(
               child: ExcludeSemantics(
                 child: Text(
-                  intl.DateFormat.y().format(displayedYear),
+                  localizations.formatYear(displayedYear),
                   key: selectedPeriodKey,
                   style: datePickerStyles.displayedPeriodTitle,
                 ),
