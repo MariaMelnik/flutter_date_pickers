@@ -41,11 +41,11 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   final DatePickerKeys datePickerKeys;
 
   /// Logic for date selections.
-  final ISelectablePicker selectablePicker;
+  final ISelectablePicker<T> selectablePicker;
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overriden by selected styles
+  /// All event styles are overridden by selected styles
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
@@ -53,12 +53,12 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
     Key key,
     this.selectedDate,
     this.onChanged,
-    this.firstDate,
-    this.lastDate,
+    @required this.firstDate,
+    @required this.lastDate,
     @required this.datePickerLayoutSettings,
     @required this.datePickerStyles,
+    @required this.selectablePicker,
     this.datePickerKeys,
-    this.selectablePicker,
     this.onSelectionError,
     this.eventDecorationBuilder
   }) : assert(datePickerLayoutSettings != null),
@@ -69,7 +69,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   State<DayBasedChangeablePicker<T>> createState() => _DayBasedChangeablePickerState<T>();
 }
 
-
+// todo: Check initial selection and call onSelectionError in case it has error (ISelectablePicker.curSelectionIsCorrupted);
 class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T>> {
   MaterialLocalizations localizations;
   TextDirection textDirection;
@@ -85,6 +85,8 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
   Timer _timer;
   PageController _dayPickerController;
 
+  StreamSubscription<T> _changesSubscription;
+
   /// True if the first permitted month is displayed.
   bool get _isDisplayingFirstMonth => !_currentDisplayedMonthDate
       .isAfter(DateTime(widget.firstDate.year, widget.firstDate.month));
@@ -99,6 +101,13 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
     // Initially display the pre-selected date.
     final int monthPage = DatePickerUtils.monthDelta(widget.firstDate, widget.selectedDate);
     _dayPickerController = PageController(initialPage: monthPage);
+
+    _changesSubscription =  widget.selectablePicker.onUpdate
+        .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
+        ..onError((e) => widget.onSelectionError != null
+          ? widget.onSelectionError(e)
+          : print(e.toString()));
+
     _handleMonthPageChanged(monthPage);
     _updateCurrentDate();
   }
@@ -115,6 +124,14 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
     if (widget.datePickerStyles != oldWidget.datePickerStyles) {
       final ThemeData theme = Theme.of(context);
       _resultStyles = widget.datePickerStyles.fulfillWithTheme(theme);
+    }
+
+    if (widget.selectablePicker != oldWidget.selectablePicker) {
+      _changesSubscription =  widget.selectablePicker.onUpdate
+          .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
+          ..onError((e) => widget.onSelectionError != null
+            ? widget.onSelectionError(e)
+            : print(e.toString()));
     }
   }
 
@@ -181,6 +198,8 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
   void dispose() {
     _timer?.cancel();
     _dayPickerController?.dispose();
+    _changesSubscription.cancel();
+    widget.selectablePicker.dispose();
     super.dispose();
   }
 
@@ -199,12 +218,6 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
 
   Widget _buildCalendar(BuildContext context, int index) {
     final DateTime targetDate = DatePickerUtils.addMonthsToMonthDate(widget.firstDate, index);
-
-    widget.selectablePicker.onUpdate
-        .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
-        .onError((e) => widget.onSelectionError != null
-          ? widget.onSelectionError(e)
-          : print(e.toString()));
 
     return DayBasedPicker(
       key: ValueKey<DateTime>(targetDate),

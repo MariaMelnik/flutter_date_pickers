@@ -28,6 +28,10 @@ abstract class ISelectablePicker<T> {
   Stream<T> get onUpdate => onUpdateController.stream;
 
   ISelectablePicker(this.firstDate, this.lastDate, this._selectableDayPredicate);
+  
+  /// If current selection exists and includes day/days that can't be selected 
+  /// according to the [_selectableDayPredicate]'
+  bool get curSelectionIsCorrupted;
 
   DayType getDayType(DateTime day);
 
@@ -64,6 +68,9 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
   // According to MaterialLocalization.firstDayOfWeekIndex.
   final int _firstDayOfWeekIndex;
 
+  @override
+  bool get curSelectionIsCorrupted => _checkCurSelection();
+
   WeekSelectable(
       DateTime selectedDate,
       this._firstDayOfWeekIndex,
@@ -75,15 +82,19 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
     DatePeriod selectedWeek = _getNewSelectedPeriod(selectedDate);
     _firstDayOfSelectedWeek = selectedWeek.start;
     _lastDayOfSelectedWeek = selectedWeek.end;
+    _checkCurSelection();
   }
 
   @override
   DayType getDayType(DateTime date) {
     DayType result;
 
+    DatePeriod selectedPeriod = DatePeriod(_firstDayOfSelectedWeek, _lastDayOfSelectedWeek);
+    bool selectedPeriodIsBroken = _disabledDatesInPeriod(selectedPeriod).isNotEmpty;
+
     if (isDisabled(date)) {
       result = DayType.disabled;
-    } else if (_isDaySelected(date)) {
+    } else if (_isDaySelected(date) && !selectedPeriodIsBroken) {
       DateTime firstNotDisabledDayOfSelectedWeek = _firstDayOfSelectedWeek.isBefore(firstDate)
           ? firstDate
           : _firstDayOfSelectedWeek;
@@ -164,11 +175,26 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
 
     return result;
   }
+
+  // Returns if current selection contains disabled dates.
+  // Returns false if there is no any selection.
+  bool _checkCurSelection() {
+    if (_firstDayOfSelectedWeek == null || _lastDayOfSelectedWeek == null) return false;
+
+    DatePeriod selectedPeriod = DatePeriod(_firstDayOfSelectedWeek, _lastDayOfSelectedWeek);
+    List<DateTime> disabledDates = _disabledDatesInPeriod(selectedPeriod);
+
+    bool selectedPeriodIsBroken = disabledDates.isNotEmpty;
+    return selectedPeriodIsBroken;
+  }
 }
 
 
 class DaySelectable extends ISelectablePicker<DateTime> {
   DateTime selectedDate;
+
+  @override
+  bool get curSelectionIsCorrupted => _checkCurSelection();
 
   DaySelectable(
       this.selectedDate,
@@ -192,10 +218,6 @@ class DaySelectable extends ISelectablePicker<DateTime> {
     return result;
   }
 
-  bool _isDaySelected(DateTime date) {
-    return DatePickerUtils.sameDate(date, selectedDate);
-  }
-
   @override
   void onDayTapped(DateTime selectedDate) {
     DateTime newSelected = DatePickerUtils.sameDate(firstDate, selectedDate)
@@ -203,11 +225,27 @@ class DaySelectable extends ISelectablePicker<DateTime> {
         : DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
     return onUpdateController.add(newSelected);
   }
+
+  bool _isDaySelected(DateTime date) {
+    return DatePickerUtils.sameDate(date, selectedDate);
+  }
+
+  // Returns if current selection is disabled according to the [_selectableDayPredicate].
+  // Returns false if there is no any selection.
+  bool _checkCurSelection() {
+    if (selectedDate == null) return false;
+    bool selectedIsBroken = _selectableDayPredicate(selectedDate);
+
+    return selectedIsBroken;
+  }
 }
 
 
 class RangeSelectable extends ISelectablePicker<DatePeriod>{
   DatePeriod selectedPeriod;
+
+  @override
+  bool get curSelectionIsCorrupted => _checkCurSelection();
 
   RangeSelectable(
       this.selectedPeriod,
@@ -220,9 +258,11 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
   DayType getDayType(DateTime date) {
     DayType result;
 
+    bool selectedPeriodIsBroken = _disabledDatesInPeriod(selectedPeriod).isNotEmpty;
+
     if (isDisabled(date)) {
       result = DayType.disabled;
-    } else if (_isDaySelected(date)) {
+    } else if (_isDaySelected(date) && !selectedPeriodIsBroken) {
       if (DatePickerUtils.sameDate(date, selectedPeriod.start) &&
           DatePickerUtils.sameDate(date, selectedPeriod.end)) {
         result = DayType.single;
@@ -240,13 +280,6 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
     }
 
     return result;
-  }
-
-  bool _isDaySelected(DateTime date) {
-    DateTime startOfTheStartDay = DatePickerUtils.startOfTheDay(selectedPeriod.start);
-    DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(selectedPeriod.end);
-    return !(date.isBefore(startOfTheStartDay) ||
-        date.isAfter(endOfTheLastDay));
   }
 
   @override
@@ -315,6 +348,15 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
     return newPeriod;
   }
 
+  // Returns if current selection contains disabled dates.
+  // Returns false if there is no any selection.
+  bool _checkCurSelection() {
+    if (selectedPeriod == null) return false;
+    List<DateTime> disabledDates = _disabledDatesInPeriod(selectedPeriod);
+
+    bool selectedPeriodIsBroken = disabledDates.isNotEmpty;
+    return selectedPeriodIsBroken;
+  }
 
   List<DateTime> _disabledDatesInPeriod(DatePeriod period) {
     List<DateTime> result = List<DateTime>();
@@ -328,6 +370,13 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
     }
 
     return result;
+  }
+
+  bool _isDaySelected(DateTime date) {
+    DateTime startOfTheStartDay = DatePickerUtils.startOfTheDay(selectedPeriod.start);
+    DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(selectedPeriod.end);
+    return !(date.isBefore(startOfTheStartDay) ||
+        date.isAfter(endOfTheLastDay));
   }
 }
 
