@@ -7,3 +7,5 @@ Fixed i18n issue for MonthPicker in case no locale was set.
 Fixed selection periods with unselectable dates issue in RangePicker.
 Minor changes and fixes.
 
+## [0.1.1] - 20 June 2020
+Added scrollPhysics property to DatePickerLayoutSettings.
