@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 // layout defaults
 const Duration _kPageScrollDuration = const Duration(milliseconds: 200);
@@ -13,6 +14,12 @@ const EdgeInsetsGeometry _kContentPadding =
 class DatePickerLayoutSettings {
   /// Duration for scroll to previous or next page
   final Duration pagesScrollDuration;
+
+  /// Determines the scroll physics of a date picker widget.
+  ///
+  /// Can be null. In this case default physics for [ScrollView] will be used.
+  final ScrollPhysics scrollPhysics;
+
   final double dayPickerRowHeight;
   final double monthPickerPortraitWidth;
   final int maxDayPickerRowCount;
@@ -25,13 +32,14 @@ class DatePickerLayoutSettings {
   double get maxDayPickerHeight =>
       dayPickerRowHeight * (maxDayPickerRowCount + 2);
 
-  const DatePickerLayoutSettings(
-      {this.pagesScrollDuration = _kPageScrollDuration,
-      this.dayPickerRowHeight = _kDayPickerRowHeight,
-      this.monthPickerPortraitWidth = _kMonthPickerPortraitWidth,
-      this.maxDayPickerRowCount = _kMaxDayPickerRowCount,
-      this.contentPadding = _kContentPadding})
-      : assert(pagesScrollDuration != null),
+  const DatePickerLayoutSettings({
+    this.pagesScrollDuration = _kPageScrollDuration,
+    this.dayPickerRowHeight = _kDayPickerRowHeight,
+    this.monthPickerPortraitWidth = _kMonthPickerPortraitWidth,
+    this.maxDayPickerRowCount = _kMaxDayPickerRowCount,
+    this.contentPadding = _kContentPadding,
+    this.scrollPhysics
+  }) : assert(pagesScrollDuration != null),
         assert(dayPickerRowHeight != null),
         assert(monthPickerPortraitWidth != null),
         assert(maxDayPickerRowCount != null),

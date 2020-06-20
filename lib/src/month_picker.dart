@@ -399,6 +399,7 @@ class _MonthPicker extends StatelessWidget {
           ),
           Flexible(
             child: GridView.count(
+              physics: datePickerLayoutSettings.scrollPhysics,
               crossAxisCount: 4,
               children: labels,
             ),
