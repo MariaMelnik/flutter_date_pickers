@@ -60,8 +60,8 @@ class _RangePickerPageState extends State<RangePickerPage> {
       ),
       selectedPeriodMiddleDecoration: BoxDecoration(
           color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
-      nextIcon: Icon(Icons.arrow_right),
-      prevIcon: Icon(Icons.arrow_left),
+      nextIcon: const Icon(Icons.arrow_right),
+      prevIcon: const Icon(Icons.arrow_left),
       dayHeaderStyleBuilder: _dayHeaderStyleBuilder
     );
 
