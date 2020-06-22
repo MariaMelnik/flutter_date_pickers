@@ -204,7 +204,7 @@ class _MonthPickerState extends State<MonthPicker> {
               sortKey: YearPickerSortKey.previousYear,
               child: IconButton(
                 key: widget.datePickerKeys?.previousPageIconKey,
-                icon: const Icon(Icons.chevron_left),
+                icon: widget.datePickerStyles.prevIcon,
                 tooltip: _isDisplayingFirstYear
                     ? null
                     : '${localizations.formatYear(_previousYearDate)}',
@@ -219,7 +219,7 @@ class _MonthPickerState extends State<MonthPicker> {
               sortKey: YearPickerSortKey.nextYear,
               child: IconButton(
                 key: widget.datePickerKeys?.nextPageIconKey,
-                icon: const Icon(Icons.chevron_right),
+                icon: widget.datePickerStyles.nextIcon,
                 tooltip: _isDisplayingLastYear
                     ? null
                     : '${localizations.formatYear(_nextYearDate)}',
