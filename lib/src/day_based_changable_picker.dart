@@ -173,6 +173,8 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
                   key: widget.datePickerKeys?.selectedPeriodKeys,
                   style: _resultStyles.displayedPeriodTitle,
                 ),
+                nextIcon: widget.datePickerStyles.nextIcon,
+                prevIcon: widget.datePickerStyles.prevIcon,
               ),
             ),
           ),

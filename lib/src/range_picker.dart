@@ -30,7 +30,7 @@ class RangePicker extends StatelessWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerStyles = const DatePickerRangeStyles(),
+      this.datePickerStyles,
       this.datePickerKeys,
       this.selectableDayPredicate,
         this.onSelectionError,
@@ -97,7 +97,7 @@ class RangePicker extends StatelessWidget {
       onChanged: onChanged,
       onSelectionError: onSelectionError,
       datePickerLayoutSettings: datePickerLayoutSettings,
-      datePickerStyles: datePickerStyles,
+      datePickerStyles: datePickerStyles ?? DatePickerRangeStyles(),
       datePickerKeys: datePickerKeys,
       eventDecorationBuilder: eventDecorationBuilder,
     );

@@ -60,6 +60,9 @@ class _RangePickerPageState extends State<RangePickerPage> {
       ),
       selectedPeriodMiddleDecoration: BoxDecoration(
           color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
+      nextIcon: Icon(Icons.arrow_right),
+      prevIcon: Icon(Icons.arrow_left),
+      dayHeaderStyleBuilder: _dayHeaderStyleBuilder
     );
 
     return Flex(
@@ -213,7 +216,19 @@ class _RangePickerPageState extends State<RangePickerPage> {
   }
 
   bool _isSelectableCustom (DateTime day) {
+    return true;
 //    return day.weekday < 6;
-    return day.day != DateTime.now().add(Duration(days: 7)).day ;
+//    return day.day != DateTime.now().add(Duration(days: 7)).day ;
+  }
+
+  // 0 is Sunday, 6 is Saturday
+  DayHeaderStyle _dayHeaderStyleBuilder(int weekday) {
+    bool isWeekend = weekday == 0 || weekday == 6;
+
+    return DayHeaderStyle(
+        textStyle: TextStyle(
+            color: isWeekend ? Colors.red : Colors.teal
+        )
+    );
   }
 }

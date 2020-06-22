@@ -8,6 +8,8 @@ class MonthNavigationRow extends StatelessWidget {
   final VoidCallback onPreviousMonthTapped;
   final String nextMonthTooltip;
   final String previousMonthTooltip;
+  final Widget nextIcon;
+  final Widget prevIcon;
 
   /// Usually [Text] widget.
   final Widget title;
@@ -20,8 +22,12 @@ class MonthNavigationRow extends StatelessWidget {
     this.onPreviousMonthTapped,
     this.nextMonthTooltip,
     this.previousMonthTooltip,
-    this.title
-  }) : super(key: key);
+    this.title,
+    @required this.nextIcon,
+    @required this.prevIcon
+  }) : assert(nextIcon != null),
+        assert(prevIcon != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class MonthNavigationRow extends StatelessWidget {
           sortKey: MonthPickerSortKey.previousMonth,
           child: IconButton(
             key: previousPageIconKey,
-            icon: const Icon(Icons.chevron_left),
+            icon: prevIcon,
             tooltip: previousMonthTooltip,
             onPressed: onPreviousMonthTapped,
           ),
@@ -51,7 +57,7 @@ class MonthNavigationRow extends StatelessWidget {
           sortKey: MonthPickerSortKey.nextMonth,
           child: IconButton(
             key: nextPageIconKey,
-            icon: const Icon(Icons.chevron_right),
+            icon: nextIcon,
             tooltip: nextMonthTooltip,
             onPressed: onNextMonthTapped,
           ),

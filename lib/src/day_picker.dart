@@ -30,7 +30,7 @@ class DayPicker extends StatelessWidget {
       @required this.firstDate,
       @required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerStyles = const DatePickerRangeStyles(),
+      this.datePickerStyles,
       this.datePickerKeys,
       this.selectableDayPredicate,
       this.eventDecorationBuilder})
@@ -90,7 +90,7 @@ class DayPicker extends StatelessWidget {
       lastDate: lastDate,
       onChanged: onChanged,
       datePickerLayoutSettings: datePickerLayoutSettings,
-      datePickerStyles: datePickerStyles,
+      datePickerStyles: datePickerStyles ?? DatePickerStyles(),
       datePickerKeys: datePickerKeys,
       eventDecorationBuilder: eventDecorationBuilder,
     );

@@ -80,9 +80,26 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
     return result;
   }
 
+  // Returns decoration for selected date with applied border radius if it needs for passed date.
+  TextStyle _getSelectedTextStyle(DayType dayType) {
+
+    TextStyle result;
+
+    if (dayType == DayType.single) {
+      result = datePickerStyles.selectedDateStyle;
+    } else if (dayType == DayType.start) {
+      result = datePickerStyles.selectedPeriodStartTextStyle;
+    } else if (dayType == DayType.end) {
+      result = datePickerStyles.selectedPeriodEndTextStyle;
+    } else {
+      result = datePickerStyles.selectedPeriodMiddleTextStyle;
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
@@ -90,7 +107,12 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
     final int firstDayOffset = computeFirstDayOffset(year, month, localizations);
 
     final List<Widget> labels = <Widget>[];
-    labels.addAll(getDayHeaders(themeData.textTheme.caption, localizations));
+
+    DayHeaderStyleBuilder dayHeaderStyleBuilder = datePickerStyles.dayHeaderStyleBuilder
+        ?? (int i) => datePickerStyles.dayHeaderStyle;
+
+    List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder, localizations);
+    labels.addAll(headers);
 
     for (int i = 0; true; i += 1) {
       // 1-based day of month, e.g. 1-31 for January, and 1-29 for February on
@@ -118,7 +140,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
 
         if (dayType != DayType.disabled && dayType != DayType.notSelected) {
           // The selected day gets a circle background highlight, and a contrasting text color by default.
-          itemStyle = datePickerStyles?.selectedDateStyle;
+          itemStyle = _getSelectedTextStyle(dayType);
           decoration = _getSelectedDecoration(dayType);
         } else if (dayType == DayType.disabled) {
           itemStyle = datePickerStyles.disabledDateStyle;

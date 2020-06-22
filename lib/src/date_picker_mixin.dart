@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
 mixin CommonDatePickerFunctions {
 
@@ -20,14 +21,25 @@ mixin CommonDatePickerFunctions {
   /// _ _ _ _ 1 2 3
   /// 4 5 6 7 8 9 10
   /// ```
-  List<Widget> getDayHeaders(
-      TextStyle headerStyle, MaterialLocalizations localizations) {
+  List<Widget> getDayHeaders(DayHeaderStyleBuilder headerStyleBuilder, MaterialLocalizations localizations) {
     final List<Widget> result = <Widget>[];
     for (int i = localizations.firstDayOfWeekIndex; true; i = (i + 1) % 7) {
+      DayHeaderStyle headerStyle = headerStyleBuilder(i);
       final String weekday = localizations.narrowWeekdays[i];
-      result.add(ExcludeSemantics(
-        child: Center(child: Text(weekday, style: headerStyle)),
-      ));
+
+      Widget header = ExcludeSemantics(
+        child: Container(
+          decoration: headerStyle.decoration,
+          child: Center(
+              child: Text(
+                  weekday,
+                  style: headerStyle.textStyle
+              )
+          ),
+        ),
+      );
+
+      result.add(header);
       if (i == (localizations.firstDayOfWeekIndex - 1) % 7) {
         break;
       }
