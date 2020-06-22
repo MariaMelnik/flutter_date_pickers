@@ -168,6 +168,15 @@ class DatePickerRangeStyles extends DatePickerStyles {
               shape: BoxShape.rectangle,
             );
 
+    final TextStyle _selectedPeriodStartTextStyle =
+        selectedPeriodStartTextStyle ?? commonStyles.selectedDateStyle;
+
+    final TextStyle _selectedPeriodMiddleTextStyle =
+        selectedPeriodMiddleTextStyle ?? commonStyles.selectedDateStyle;
+
+    final TextStyle _selectedPeriodEndTextStyle =
+        selectedPeriodEndTextStyle ?? commonStyles.selectedDateStyle;
+
     return DatePickerRangeStyles(
         disabledDateStyle: commonStyles.disabledDateStyle,
         currentDateStyle: commonStyles.currentDateStyle,
@@ -180,9 +189,9 @@ class DatePickerRangeStyles extends DatePickerStyles {
         selectedPeriodStartDecoration: _selectedPeriodStartDecoration,
         selectedPeriodMiddleDecoration: _selectedPeriodMiddleDecoration,
         selectedPeriodLastDecoration: _selectedPeriodLastDecoration,
-        selectedPeriodStartTextStyle: commonStyles.selectedDateStyle,
-        selectedPeriodMiddleTextStyle: commonStyles.selectedDateStyle,
-        selectedPeriodEndTextStyle: commonStyles.selectedDateStyle,
+        selectedPeriodStartTextStyle: _selectedPeriodStartTextStyle,
+        selectedPeriodMiddleTextStyle: _selectedPeriodMiddleTextStyle,
+        selectedPeriodEndTextStyle: _selectedPeriodEndTextStyle,
     );
   }
 

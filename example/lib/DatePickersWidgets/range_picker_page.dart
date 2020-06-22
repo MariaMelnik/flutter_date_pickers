@@ -50,13 +50,15 @@ class _RangePickerPageState extends State<RangePickerPage> {
     DatePickerRangeStyles styles = DatePickerRangeStyles(
       selectedPeriodLastDecoration: BoxDecoration(
           color: selectedPeriodLastColor,
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(10.0),
-              bottomRight: Radius.circular(10.0))),
+          borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(24.0),
+              bottomRight: Radius.circular(24.0))),
       selectedPeriodStartDecoration: BoxDecoration(
         color: selectedPeriodStartColor,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24.0),
+            bottomLeft: Radius.circular(24.0)
+        ),
       ),
       selectedPeriodMiddleDecoration: BoxDecoration(
           color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
