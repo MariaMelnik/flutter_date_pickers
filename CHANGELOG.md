@@ -10,6 +10,7 @@ Minor changes and fixes.
 ## [0.1.1] - 20 June 2020
 Added scrollPhysics property to DatePickerLayoutSettings.
 
-## [0.1.2] - 23 June 2020
+## [0.1.3] - 23 June 2020
 Added day headers style customization.
 Added prev/next icon customization.
+Added selected period text styles customization.
