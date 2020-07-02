@@ -14,3 +14,6 @@ Added scrollPhysics property to DatePickerLayoutSettings.
 Added day headers style customization.
 Added prev/next icon customization.
 Added selected period text styles customization.
+
+## [0.1.4] - 2 July 2020
+Added firstDayOfWeekIndex customization.
