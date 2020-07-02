@@ -21,11 +21,12 @@ mixin CommonDatePickerFunctions {
   /// _ _ _ _ 1 2 3
   /// 4 5 6 7 8 9 10
   /// ```
-  List<Widget> getDayHeaders(DayHeaderStyleBuilder headerStyleBuilder, MaterialLocalizations localizations) {
+  List<Widget> getDayHeaders(DayHeaderStyleBuilder headerStyleBuilder, List<String> narrowWeekdays, int firstDayOfWeekIndex) {
     final List<Widget> result = <Widget>[];
-    for (int i = localizations.firstDayOfWeekIndex; true; i = (i + 1) % 7) {
+
+    for (int i = firstDayOfWeekIndex; true; i = (i + 1) % 7) {
       DayHeaderStyle headerStyle = headerStyleBuilder(i);
-      final String weekday = localizations.narrowWeekdays[i];
+      final String weekday = narrowWeekdays[i];
 
       Widget header = ExcludeSemantics(
         child: Container(
@@ -40,7 +41,7 @@ mixin CommonDatePickerFunctions {
       );
 
       result.add(header);
-      if (i == (localizations.firstDayOfWeekIndex - 1) % 7) {
+      if (i == (firstDayOfWeekIndex - 1) % 7) {
         break;
       }
     }
@@ -80,11 +81,9 @@ mixin CommonDatePickerFunctions {
   /// - [MaterialLocalizations.narrowWeekdays] list provides localized names of
   ///   days of week, always starting with Sunday and ending with Saturday.
   int computeFirstDayOffset(
-      int year, int month, MaterialLocalizations localizations) {
+      int year, int month, int firstDayOfWeekFromSunday) {
     // 0-based day of week, with 0 representing Monday.
-    final int weekdayFromMonday = new DateTime(year, month).weekday - 1;
-    // 0-based day of week, with 0 representing Sunday.
-    final int firstDayOfWeekFromSunday = localizations.firstDayOfWeekIndex;
+    final int weekdayFromMonday = DateTime(year, month).weekday - 1;
     // firstDayOfWeekFromSunday recomputed to be Monday-based
     final int firstDayOfWeekFromMonday = (firstDayOfWeekFromSunday - 1) % 7;
     // Number of days between the first day of week appearing on the calendar,

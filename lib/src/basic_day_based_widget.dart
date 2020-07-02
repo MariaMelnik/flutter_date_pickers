@@ -36,7 +36,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overriden by selected styles
+  /// All event styles are overridden by selected styles
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
@@ -104,14 +104,16 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
     final int daysInMonth = DatePickerUtils.getDaysInMonth(year, month);
-    final int firstDayOffset = computeFirstDayOffset(year, month, localizations);
+    final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex
+        ?? localizations.firstDayOfWeekIndex;
+    final int firstDayOffset = computeFirstDayOffset(year, month, firstDayOfWeekIndex);
 
     final List<Widget> labels = <Widget>[];
 
     DayHeaderStyleBuilder dayHeaderStyleBuilder = datePickerStyles.dayHeaderStyleBuilder
         ?? (int i) => datePickerStyles.dayHeaderStyle;
 
-    List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder, localizations);
+    List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder, localizations.narrowWeekdays, firstDayOfWeekIndex);
     labels.addAll(headers);
 
     for (int i = 0; true; i += 1) {

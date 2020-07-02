@@ -44,6 +44,12 @@ class DatePickerStyles {
   /// User goes to next data period by click on it.
   final Widget nextIcon;
 
+  /// Index of the first day of week, where 0 points to Sunday, and 6 points to
+  /// Saturday. Must not be less 0 or more then 6.
+  ///
+  /// Can be null. In this case value from current locale will be used.
+  final int firstDayOfeWeekIndex;
+
   DatePickerStyles({
     this.displayedPeriodTitle,
     this.currentDateStyle,
@@ -53,12 +59,15 @@ class DatePickerStyles {
     this.defaultDateTextStyle,
     this.dayHeaderStyleBuilder,
     this.dayHeaderStyle,
+    this.firstDayOfeWeekIndex,
     Widget prevIcon,
     Widget nextIcon
   }) : assert(!(dayHeaderStyle != null && dayHeaderStyleBuilder != null),
         "Should be only one from: dayHeaderStyleBuilder, dayHeaderStyle."),
        assert(dayHeaderStyleBuilder == null || _validateDayHeaderStyleBuilder(dayHeaderStyleBuilder),
         "dayHeaderStyleBuilder must return not null value from every weekday (from 0 to 6)."),
+       assert(_validateFirstDayOfWeek(firstDayOfeWeekIndex),
+        "firstDayOfeWeekIndex must be null or in correct range (from 0 to 6)."),
       this.nextIcon = nextIcon ?? const Icon(Icons.chevron_right),
       this.prevIcon = prevIcon ?? const Icon(Icons.chevron_left);
 
@@ -104,6 +113,14 @@ class DatePickerStyles {
   static bool _validateDayHeaderStyleBuilder(DayHeaderStyleBuilder builder) {
     List<int> weekdays = const [0, 1, 2, 3, 4, 5, 6];
     bool valid = weekdays.every((int weekday) => builder(weekday) != null);
+
+    return valid;
+  }
+
+  static bool _validateFirstDayOfWeek(int index) {
+    if (index == null) return true;
+
+    bool valid = index >= 0 && index <= 6;
 
     return valid;
   }
@@ -186,6 +203,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
         defaultDateTextStyle: commonStyles.defaultDateTextStyle,
         dayHeaderStyle: commonStyles.dayHeaderStyle,
         dayHeaderStyleBuilder: commonStyles.dayHeaderStyleBuilder,
+        firstDayOfWeekIndex: firstDayOfeWeekIndex,
         selectedPeriodStartDecoration: _selectedPeriodStartDecoration,
         selectedPeriodMiddleDecoration: _selectedPeriodMiddleDecoration,
         selectedPeriodLastDecoration: _selectedPeriodLastDecoration,
@@ -206,6 +224,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
     dayHeaderStyleBuilder,
     nextIcon,
     prevIcon,
+    firstDayOfWeekIndex,
     this.selectedPeriodLastDecoration,
     this.selectedPeriodMiddleDecoration,
     this.selectedPeriodStartDecoration,
@@ -222,7 +241,8 @@ class DatePickerRangeStyles extends DatePickerStyles {
             dayHeaderStyle: dayHeaderStyle,
             dayHeaderStyleBuilder: dayHeaderStyleBuilder,
             nextIcon: nextIcon,
-            prevIcon: prevIcon
+            prevIcon: prevIcon,
+            firstDayOfeWeekIndex: firstDayOfWeekIndex
        );
 }
 

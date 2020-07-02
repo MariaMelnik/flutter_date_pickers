@@ -85,7 +85,7 @@ class WeekPicker extends StatelessWidget {
 
     ISelectablePicker<DatePeriod> weekSelectablePicker = WeekSelectable(
         selectedDate,
-        localizations.firstDayOfWeekIndex,
+        datePickerStyles.firstDayOfeWeekIndex ?? localizations.firstDayOfWeekIndex,
         firstDate,
         lastDate,
         selectableDayPredicate: selectableDayPredicate
