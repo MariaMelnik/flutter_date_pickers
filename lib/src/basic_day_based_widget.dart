@@ -8,7 +8,7 @@ import 'package:flutter_date_pickers/src/utils.dart';
 
 /// Widget for date pickers based on days and cover entire month.
 /// Each cell of this picker is day.
-class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
+class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   final ISelectablePicker selectablePicker;
 
   /// The current date at the time the picker is displayed.
@@ -42,16 +42,15 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
 
   DayBasedPicker(
       {Key key,
-        @required this.currentDate,
-        @required this.firstDate,
-        @required this.lastDate,
-        @required this.displayedMonth,
-        @required this.datePickerLayoutSettings,
-        @required this.selectedPeriodKey,
-        @required this.datePickerStyles,
-        @required this.selectablePicker,
-        this.eventDecorationBuilder
-      })
+      @required this.currentDate,
+      @required this.firstDate,
+      @required this.lastDate,
+      @required this.displayedMonth,
+      @required this.datePickerLayoutSettings,
+      @required this.selectedPeriodKey,
+      @required this.datePickerStyles,
+      @required this.selectablePicker,
+      this.eventDecorationBuilder})
       : assert(currentDate != null),
         assert(displayedMonth != null),
         assert(datePickerLayoutSettings != null),
@@ -61,10 +60,8 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
         assert(datePickerStyles != null),
         super(key: key);
 
-
   // Returns decoration for selected date with applied border radius if it needs for passed date.
   BoxDecoration _getSelectedDecoration(DayType dayType) {
-
     BoxDecoration result;
 
     if (dayType == DayType.single) {
@@ -82,7 +79,6 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
 
   // Returns decoration for selected date with applied border radius if it needs for passed date.
   TextStyle _getSelectedTextStyle(DayType dayType) {
-
     TextStyle result;
 
     if (dayType == DayType.single) {
@@ -100,20 +96,24 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
     final int daysInMonth = DatePickerUtils.getDaysInMonth(year, month);
-    final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex
-        ?? localizations.firstDayOfWeekIndex;
-    final int firstDayOffset = computeFirstDayOffset(year, month, firstDayOfWeekIndex);
+    final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
+        localizations.firstDayOfWeekIndex;
+    final int firstDayOffset =
+        computeFirstDayOffset(year, month, firstDayOfWeekIndex);
 
     final List<Widget> labels = <Widget>[];
 
-    DayHeaderStyleBuilder dayHeaderStyleBuilder = datePickerStyles.dayHeaderStyleBuilder
-        ?? (int i) => datePickerStyles.dayHeaderStyle;
+    DayHeaderStyleBuilder dayHeaderStyleBuilder =
+        datePickerStyles.dayHeaderStyleBuilder ??
+            (int i) => datePickerStyles.dayHeaderStyle;
 
-    List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder, localizations.narrowWeekdays, firstDayOfWeekIndex);
+    List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder,
+        localizations.narrowWeekdays, firstDayOfWeekIndex);
     labels.addAll(headers);
 
     for (int i = 0; true; i += 1) {
@@ -173,8 +173,9 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
               // for the day of month. To do that we prepend day of month to the
               // formatted full date.
               label:
-              '${localizations.formatDecimal(day)}, ${localizations.formatFullDate(dayToBuild)}',
-              selected: dayType != DayType.disabled && dayType != DayType.notSelected,
+                  '${localizations.formatDecimal(day)}, ${localizations.formatFullDate(dayToBuild)}',
+              selected:
+                  dayType != DayType.disabled && dayType != DayType.notSelected,
               child: ExcludeSemantics(
                 child: Text(localizations.formatDecimal(day), style: itemStyle),
               ),
@@ -203,7 +204,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions{
               physics: datePickerLayoutSettings.scrollPhysics,
               gridDelegate: datePickerLayoutSettings.dayPickerGridDelegate,
               childrenDelegate:
-              SliverChildListDelegate(labels, addRepaintBoundaries: false),
+                  SliverChildListDelegate(labels, addRepaintBoundaries: false),
             ),
           ),
         ],

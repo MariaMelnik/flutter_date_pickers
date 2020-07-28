@@ -9,5 +9,4 @@ export 'package:flutter_date_pickers/src/week_picker.dart';
 export 'package:flutter_date_pickers/src/month_picker.dart';
 export 'package:flutter_date_pickers/src/range_picker.dart';
 
-
 export 'package:flutter_date_pickers/src/unselectable_period_error.dart';
