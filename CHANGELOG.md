@@ -17,3 +17,6 @@ Added selected period text styles customization.
 
 ## [0.1.4] - 2 July 2020
 Added firstDayOfWeekIndex customization.
+
+## [0.1.5] - 29 July 2020
+Added support of the CupertinoApp ancestor (fixed #29).
