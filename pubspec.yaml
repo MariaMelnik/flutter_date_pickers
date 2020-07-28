@@ -11,7 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: '>=0.15.2 <0.17.0'
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

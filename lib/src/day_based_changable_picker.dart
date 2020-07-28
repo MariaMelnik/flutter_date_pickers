@@ -10,6 +10,7 @@ import 'package:flutter_date_pickers/src/month_navigation_row.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 import 'package:flutter_date_pickers/src/typedefs.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
 /// Allows select previous/next month.
@@ -72,6 +73,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
 // todo: Check initial selection and call onSelectionError in case it has error (ISelectablePicker.curSelectionIsCorrupted);
 class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T>> {
   MaterialLocalizations localizations;
+  Locale curLocale;
   TextDirection textDirection;
 
   DateTime _todayDate;
@@ -135,10 +137,11 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
     }
   }
 
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    localizations = MaterialLocalizations.of(context);
+    curLocale = Localizations.localeOf(context);
     textDirection = Directionality.of(context);
 
     final ThemeData theme = Theme.of(context);
@@ -148,50 +151,59 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
-      height: widget.datePickerLayoutSettings.maxDayPickerHeight,
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: widget.datePickerLayoutSettings.dayPickerRowHeight,
-            child: Padding(
-              padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
-              child: MonthNavigationRow(
-                previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
-                nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
-                previousMonthTooltip: _isDisplayingFirstMonth
-                    ? null
-                    : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
-                nextMonthTooltip: _isDisplayingLastMonth
-                    ? null
-                    : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
-                onPreviousMonthTapped: _handlePreviousMonth,
-                onNextMonthTapped: _handleNextMonth,
-                title: Text(
-                  localizations.formatMonthYear(_currentDisplayedMonthDate),
-                  key: widget.datePickerKeys?.selectedPeriodKeys,
-                  style: _resultStyles.displayedPeriodTitle,
+    return Localizations(
+      locale: curLocale,
+      delegates: GlobalMaterialLocalizations.delegates,
+      child: Builder(
+        builder: (c) {
+          localizations = MaterialLocalizations.of(c);
+          return SizedBox(
+            width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
+            height: widget.datePickerLayoutSettings.maxDayPickerHeight,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: widget.datePickerLayoutSettings.dayPickerRowHeight,
+                  child: Padding(
+                    padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
+                    child: MonthNavigationRow(
+                      previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
+                      nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
+                      previousMonthTooltip: _isDisplayingFirstMonth
+                          ? null
+                          : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                      nextMonthTooltip: _isDisplayingLastMonth
+                          ? null
+                          : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                      onPreviousMonthTapped: _handlePreviousMonth,
+                      onNextMonthTapped: _handleNextMonth,
+                      title: Text(
+                        localizations.formatMonthYear(_currentDisplayedMonthDate),
+                        key: widget.datePickerKeys?.selectedPeriodKeys,
+                        style: _resultStyles.displayedPeriodTitle,
+                      ),
+                      nextIcon: widget.datePickerStyles.nextIcon,
+                      prevIcon: widget.datePickerStyles.prevIcon,
+                    ),
+                  ),
                 ),
-                nextIcon: widget.datePickerStyles.nextIcon,
-                prevIcon: widget.datePickerStyles.prevIcon,
-              ),
+                Expanded(
+                  child: Semantics(
+                    sortKey: MonthPickerSortKey.calendar,
+                    child: PageView.builder(
+                      key: ValueKey<DateTime>(widget.selectedDate),
+                      controller: _dayPickerController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
+                      itemBuilder: _buildCalendar,
+                      onPageChanged: _handleMonthPageChanged,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: Semantics(
-              sortKey: MonthPickerSortKey.calendar,
-              child: PageView.builder(
-                key: ValueKey<DateTime>(widget.selectedDate),
-                controller: _dayPickerController,
-                scrollDirection: Axis.horizontal,
-                itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
-                itemBuilder: _buildCalendar,
-                onPageChanged: _handleMonthPageChanged,
-              ),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

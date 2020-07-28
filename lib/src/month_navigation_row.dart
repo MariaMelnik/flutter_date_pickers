@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_date_pickers/src/icon_btn.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 
 class MonthNavigationRow extends StatelessWidget {
@@ -37,15 +38,16 @@ class MonthNavigationRow extends StatelessWidget {
       children: <Widget>[
         Semantics(
           sortKey: MonthPickerSortKey.previousMonth,
-          child: IconButton(
+          child: IconBtn(
             key: previousPageIconKey,
             icon: prevIcon,
             tooltip: previousMonthTooltip,
-            onPressed: onPreviousMonthTapped,
+            onTap: onPreviousMonthTapped,
           ),
         ),
         Expanded(
           child: Container(
+            alignment: Alignment.center,
             child: Center(
               child: ExcludeSemantics(
                 child: title,
@@ -55,11 +57,11 @@ class MonthNavigationRow extends StatelessWidget {
         ),
         Semantics(
           sortKey: MonthPickerSortKey.nextMonth,
-          child: IconButton(
+          child: IconBtn(
             key: nextPageIconKey,
             icon: nextIcon,
             tooltip: nextMonthTooltip,
-            onPressed: onNextMonthTapped,
+            onTap: onNextMonthTapped,
           ),
         ),
       ],
