@@ -133,33 +133,6 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
       : onUpdateController.addError(UnselectablePeriodException(customDisabledDays));
   }
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other))
-      return true;
-    if (other.runtimeType != runtimeType)
-      return false;
-    return other is WeekSelectable
-        && other.firstDate == firstDate
-        && other.lastDate == lastDate
-        && other._selectableDayPredicate == _selectableDayPredicate
-        && other._firstDayOfSelectedWeek == _firstDayOfSelectedWeek
-        && other._lastDayOfSelectedWeek == _lastDayOfSelectedWeek
-        && other._firstDayOfWeekIndex == _firstDayOfWeekIndex;
-  }
-
-  @override
-  int get hashCode {
-    return hashValues(
-        firstDate,
-        lastDate,
-        _selectableDayPredicate,
-        _firstDayOfSelectedWeek,
-        _lastDayOfSelectedWeek,
-        _firstDayOfWeekIndex,
-    );
-  }
-
   // Returns new selected period according to tapped date.
   // Doesn't check custom disabled days. You have to check it separately if it needs.
   DatePeriod _getNewSelectedPeriod(DateTime tappedDay) {
@@ -250,29 +223,7 @@ class DaySelectable extends ISelectablePicker<DateTime> {
     DateTime newSelected = DatePickerUtils.sameDate(firstDate, selectedDate)
         ? selectedDate
         : DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-    return onUpdateController.add(newSelected);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other))
-      return true;
-    if (other.runtimeType != runtimeType)
-      return false;
-    return other is DaySelectable
-        && other.firstDate == firstDate
-        && other.lastDate == lastDate
-        && other.selectedDate == selectedDate;
-  }
-
-  @override
-  int get hashCode {
-    return hashValues(
-      firstDate,
-      lastDate,
-      _selectableDayPredicate,
-      selectedDate,
-    );
+    onUpdateController.add(newSelected);
   }
 
   bool _isDaySelected(DateTime date) {
@@ -339,29 +290,6 @@ class RangeSelectable extends ISelectablePicker<DatePeriod>{
     customDisabledDays.isEmpty
         ? onUpdateController.add(newPeriod)
         : onUpdateController.addError(UnselectablePeriodException(customDisabledDays));
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other))
-      return true;
-    if (other.runtimeType != runtimeType)
-      return false;
-    return other is RangeSelectable
-        && other.firstDate == firstDate
-        && other.lastDate == lastDate
-        && other._selectableDayPredicate == _selectableDayPredicate
-        && other.selectedPeriod == selectedPeriod;
-  }
-
-  @override
-  int get hashCode {
-    return hashValues(
-      firstDate,
-      lastDate,
-      _selectableDayPredicate,
-      selectedPeriod,
-    );
   }
 
   // Returns new selected period according to tapped date.
