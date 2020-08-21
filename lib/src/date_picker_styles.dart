@@ -110,6 +110,43 @@ class DatePickerStyles {
     );
   }
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other))
+      return true;
+    if (other.runtimeType != runtimeType)
+      return false;
+    return other is DatePickerStyles
+        && other.displayedPeriodTitle == displayedPeriodTitle
+        && other.currentDateStyle == currentDateStyle
+        && other.disabledDateStyle == disabledDateStyle
+        && other.selectedDateStyle == selectedDateStyle
+        && other.defaultDateTextStyle == defaultDateTextStyle
+        && other.selectedSingleDateDecoration == selectedSingleDateDecoration
+        && other.dayHeaderStyle == dayHeaderStyle
+        && other.dayHeaderStyleBuilder == dayHeaderStyleBuilder
+        && other.prevIcon == prevIcon
+        && other.nextIcon == nextIcon
+        && other.firstDayOfeWeekIndex == firstDayOfeWeekIndex;
+  }
+
+  @override
+  int get hashCode {
+    return hashValues(
+        displayedPeriodTitle,
+        currentDateStyle,
+        disabledDateStyle,
+        selectedDateStyle,
+        defaultDateTextStyle,
+        selectedSingleDateDecoration,
+        dayHeaderStyle,
+        dayHeaderStyleBuilder,
+        prevIcon,
+        nextIcon,
+        firstDayOfeWeekIndex
+    );
+  }
+
   static bool _validateDayHeaderStyleBuilder(DayHeaderStyleBuilder builder) {
     List<int> weekdays = const [0, 1, 2, 3, 4, 5, 6];
     bool valid = weekdays.every((int weekday) => builder(weekday) != null);
@@ -244,6 +281,55 @@ class DatePickerRangeStyles extends DatePickerStyles {
             prevIcon: prevIcon,
             firstDayOfeWeekIndex: firstDayOfWeekIndex
        );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other))
+      return true;
+    if (other.runtimeType != runtimeType)
+      return false;
+    return other is DatePickerRangeStyles
+        && other.selectedPeriodStartDecoration == selectedPeriodStartDecoration
+        && other.selectedPeriodStartTextStyle == selectedPeriodStartTextStyle
+        && other.selectedPeriodLastDecoration == selectedPeriodLastDecoration
+        && other.selectedPeriodEndTextStyle == selectedPeriodEndTextStyle
+        && other.selectedPeriodMiddleDecoration == selectedPeriodMiddleDecoration
+        && other.selectedPeriodMiddleTextStyle == selectedPeriodMiddleTextStyle
+        && other.displayedPeriodTitle == displayedPeriodTitle
+        && other.currentDateStyle == currentDateStyle
+        && other.disabledDateStyle == disabledDateStyle
+        && other.selectedDateStyle == selectedDateStyle
+        && other.defaultDateTextStyle == defaultDateTextStyle
+        && other.selectedSingleDateDecoration == selectedSingleDateDecoration
+        && other.dayHeaderStyle == dayHeaderStyle
+        && other.dayHeaderStyleBuilder == dayHeaderStyleBuilder
+        && other.prevIcon == prevIcon
+        && other.nextIcon == nextIcon
+        && other.firstDayOfeWeekIndex == firstDayOfeWeekIndex;
+  }
+
+  @override
+  int get hashCode {
+    return hashValues(
+      selectedPeriodStartDecoration,
+      selectedPeriodStartTextStyle,
+      selectedPeriodLastDecoration,
+      selectedPeriodEndTextStyle,
+      selectedPeriodMiddleDecoration,
+      selectedPeriodMiddleTextStyle,
+      displayedPeriodTitle,
+      currentDateStyle,
+      disabledDateStyle,
+      selectedDateStyle,
+      defaultDateTextStyle,
+      selectedSingleDateDecoration,
+      dayHeaderStyle,
+      dayHeaderStyleBuilder,
+      prevIcon,
+      nextIcon,
+      firstDayOfeWeekIndex
+    );
+  }
 }
 
 
@@ -259,4 +345,23 @@ class DayHeaderStyle {
     this.textStyle,
     this.decoration
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other))
+      return true;
+    if (other.runtimeType != runtimeType)
+      return false;
+    return other is DayHeaderStyle
+        && other.textStyle == textStyle
+        && other.decoration == decoration;
+  }
+
+  @override
+  int get hashCode {
+    return hashValues(
+      textStyle,
+      decoration
+    );
+  }
 }
