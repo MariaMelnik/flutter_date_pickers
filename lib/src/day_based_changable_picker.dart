@@ -7,7 +7,6 @@ import 'package:flutter_date_pickers/src/day_based_changeable_picker_presenter.d
 import 'package:flutter_date_pickers/src/event_decoration.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/month_navigation_row.dart';
-import 'package:flutter_date_pickers/src/month_navigation_row_stfl.dart';
 import 'package:flutter_date_pickers/src/semantic_sorting.dart';
 import 'package:flutter_date_pickers/src/typedefs.dart';
 import 'package:flutter_date_pickers/src/utils.dart';

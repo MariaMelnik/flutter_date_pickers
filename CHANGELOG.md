@@ -20,3 +20,6 @@ Added firstDayOfWeekIndex customization.
 
 ## [0.1.5] - 29 July 2020
 Added support of the CupertinoApp ancestor (fixed #29).
+
+## [0.1.6] - 21 August 2020
+Added two customizable fields to DatePickerLayoutSettings: showNextMonthStart, showPrevMonthEnd (implemented #28).
