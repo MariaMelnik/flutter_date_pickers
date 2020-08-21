@@ -25,6 +25,18 @@ class DatePickerLayoutSettings {
   final int maxDayPickerRowCount;
   final EdgeInsetsGeometry contentPadding;
 
+  /// If the first dates from the next month should be shown
+  /// to complete last week of the selected month.
+  ///
+  /// false by default.
+  final bool showNextMonthStart;
+
+  /// If the last dates from the previous month should be shown
+  /// to complete first week of the selected month.
+  ///
+  /// false by default.
+  final bool showPrevMonthEnd;
+
   SliverGridDelegate get dayPickerGridDelegate =>
       _DayPickerGridDelegate(dayPickerRowHeight, maxDayPickerRowCount);
 
@@ -38,12 +50,16 @@ class DatePickerLayoutSettings {
     this.monthPickerPortraitWidth = _kMonthPickerPortraitWidth,
     this.maxDayPickerRowCount = _kMaxDayPickerRowCount,
     this.contentPadding = _kContentPadding,
+    this.showNextMonthStart = false,
+    this.showPrevMonthEnd = false,
     this.scrollPhysics
   }) : assert(pagesScrollDuration != null),
         assert(dayPickerRowHeight != null),
         assert(monthPickerPortraitWidth != null),
         assert(maxDayPickerRowCount != null),
-        assert(contentPadding != null);
+        assert(contentPadding != null),
+        assert(showNextMonthStart != null),
+        assert(showPrevMonthEnd != null);
 }
 
 class _DayPickerGridDelegate extends SliverGridDelegate {
