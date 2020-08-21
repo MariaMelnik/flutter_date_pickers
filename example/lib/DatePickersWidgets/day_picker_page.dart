@@ -61,7 +61,11 @@ class _DayPickerPageState extends State<DayPickerPage> {
             firstDate: _firstDate,
             lastDate: _lastDate,
             datePickerStyles: styles,
-            datePickerLayoutSettings: dp.DatePickerLayoutSettings(maxDayPickerRowCount: 2),
+            datePickerLayoutSettings: dp.DatePickerLayoutSettings(
+                maxDayPickerRowCount: 2,
+                showPrevMonthEnd: true,
+                showNextMonthStart: true
+            ),
             selectableDayPredicate: _isSelectableCustom,
             eventDecorationBuilder: _eventDecorationBuilder,
           ),
