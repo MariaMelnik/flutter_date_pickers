@@ -8,7 +8,6 @@ import 'package:flutter_date_pickers/src/date_picker_keys.dart';
 import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
 import 'package:flutter_date_pickers/src/typedefs.dart';
 
-
 // Styles for current displayed period: Theme.of(context).textTheme.subhead
 //
 // Styles for date picker cell:
@@ -33,8 +32,9 @@ class RangePicker extends StatelessWidget {
       this.datePickerStyles,
       this.datePickerKeys,
       this.selectableDayPredicate,
-        this.onSelectionError,
-        this.eventDecorationBuilder})
+      this.onSelectionError,
+      this.eventDecorationBuilder,
+      this.onMonthChanged})
       : assert(selectedPeriod != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -79,15 +79,14 @@ class RangePicker extends StatelessWidget {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
-  @override
-  Widget build(BuildContext context){
+  /// Called when the user changes the month.
+  final ValueChanged<DateTime> onMonthChanged;
 
+  @override
+  Widget build(BuildContext context) {
     ISelectablePicker<DatePeriod> rangeSelectablePicker = RangeSelectable(
-        selectedPeriod,
-        firstDate,
-        lastDate,
-        selectableDayPredicate: selectableDayPredicate
-    );
+        selectedPeriod, firstDate, lastDate,
+        selectableDayPredicate: selectableDayPredicate);
 
     return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: rangeSelectablePicker,
@@ -100,6 +99,7 @@ class RangePicker extends StatelessWidget {
       datePickerStyles: datePickerStyles ?? DatePickerRangeStyles(),
       datePickerKeys: datePickerKeys,
       eventDecorationBuilder: eventDecorationBuilder,
+      onMonthChanged: onMonthChanged,
     );
   }
 }
