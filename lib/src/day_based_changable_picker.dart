@@ -12,6 +12,8 @@ import 'package:flutter_date_pickers/src/typedefs.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'utils.dart';
+
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
 /// Allows select previous/next month.
 class DayBasedChangeablePicker<T> extends StatefulWidget {
@@ -50,28 +52,34 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
-  const DayBasedChangeablePicker({
-    Key key,
-    this.selectedDate,
-    this.onChanged,
-    @required this.firstDate,
-    @required this.lastDate,
-    @required this.datePickerLayoutSettings,
-    @required this.datePickerStyles,
-    @required this.selectablePicker,
-    this.datePickerKeys,
-    this.onSelectionError,
-    this.eventDecorationBuilder
-  }) : assert(datePickerLayoutSettings != null),
-       assert(datePickerStyles != null),
-       super(key: key);
+  /// Called when the user changes the month
+  final ValueChanged<DateTime> onMonthChanged;
+
+  const DayBasedChangeablePicker(
+      {Key key,
+      this.selectedDate,
+      this.onChanged,
+      @required this.firstDate,
+      @required this.lastDate,
+      @required this.datePickerLayoutSettings,
+      @required this.datePickerStyles,
+      @required this.selectablePicker,
+      this.datePickerKeys,
+      this.onSelectionError,
+      this.eventDecorationBuilder,
+      this.onMonthChanged})
+      : assert(datePickerLayoutSettings != null),
+        assert(datePickerStyles != null),
+        super(key: key);
 
   @override
-  State<DayBasedChangeablePicker<T>> createState() => _DayBasedChangeablePickerState<T>();
+  State<DayBasedChangeablePicker<T>> createState() =>
+      _DayBasedChangeablePickerState<T>();
 }
 
 // todo: Check initial selection and call onSelectionError in case it has error (ISelectablePicker.curSelectionIsCorrupted);
-class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T>> {
+class _DayBasedChangeablePickerState<T>
+    extends State<DayBasedChangeablePicker<T>> {
   MaterialLocalizations localizations;
   Locale curLocale;
   TextDirection textDirection;
@@ -90,14 +98,28 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
     super.initState();
 
     // Initially display the pre-selected date.
-    final int monthPage = DatePickerUtils.monthDelta(widget.firstDate, widget.selectedDate);
+    final int monthPage =
+        DatePickerUtils.monthDelta(widget.firstDate, widget.selectedDate);
     _dayPickerController = PageController(initialPage: monthPage);
 
-    _changesSubscription =  widget.selectablePicker.onUpdate
+    _dayPickerController.addListener(() {
+      if (widget.onMonthChanged != null) {
+        if (_dayPickerController.page.round() == _dayPickerController.page) {
+          widget.onMonthChanged(
+            DatePickerUtils.addMonthsToMonthDate(
+              DateTime(widget.firstDate.year, widget.firstDate.month),
+              _dayPickerController.page.round(),
+            ),
+          );
+        }
+      }
+    });
+
+    _changesSubscription = widget.selectablePicker.onUpdate
         .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
-        ..onError((e) => widget.onSelectionError != null
-          ? widget.onSelectionError(e)
-          : print(e.toString()));
+          ..onError((e) => widget.onSelectionError != null
+              ? widget.onSelectionError(e)
+              : print(e.toString()));
 
     // Give information about initial selection to presenter.
     // It should be done after first frame when PageView is already created.
@@ -123,11 +145,11 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
     }
 
     if (widget.selectablePicker != oldWidget.selectablePicker) {
-      _changesSubscription =  widget.selectablePicker.onUpdate
+      _changesSubscription = widget.selectablePicker.onUpdate
           .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
-          ..onError((e) => widget.onSelectionError != null
-            ? widget.onSelectionError(e)
-            : print(e.toString()));
+            ..onError((e) => widget.onSelectionError != null
+                ? widget.onSelectionError(e)
+                : print(e.toString()));
     }
   }
 
@@ -163,14 +185,14 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
                 SizedBox(
                   height: widget.datePickerLayoutSettings.dayPickerRowHeight,
                   child: Padding(
-                    padding: widget.datePickerLayoutSettings.contentPadding, //match _DayPicker main layout padding
-                    child: _buildMonthNavigationRow()
-                  ),
+                      padding: widget.datePickerLayoutSettings
+                          .contentPadding, //match _DayPicker main layout padding
+                      child: _buildMonthNavigationRow()),
                 ),
                 Expanded(
                   child: Semantics(
                     sortKey: MonthPickerSortKey.calendar,
-                    child: _buildDayPickerPageView()
+                    child: _buildDayPickerPageView(),
                   ),
                 ),
               ],
@@ -192,9 +214,11 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
 
   void _updateCurrentDate() {
     _todayDate = DateTime.now();
-    final DateTime tomorrow = DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
+    final DateTime tomorrow =
+        DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
     Duration timeUntilTomorrow = tomorrow.difference(_todayDate);
-    timeUntilTomorrow += const Duration(seconds: 1); // so we don't miss it by rounding
+    timeUntilTomorrow +=
+        const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
     _timer = Timer(timeUntilTomorrow, () {
       setState(() {
@@ -205,44 +229,50 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
 
   Widget _buildMonthNavigationRow() {
     return StreamBuilder<DayBasedChangeablePickerState>(
-      stream: _presenter.data,
-      initialData: _presenter.lastVal,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return Center(child:  CircularProgressIndicator(),);
+        stream: _presenter.data,
+        initialData: _presenter.lastVal,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
 
-        DayBasedChangeablePickerState state = snapshot.data;
+          DayBasedChangeablePickerState state = snapshot.data;
 
-        return MonthNavigationRow(
-          previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
-          nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
-          previousMonthTooltip: state.prevTooltip,
-          nextMonthTooltip: state.nextTooltip,
-          onPreviousMonthTapped: state.isFirstMonth ? null : _presenter.gotoPrevMonth,
-          onNextMonthTapped: state.isLastMonth ? null : _presenter.gotoNextMonth,
-          title: Text(
-            state.curMonthDis,
-            key: widget.datePickerKeys?.selectedPeriodKeys,
-            style: _resultStyles.displayedPeriodTitle,
-          ),
-          nextIcon: widget.datePickerStyles.nextIcon,
-          prevIcon: widget.datePickerStyles.prevIcon,
-        );
-      }
-    );
+          return MonthNavigationRow(
+            previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
+            nextPageIconKey: widget.datePickerKeys?.nextPageIconKey,
+            previousMonthTooltip: state.prevTooltip,
+            nextMonthTooltip: state.nextTooltip,
+            onPreviousMonthTapped:
+                state.isFirstMonth ? null : _presenter.gotoPrevMonth,
+            onNextMonthTapped:
+                state.isLastMonth ? null : _presenter.gotoNextMonth,
+            title: Text(
+              state.curMonthDis,
+              key: widget.datePickerKeys?.selectedPeriodKeys,
+              style: _resultStyles.displayedPeriodTitle,
+            ),
+            nextIcon: widget.datePickerStyles.nextIcon,
+            prevIcon: widget.datePickerStyles.prevIcon,
+          );
+        });
   }
 
   Widget _buildDayPickerPageView() {
     return PageView.builder(
       controller: _dayPickerController,
       scrollDirection: Axis.horizontal,
-      itemCount: DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
+      itemCount:
+          DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
       itemBuilder: _buildCalendar,
       onPageChanged: _handleMonthPageChanged,
     );
   }
 
   Widget _buildCalendar(BuildContext context, int index) {
-    final DateTime targetDate = DatePickerUtils.addMonthsToMonthDate(widget.firstDate, index);
+    final DateTime targetDate =
+        DatePickerUtils.addMonthsToMonthDate(widget.firstDate, index);
 
     return DayBasedPicker(
       key: ValueKey<DateTime>(targetDate),
@@ -265,25 +295,23 @@ class _DayBasedChangeablePickerState<T> extends State<DayBasedChangeablePicker<T
         localizations,
         widget.datePickerLayoutSettings.showPrevMonthEnd,
         widget.datePickerLayoutSettings.showNextMonthStart,
-        widget.datePickerStyles.firstDayOfeWeekIndex
-    );
+        widget.datePickerStyles.firstDayOfeWeekIndex);
     _presenter.data.listen(_onStateChanged);
 //    _presenter.setSelectedData(widget.selectedDate);
   }
 
   void _onStateChanged(DayBasedChangeablePickerState newState) {
     DateTime newMonth = newState.currentMonth;
-    final int monthPage = DatePickerUtils.monthDelta(widget.firstDate, newMonth);
-    _dayPickerController.animateToPage(
-        monthPage,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut
-    );
+    final int monthPage =
+        DatePickerUtils.monthDelta(widget.firstDate, newMonth);
+    _dayPickerController.animateToPage(monthPage,
+        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
   }
 
   void _handleMonthPageChanged(int monthPage) {
     DateTime firstMonth = widget.firstDate;
-    DateTime newMonth = DateTime(firstMonth.year, firstMonth.month + monthPage, firstMonth.day);
+    DateTime newMonth =
+        DateTime(firstMonth.year, firstMonth.month + monthPage, firstMonth.day);
     _presenter?.changeMonth(newMonth);
   }
 }

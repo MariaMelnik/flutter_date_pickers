@@ -34,7 +34,8 @@ class WeekPicker extends StatelessWidget {
       this.datePickerKeys,
       this.selectableDayPredicate,
       this.onSelectionError,
-      this.eventDecorationBuilder})
+      this.eventDecorationBuilder,
+      this.onMonthChanged})
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
@@ -79,17 +80,16 @@ class WeekPicker extends StatelessWidget {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
+  /// Called when the user changes the month.
+  final ValueChanged<DateTime> onMonthChanged;
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     MaterialLocalizations localizations = MaterialLocalizations.of(context);
 
     ISelectablePicker<DatePeriod> weekSelectablePicker = WeekSelectable(
-        selectedDate,
-        datePickerStyles.firstDayOfeWeekIndex ?? localizations.firstDayOfWeekIndex,
-        firstDate,
-        lastDate,
-        selectableDayPredicate: selectableDayPredicate
-    );
+        selectedDate, datePickerStyles.firstDayOfeWeekIndex ?? localizations.firstDayOfWeekIndex, firstDate, lastDate,
+        selectableDayPredicate: selectableDayPredicate);
 
     return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: weekSelectablePicker,
@@ -102,6 +102,7 @@ class WeekPicker extends StatelessWidget {
       datePickerStyles: datePickerStyles ?? DatePickerRangeStyles(),
       datePickerKeys: datePickerKeys,
       eventDecorationBuilder: eventDecorationBuilder,
+      onMonthChanged: onMonthChanged,
     );
   }
 }
