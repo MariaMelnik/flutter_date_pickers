@@ -81,6 +81,7 @@ class WeekPicker extends StatelessWidget {
   final EventDecorationBuilder eventDecorationBuilder;
 
   /// Called when the user changes the month.
+  /// New DateTime object represents first day of new month and 00:00 time.
   final ValueChanged<DateTime> onMonthChanged;
 
   @override
