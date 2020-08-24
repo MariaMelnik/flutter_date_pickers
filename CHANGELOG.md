@@ -23,3 +23,7 @@ Added support of the CupertinoApp ancestor (fixed #29).
 
 ## [0.1.6] - 21 August 2020
 Added two customizable fields to DatePickerLayoutSettings: showNextMonthStart, showPrevMonthEnd (implemented #28).
+
+## [0.1.7] - 25 August 2020
+Added onMonthChange callback for all day based pickers.
+Added newPeriod field to UnselectablePeriodError class.
