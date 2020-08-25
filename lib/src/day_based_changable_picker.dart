@@ -102,19 +102,6 @@ class _DayBasedChangeablePickerState<T>
         DatePickerUtils.monthDelta(widget.firstDate, widget.selectedDate);
     _dayPickerController = PageController(initialPage: monthPage);
 
-    _dayPickerController.addListener(() {
-      if (widget.onMonthChanged != null) {
-        if (_dayPickerController.page.round() == _dayPickerController.page) {
-          widget.onMonthChanged(
-            DatePickerUtils.addMonthsToMonthDate(
-              DateTime(widget.firstDate.year, widget.firstDate.month),
-              _dayPickerController.page.round(),
-            ),
-          );
-        }
-      }
-    });
-
     _changesSubscription = widget.selectablePicker.onUpdate
         .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
           ..onError((e) => widget.onSelectionError != null
@@ -313,5 +300,9 @@ class _DayBasedChangeablePickerState<T>
     DateTime newMonth =
         DateTime(firstMonth.year, firstMonth.month + monthPage, firstMonth.day);
     _presenter?.changeMonth(newMonth);
+
+    if (widget.onMonthChanged != null) {
+      widget.onMonthChanged(newMonth);
+    }
   }
 }
