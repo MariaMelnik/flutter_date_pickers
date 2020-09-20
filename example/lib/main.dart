@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_picker/event.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'DatePickersWidgets/month_picker_page.dart';
-import 'DatePickersWidgets/day_picker_page.dart';
-import 'DatePickersWidgets/range_picker_page.dart';
-import 'DatePickersWidgets/week_picker_page.dart';
+import 'date_pickers_widgets/day_picker_page.dart';
+import 'date_pickers_widgets/month_picker_page.dart';
+import 'date_pickers_widgets/range_picker_page.dart';
+import 'date_pickers_widgets/week_picker_page.dart';
+
+import 'event.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+///
 class MyApp extends StatelessWidget {
+
   @override
+    // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return MaterialApp(
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
@@ -34,9 +38,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// Start page.
 class MyHomePage extends StatefulWidget {
+  /// Page title.
   final String title;
 
+  ///
   MyHomePage({Key key, this.title}) : super(key: key);
 
   @override
@@ -74,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   @override
+    // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -113,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 }
 
+/// Mock events.
 final List<Event> events = [
   Event(DateTime.now(), "Today event"),
   Event(DateTime.now().subtract(Duration(days: 3)), "Ev1"),

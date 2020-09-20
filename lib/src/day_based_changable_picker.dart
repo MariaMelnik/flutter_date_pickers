@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/basic_day_based_widget.dart';
-import 'package:flutter_date_pickers/src/day_based_changeable_picker_presenter.dart';
-import 'package:flutter_date_pickers/src/event_decoration.dart';
-import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
-import 'package:flutter_date_pickers/src/month_navigation_row.dart';
-import 'package:flutter_date_pickers/src/semantic_sorting.dart';
-import 'package:flutter_date_pickers/src/typedefs.dart';
-import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'basic_day_based_widget.dart';
+import 'date_picker_keys.dart';
+import 'date_picker_styles.dart';
+import 'day_based_changeable_picker_presenter.dart';
+import 'day_type.dart';
+import 'event_decoration.dart';
+import 'i_selectable_picker.dart';
+import 'layout_settings.dart';
+import 'month_navigation_row.dart';
+import 'semantic_sorting.dart';
+import 'typedefs.dart';
 import 'utils.dart';
 
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
@@ -55,6 +57,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// Called when the user changes the month
   final ValueChanged<DateTime> onMonthChanged;
 
+  /// Create picker with option to change month.
   const DayBasedChangeablePicker(
       {Key key,
       this.selectedDate,
@@ -77,7 +80,8 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
       _DayBasedChangeablePickerState<T>();
 }
 
-// todo: Check initial selection and call onSelectionError in case it has error (ISelectablePicker.curSelectionIsCorrupted);
+// todo: Check initial selection and call onSelectionError in case it has error
+// todo: (ISelectablePicker.curSelectionIsCorrupted);
 class _DayBasedChangeablePickerState<T>
     extends State<DayBasedChangeablePicker<T>> {
   MaterialLocalizations localizations;
@@ -112,7 +116,7 @@ class _DayBasedChangeablePickerState<T>
     // It should be done after first frame when PageView is already created.
     // Otherwise event from presenter will cause a error.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _presenter.setSelectedData(widget.selectedDate);
+      _presenter.setSelectedDate(widget.selectedDate);
     });
 
     _updateCurrentDate();
@@ -123,7 +127,7 @@ class _DayBasedChangeablePickerState<T>
     super.didUpdateWidget(oldWidget);
 
     if (widget.selectedDate != oldWidget.selectedDate) {
-      _presenter.setSelectedData(widget.selectedDate);
+      _presenter.setSelectedDate(widget.selectedDate);
     }
 
     if (widget.datePickerStyles != oldWidget.datePickerStyles) {
@@ -157,6 +161,7 @@ class _DayBasedChangeablePickerState<T>
   }
 
   @override
+  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return Localizations(
       locale: curLocale,
@@ -172,8 +177,9 @@ class _DayBasedChangeablePickerState<T>
                 SizedBox(
                   height: widget.datePickerLayoutSettings.dayPickerRowHeight,
                   child: Padding(
+                      //match _DayPicker main layout padding
                       padding: widget.datePickerLayoutSettings
-                          .contentPadding, //match _DayPicker main layout padding
+                          .contentPadding,
                       child: _buildMonthNavigationRow()),
                 ),
                 Expanded(
@@ -196,6 +202,7 @@ class _DayBasedChangeablePickerState<T>
     _dayPickerController?.dispose();
     _changesSubscription.cancel();
     widget.selectablePicker.dispose();
+    _presenter.dispose();
     super.dispose();
   }
 
@@ -208,21 +215,21 @@ class _DayBasedChangeablePickerState<T>
         const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
     _timer = Timer(timeUntilTomorrow, () {
-      setState(() {
-        _updateCurrentDate();
-      });
+      setState(_updateCurrentDate);
     });
   }
 
+  // ignore: prefer_expression_function_bodies
   Widget _buildMonthNavigationRow() {
     return StreamBuilder<DayBasedChangeablePickerState>(
         stream: _presenter.data,
         initialData: _presenter.lastVal,
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
+          }
 
           DayBasedChangeablePickerState state = snapshot.data;
 
@@ -246,8 +253,8 @@ class _DayBasedChangeablePickerState<T>
         });
   }
 
-  Widget _buildDayPickerPageView() {
-    return PageView.builder(
+  Widget _buildDayPickerPageView() =>
+     PageView.builder(
       controller: _dayPickerController,
       scrollDirection: Axis.horizontal,
       itemCount:
@@ -255,7 +262,6 @@ class _DayBasedChangeablePickerState<T>
       itemBuilder: _buildCalendar,
       onPageChanged: _handleMonthPageChanged,
     );
-  }
 
   Widget _buildCalendar(BuildContext context, int index) {
     final DateTime targetDate =
@@ -277,12 +283,12 @@ class _DayBasedChangeablePickerState<T>
 
   void _initPresenter() {
     _presenter = DayBasedChangeablePickerPresenter(
-        widget.firstDate,
-        widget.lastDate,
-        localizations,
-        widget.datePickerLayoutSettings.showPrevMonthEnd,
-        widget.datePickerLayoutSettings.showNextMonthStart,
-        widget.datePickerStyles.firstDayOfeWeekIndex);
+        firstDate: widget.firstDate,
+        lastDate: widget.lastDate,
+        localizations: localizations,
+        showPrevMonthDates: widget.datePickerLayoutSettings.showPrevMonthEnd,
+        showNextMonthDates: widget.datePickerLayoutSettings.showNextMonthStart,
+        firstDayOfWeekIndex: widget.datePickerStyles.firstDayOfeWeekIndex);
     _presenter.data.listen(_onStateChanged);
 //    _presenter.setSelectedData(widget.selectedDate);
   }

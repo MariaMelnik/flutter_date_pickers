@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_date_pickers/src/date_picker_styles.dart';
-import 'package:flutter_date_pickers/src/event_decoration.dart';
-import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
-import 'package:flutter_date_pickers/src/layout_settings.dart';
-import 'package:flutter_date_pickers/src/date_period.dart';
-import 'package:flutter_date_pickers/src/date_picker_keys.dart';
-import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
-import 'package:flutter_date_pickers/src/typedefs.dart';
 
-// Styles for current displayed period (month): Theme.of(context).textTheme.subhead
-//
-// Styles for date picker cell:
-// current date: Theme.of(context).textTheme.body2.copyWith(color: themeData.accentColor)
-// if date disabled: Theme.of(context).textTheme.body1.copyWith(color: themeData.disabledColor)
-// if date selected:
-//  text - Theme.of(context).accentTextTheme.body2
-//  for box decoration - color is Theme.of(context).accentColor and box shape is circle
-
-// selectedDate must be between firstDate and lastDate
+import 'date_period.dart';
+import 'date_picker_keys.dart';
+import 'date_picker_styles.dart';
+import 'day_based_changable_picker.dart';
+import 'day_type.dart';
+import 'event_decoration.dart';
+import 'i_selectable_picker.dart';
+import 'layout_settings.dart';
+import 'typedefs.dart';
 
 /// Date picker for selection a week.
 class WeekPicker extends StatelessWidget {
@@ -53,7 +44,8 @@ class WeekPicker extends StatelessWidget {
   final ValueChanged<DatePeriod> onChanged;
 
   /// Called when the error was thrown after user selection.
-  /// (e.g. when user selected a week with one or more days what can't be selected)
+  /// (e.g. when user selected a week with one or more days
+  /// what can't be selected)
   final OnSelectionError onSelectionError;
 
   /// The earliest date the user is permitted to pick.
@@ -80,6 +72,7 @@ class WeekPicker extends StatelessWidget {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
+
   /// Called when the user changes the month.
   /// New DateTime object represents first day of new month and 00:00 time.
   final ValueChanged<DateTime> onMonthChanged;
@@ -88,8 +81,11 @@ class WeekPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     MaterialLocalizations localizations = MaterialLocalizations.of(context);
 
+    int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex
+        ?? localizations.firstDayOfWeekIndex;
+
     ISelectablePicker<DatePeriod> weekSelectablePicker = WeekSelectable(
-        selectedDate, datePickerStyles.firstDayOfeWeekIndex ?? localizations.firstDayOfWeekIndex, firstDate, lastDate,
+        selectedDate, firstDayOfWeekIndex, firstDate, lastDate,
         selectableDayPredicate: selectableDayPredicate);
 
     return DayBasedChangeablePicker<DatePeriod>(

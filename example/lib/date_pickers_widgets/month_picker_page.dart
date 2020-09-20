@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_picker/event.dart';
-import 'package:flutter_date_picker/color_picker_dialog.dart';
-import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart' as dp;
 
-class DayPickerPage extends StatefulWidget {
-  final List<Event> events;
+import '../color_picker_dialog.dart';
+import '../color_selector_btn.dart';
 
-  const DayPickerPage({Key key, this.events}) : super(key: key);
-
+/// Page with the [dp.MonthPicker].
+class MonthPickerPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _DayPickerPageState();
+  State<StatefulWidget> createState() => _MonthPickerPageState();
 }
 
-class _DayPickerPageState extends State<DayPickerPage> {
-  DateTime _selectedDate;
+class _MonthPickerPageState extends State<MonthPickerPage> {
   DateTime _firstDate;
   DateTime _lastDate;
+  DateTime _selectedDate;
+
   Color selectedDateStyleColor;
   Color selectedSingleDateDecorationColor;
 
@@ -24,9 +22,10 @@ class _DayPickerPageState extends State<DayPickerPage> {
   void initState() {
     super.initState();
 
+    _firstDate = DateTime.now().subtract(Duration(days: 350));
+    _lastDate = DateTime.now().add(Duration(days: 350));
+
     _selectedDate = DateTime.now();
-    _firstDate = DateTime.now().subtract(Duration(days: 45));
-    _lastDate = DateTime.now().add(Duration(days: 45));
   }
 
   @override
@@ -41,7 +40,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
   @override
   Widget build(BuildContext context) {
     // add selected colors to default settings
-    dp.DatePickerStyles styles = dp.DatePickerRangeStyles(
+    dp.DatePickerStyles styles = dp.DatePickerStyles(
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
             .bodyText1
@@ -55,19 +54,12 @@ class _DayPickerPageState extends State<DayPickerPage> {
           : Axis.horizontal,
       children: <Widget>[
         Expanded(
-          child: dp.DayPicker(
+          child: dp.MonthPicker(
             selectedDate: _selectedDate,
             onChanged: _onSelectedDateChanged,
             firstDate: _firstDate,
             lastDate: _lastDate,
             datePickerStyles: styles,
-            datePickerLayoutSettings: dp.DatePickerLayoutSettings(
-                maxDayPickerRowCount: 2,
-                showPrevMonthEnd: true,
-                showNextMonthStart: true
-            ),
-            selectableDayPredicate: _isSelectableCustom,
-            eventDecorationBuilder: _eventDecorationBuilder,
           ),
         ),
         Container(
@@ -121,10 +113,11 @@ class _DayPickerPageState extends State<DayPickerPage> {
               selectedColor: selectedDateStyleColor,
             ));
 
-    if (newSelectedColor != null)
+    if (newSelectedColor != null) {
       setState(() {
         selectedDateStyleColor = newSelectedColor;
       });
+    }
   }
 
   // select background color of the selected date
@@ -135,35 +128,16 @@ class _DayPickerPageState extends State<DayPickerPage> {
               selectedColor: selectedSingleDateDecorationColor,
             ));
 
-    if (newSelectedColor != null)
+    if (newSelectedColor != null) {
       setState(() {
         selectedSingleDateDecorationColor = newSelectedColor;
       });
+    }
   }
 
   void _onSelectedDateChanged(DateTime newDate) {
     setState(() {
       _selectedDate = newDate;
     });
-  }
-
-  bool _isSelectableCustom (DateTime day) {
-    return day.weekday < 6;
-  }
-
-  dp.EventDecoration _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events?.map<DateTime>((Event e) => e.date)?.toList();
-    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year && date.month == d.month && d.day == date.day) ?? false;
-
-    BoxDecoration roundedBorder = BoxDecoration(
-        border: Border.all(
-          color: Colors.deepOrange,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(3.0))
-    );
-
-    return isEventDate
-        ? dp.EventDecoration(boxDecoration: roundedBorder)
-        : null;
   }
 }

@@ -1,3 +1,11 @@
-import 'package:flutter_date_pickers/src/unselectable_period_error.dart';
+import 'range_picker.dart';
+import 'unselectable_period_error.dart';
+import 'week_picker.dart';
 
-typedef void OnSelectionError(UnselectablePeriodException e);
+
+/// Signature for function that can be used to handle incorrect selections.
+///
+/// See also:
+/// * [WeekPicker.onSelectionError]
+/// * [RangePicker.onSelectionError]
+typedef OnSelectionError = void Function(UnselectablePeriodException e);

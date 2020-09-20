@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/date_picker_styles.dart';
-import 'package:flutter_date_pickers/src/event_decoration.dart';
-import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
-import 'package:flutter_date_pickers/src/layout_settings.dart';
-import 'package:flutter_date_pickers/src/date_picker_keys.dart';
-import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
 
-// Styles for current displayed period (month) title: Theme.of(context).textTheme.subhead
-//
-// Styles for date picker cell:
-// current date: Theme.of(context).textTheme.body2.copyWith(color: themeData.accentColor)
-// if date disabled: Theme.of(context).textTheme.body1.copyWith(color: themeData.disabledColor)
-// if date selected:
-//  text - Theme.of(context).accentTextTheme.body2
-//  for box decoration - color is Theme.of(context).accentColor and box shape is circle
-
-// selectedDate must be between firstDate and lastDate
+import 'date_picker_keys.dart';
+import 'date_picker_styles.dart';
+import 'day_based_changable_picker.dart';
+import 'day_type.dart';
+import 'event_decoration.dart';
+import 'i_selectable_picker.dart';
+import 'layout_settings.dart';
 
 /// Date picker for selection one day.
 class DayPicker extends StatelessWidget {
