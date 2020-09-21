@@ -19,6 +19,7 @@ class UnselectablePeriodException implements Exception {
   /// *[RangePicker.onSelectionError]
   UnselectablePeriodException(this.customDisabledDates, this.period);
 
+  @override
   String toString() =>
         "UnselectablePeriodException:"
         " ${customDisabledDates.length} dates inside selected period "

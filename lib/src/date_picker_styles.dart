@@ -210,6 +210,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
 
   /// Return new [DatePickerRangeStyles] object
   /// where fields with null values set with defaults from given theme.
+  @override
   DatePickerRangeStyles fulfillWithTheme(ThemeData theme) {
     Color accentColor = theme.accentColor;
 
@@ -312,7 +313,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
         && other.selectedPeriodStartTextStyle == selectedPeriodStartTextStyle
         && other.selectedPeriodLastDecoration == selectedPeriodLastDecoration
         && other.selectedPeriodEndTextStyle == selectedPeriodEndTextStyle
-        && other.selectedPeriodMiddleDecoration == selectedPeriodMiddleDecoration
+        && other.selectedPeriodMiddleDecoration ==selectedPeriodMiddleDecoration
         && other.selectedPeriodMiddleTextStyle == selectedPeriodMiddleTextStyle
         && other.displayedPeriodTitle == displayedPeriodTitle
         && other.currentDateStyle == currentDateStyle
