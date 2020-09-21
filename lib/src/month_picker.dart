@@ -2,23 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/layout_settings.dart';
-import 'package:flutter_date_pickers/src/date_picker_keys.dart';
-import 'package:flutter_date_pickers/src/semantic_sorting.dart';
-import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:intl/intl.dart' as intl;
 
-// Styles for current displayed period (year): Theme.of(context).textTheme.subhead
-//
-// Styles for date picker cell:
-// current date: Theme.of(context).textTheme.body2.copyWith(color: themeData.accentColor)
-// if date disabled: Theme.of(context).textTheme.body1.copyWith(color: themeData.disabledColor)
-// if date selected:
-//  text - Theme.of(context).accentTextTheme.body2
-//  for box decoration - color is Theme.of(context).accentColor and box shape is circle
+import 'date_picker_keys.dart';
+import 'date_picker_styles.dart';
+import 'layout_settings.dart';
+import 'semantic_sorting.dart';
+import 'utils.dart';
 
+/// Month picker widget.
 class MonthPicker extends StatefulWidget {
+
+  /// Month picker widget.
   MonthPicker(
       {Key key,
       @required this.selectedDate,
@@ -31,10 +26,8 @@ class MonthPicker extends StatefulWidget {
       : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) ||
-            selectedDate.isAtSameMomentAs(firstDate)),
-        assert(selectedDate.isBefore(lastDate) ||
-            selectedDate.isAtSameMomentAs(lastDate)),
+        assert(!selectedDate.isBefore(firstDate)),
+        assert(!selectedDate.isAfter(lastDate)),
         super(key: key);
 
   /// The currently selected date.
@@ -88,7 +81,8 @@ class _MonthPickerState extends State<MonthPicker> {
   void initState() {
     super.initState();
     // Initially display the pre-selected date.
-    final int yearPage = DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
+    final int yearPage =
+      DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
     _monthPickerController = PageController(initialPage: yearPage);
     _handleYearPageChanged(yearPage);
     _updateCurrentDate();
@@ -98,7 +92,8 @@ class _MonthPickerState extends State<MonthPicker> {
   void didUpdateWidget(MonthPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
-      final int yearPage = DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
+      final int yearPage =
+        DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
       _monthPickerController = PageController(initialPage: yearPage);
       _handleYearPageChanged(yearPage);
     }
@@ -120,16 +115,13 @@ class _MonthPickerState extends State<MonthPicker> {
         const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
     _timer = Timer(timeUntilTomorrow, () {
-      setState(() {
-        _updateCurrentDate();
-      });
+      setState(_updateCurrentDate);
     });
   }
 
   /// Add years to a year truncated date.
-  DateTime _addYearsToYearDate(DateTime yearDate, int yearsToAdd) {
-    return DateTime(yearDate.year + yearsToAdd);
-  }
+  DateTime _addYearsToYearDate(DateTime yearDate, int yearsToAdd) =>
+     DateTime(yearDate.year + yearsToAdd);
 
   Widget _buildItems(BuildContext context, int index) {
     final DateTime year = _addYearsToYearDate(widget.firstDate, index);
@@ -154,7 +146,8 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleNextYear() {
     if (!_isDisplayingLastYear) {
-      SemanticsService.announce(localizations.formatYear(_nextYearDate), textDirection);
+      String yearStr = localizations.formatYear(_nextYearDate);
+      SemanticsService.announce(yearStr, textDirection);
       _monthPickerController.nextPage(
           duration: widget.datePickerLayoutSettings.pagesScrollDuration,
           curve: Curves.ease);
@@ -163,7 +156,8 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handlePreviousYear() {
     if (!_isDisplayingFirstYear) {
-      SemanticsService.announce(localizations.formatYear(_previousYearDate), textDirection);
+      String yearStr = localizations.formatYear(_previousYearDate);
+      SemanticsService.announce(yearStr, textDirection);
       _monthPickerController.previousPage(
           duration: widget.datePickerLayoutSettings.pagesScrollDuration,
           curve: Curves.ease);
@@ -181,6 +175,9 @@ class _MonthPickerState extends State<MonthPicker> {
 
   @override
   Widget build(BuildContext context) {
+    int yearsCount =
+        DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) + 1;
+
     return SizedBox(
       width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
       height: widget.datePickerLayoutSettings.maxDayPickerHeight,
@@ -192,7 +189,7 @@ class _MonthPickerState extends State<MonthPicker> {
               key: ValueKey<DateTime>(widget.selectedDate),
               controller: _monthPickerController,
               scrollDirection: Axis.horizontal,
-              itemCount: DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) + 1,
+              itemCount: yearsCount,
               itemBuilder: _buildItems,
               onPageChanged: _handleYearPageChanged,
             ),
@@ -285,8 +282,10 @@ class _MonthPicker extends StatelessWidget {
             selectedDate.isAtSameMomentAs(firstDate)),
         super(key: key);
 
-  // we only wondering to know if month of passed day before the month of the firstDate or after the month of the lastDate
-  // don't need to compare day and time
+  // We only need to know if month of passed day
+  // before the month of the firstDate or after the month of the lastDate.
+  //
+  // Don't need to compare day and time.
   bool _isDisabled(DateTime month) {
     DateTime beginningOfTheFirstDateMonth =
         DateTime(firstDate.year, firstDate.month);
@@ -299,14 +298,15 @@ class _MonthPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+      MaterialLocalizations.of(context);
     final Locale locale = Localizations.localeOf(context);
 
     bool localeExist = true;
 
     try {
       localeExist = intl.DateFormat.localeExists(locale.languageCode);
-    } catch (e) {
+    } on Exception {
       localeExist = false;
     }
 
@@ -331,7 +331,6 @@ class _MonthPicker extends StatelessWidget {
       TextStyle itemStyle = themeData.textTheme.bodyText2;
 
       if (isSelectedMonth) {
-        // The selected month gets a circle background highlight, and a contrasting text color.
         itemStyle = datePickerStyles.selectedDateStyle;
         decoration = datePickerStyles.selectedSingleDateDecoration;
       } else if (disabled) {
@@ -356,7 +355,8 @@ class _MonthPicker extends StatelessWidget {
             // for the day of month. To do that we prepend day of month to the
             // formatted full date.
             label:
-                '${localizations.formatDecimal(month)}, ${localizations.formatFullDate(monthToBuild)}',
+                '${localizations.formatDecimal(month)}, '
+                    '${localizations.formatFullDate(monthToBuild)}',
             selected: isSelectedMonth,
             child: ExcludeSemantics(
               child: Text(

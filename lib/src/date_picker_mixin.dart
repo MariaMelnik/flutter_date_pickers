@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
+
+import 'date_picker_styles.dart';
 
 mixin CommonDatePickerFunctions {
 
@@ -21,7 +22,11 @@ mixin CommonDatePickerFunctions {
   /// _ _ _ _ 1 2 3
   /// 4 5 6 7 8 9 10
   /// ```
-  List<Widget> getDayHeaders(DayHeaderStyleBuilder headerStyleBuilder, List<String> narrowWeekdays, int firstDayOfWeekIndex) {
+  List<Widget> getDayHeaders(
+      DayHeaderStyleBuilder headerStyleBuilder,
+      List<String> narrowWeekdays,
+      int firstDayOfWeekIndex) {
+
     final List<Widget> result = <Widget>[];
 
     for (int i = firstDayOfWeekIndex; true; i = (i + 1) % 7) {

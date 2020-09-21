@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/date_picker_mixin.dart';
-import 'package:flutter_date_pickers/src/day_type.dart';
-import 'package:flutter_date_pickers/src/event_decoration.dart';
-import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
-import 'package:flutter_date_pickers/src/utils.dart';
+
+import 'date_picker_mixin.dart';
+import 'date_picker_styles.dart';
+import 'day_type.dart';
+import 'event_decoration.dart';
+import 'i_selectable_picker.dart';
+import 'layout_settings.dart';
+import 'utils.dart';
 
 /// Widget for date pickers based on days and cover entire month.
 /// Each cell of this picker is day.
 class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
+  /// Selection logic.
   final ISelectablePicker selectablePicker;
 
   /// The current date at the time the picker is displayed.
@@ -40,6 +43,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
+  /// Creates main date picker view where every cell is day.
   DayBasedPicker(
       {Key key,
       @required this.currentDate,
@@ -96,11 +100,14 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   }
 
   List<Widget> _buildHeaders(MaterialLocalizations localizations) {
+    Map m;
+    m[1] = 2;
     final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
         localizations.firstDayOfWeekIndex;
 
     DayHeaderStyleBuilder dayHeaderStyleBuilder =
         datePickerStyles.dayHeaderStyleBuilder ??
+                // ignore: avoid_types_on_closure_parameters
                 (int i) => datePickerStyles.dayHeaderStyle;
 
     List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder,
@@ -190,7 +197,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
 
     DayType dayType = selectablePicker.getDayType(dayToBuild);
 
-    Widget dayWidget = DayCell(
+    Widget dayWidget = _DayCell(
       day: dayToBuild,
       currentDate: currentDate,
       selectablePicker: selectablePicker,
@@ -215,20 +222,21 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     DateTime result = dt;
 
     // If dayToBuild is the first day we need to save original time for it.
-    if (DatePickerUtils.sameDate(dt, firstDate))
-      result = firstDate;
+    if (DatePickerUtils.sameDate(dt, firstDate)) result = firstDate;
 
     // If dayToBuild is the last day we need to save original time for it.
-    if (DatePickerUtils.sameDate(dt, lastDate))
-      result = lastDate;
+    if (DatePickerUtils.sameDate(dt, lastDate)) result = lastDate;
 
     return result;
   }
 }
 
 
-class DayCell extends StatelessWidget {
+class _DayCell extends StatelessWidget {
+  /// Day for this cell.
   final DateTime day;
+
+  /// Selection logic.
   final ISelectablePicker selectablePicker;
 
   /// Styles what can be customized by user
@@ -243,7 +251,7 @@ class DayCell extends StatelessWidget {
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 
-  const DayCell({
+  const _DayCell({
     Key key,
     @required this.day,
     @required this.selectablePicker,
@@ -268,26 +276,32 @@ class DayCell extends StatelessWidget {
     TextStyle itemStyle;
 
     if (dayType != DayType.disabled && dayType != DayType.notSelected) {
-      // The selected day gets a circle background highlight, and a contrasting text color by default.
       itemStyle = _getSelectedTextStyle(dayType);
       decoration = _getSelectedDecoration(dayType);
     } else if (dayType == DayType.disabled) {
       itemStyle = datePickerStyles.disabledDateStyle;
     } else if (DatePickerUtils.sameDate(currentDate, day)) {
-      // The current day gets a different text color.
       itemStyle = datePickerStyles.currentDateStyle;
     } else {
       itemStyle = datePickerStyles.defaultDateTextStyle;
     }
 
-    // Checks do we need to merge decoration and textStyle with [EventDecoration].
-    // Merge only in cases if [dayType] is DayType.notSelected.
-    // If day is current day it is also gets event decoration instead of decoration for current date.
+    // Merges decoration and textStyle with [EventDecoration].
+    //
+    // Merges only in cases if [dayType] is DayType.notSelected.
+    // If day is current day it is also gets event decoration
+    // instead of decoration for current date.
     if (dayType == DayType.notSelected && eventDecorationBuilder != null) {
       EventDecoration eDecoration = eventDecorationBuilder(day);
       decoration = eDecoration?.boxDecoration ?? decoration;
       itemStyle = eDecoration?.textStyle ?? itemStyle;
     }
+
+    String semanticLabel = '${localizations.formatDecimal(day.day)}, '
+        '${localizations.formatFullDate(day)}';
+
+    bool daySelected = dayType != DayType.disabled
+        && dayType != DayType.notSelected;
 
     Widget dayWidget = Container(
       decoration: decoration,
@@ -299,10 +313,8 @@ class DayCell extends StatelessWidget {
           // day of month before the rest of the date, as they are looking
           // for the day of month. To do that we prepend day of month to the
           // formatted full date.
-          label:
-          '${localizations.formatDecimal(day.day)}, ${localizations.formatFullDate(day)}',
-          selected:
-          dayType != DayType.disabled && dayType != DayType.notSelected,
+          label: semanticLabel,
+          selected: daySelected,
           child: ExcludeSemantics(
             child: Text(localizations.formatDecimal(day.day), style: itemStyle),
           ),
@@ -313,7 +325,6 @@ class DayCell extends StatelessWidget {
     return dayWidget;
   }
 
-  // Returns decoration for selected date with applied border radius if it needs for passed date.
   BoxDecoration _getSelectedDecoration(DayType dayType) {
     BoxDecoration result;
 
@@ -330,7 +341,6 @@ class DayCell extends StatelessWidget {
     return result;
   }
 
-  // Returns decoration for selected date with applied border radius if it needs for passed date.
   TextStyle _getSelectedTextStyle(DayType dayType) {
     TextStyle result;
 

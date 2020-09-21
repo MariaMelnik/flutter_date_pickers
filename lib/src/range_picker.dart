@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/date_period.dart';
-import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
-import 'package:flutter_date_pickers/src/layout_settings.dart';
-import 'package:flutter_date_pickers/src/date_picker_keys.dart';
-import 'package:flutter_date_pickers/src/day_based_changable_picker.dart';
-import 'package:flutter_date_pickers/src/typedefs.dart';
 
-// Styles for current displayed period: Theme.of(context).textTheme.subhead
-//
-// Styles for date picker cell:
-// current date: Theme.of(context).textTheme.body2.copyWith(color: themeData.accentColor)
-// if date disabled: Theme.of(context).textTheme.body1.copyWith(color: themeData.disabledColor)
-// if date selected:
-//  text - Theme.of(context).accentTextTheme.body2
-//  for box decoration - color is Theme.of(context).accentColor and box shape is circle
-
-// selectedPeriod must be between firstDate and lastDate
+import 'date_period.dart';
+import 'date_picker_keys.dart';
+import 'date_picker_styles.dart';
+import 'day_based_changable_picker.dart';
+import 'day_type.dart';
+import 'event_decoration.dart';
+import 'i_selectable_picker.dart';
+import 'layout_settings.dart';
+import 'typedefs.dart';
 
 /// Date picker for range selection.
 class RangePicker extends StatelessWidget {
@@ -52,7 +44,8 @@ class RangePicker extends StatelessWidget {
   final ValueChanged<DatePeriod> onChanged;
 
   /// Called when the error was thrown after user selection.
-  /// (e.g. when user selected a range with one or more days what can't be selected)
+  /// (e.g. when user selected a range with one or more days
+  /// that can't be selected)
   final OnSelectionError onSelectionError;
 
   /// The earliest date the user is permitted to pick.
@@ -75,7 +68,7 @@ class RangePicker extends StatelessWidget {
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overriden by selected styles
+  /// All event styles are overridden by selected styles
   /// except days with dayType is [DayType.notSelected].
   final EventDecorationBuilder eventDecorationBuilder;
 

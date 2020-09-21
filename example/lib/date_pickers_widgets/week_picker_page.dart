@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_picker/event.dart';
-import 'package:flutter_date_picker/color_picker_dialog.dart';
-import 'package:flutter_date_picker/color_selector_btn.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 
-class RangePickerPage extends StatefulWidget {
+import '../color_picker_dialog.dart';
+import '../color_selector_btn.dart';
+import '../event.dart';
+
+/// Page with the [WeekPicker].
+class WeekPickerPage extends StatefulWidget {
+  /// Custom events.
   final List<Event> events;
 
-  const RangePickerPage({Key key, this.events}) : super(key: key);
+  ///
+  const WeekPickerPage({Key key, this.events}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _RangePickerPageState();
+  State<StatefulWidget> createState() => _WeekPickerPageState();
 }
 
-class _RangePickerPageState extends State<RangePickerPage> {
+class _WeekPickerPageState extends State<WeekPickerPage> {
+  DateTime _selectedDate;
   DateTime _firstDate;
   DateTime _lastDate;
   DatePeriod _selectedPeriod;
@@ -26,12 +31,9 @@ class _RangePickerPageState extends State<RangePickerPage> {
   void initState() {
     super.initState();
 
+    _selectedDate = DateTime.now();
     _firstDate = DateTime.now().subtract(Duration(days: 45));
     _lastDate = DateTime.now().add(Duration(days: 45));
-
-    DateTime selectedPeriodStart = DateTime.now().subtract(Duration(days: 4));
-    DateTime selectedPeriodEnd = DateTime.now().add(Duration(days: 8));
-    _selectedPeriod = DatePeriod(selectedPeriodStart, selectedPeriodEnd);
   }
 
   @override
@@ -50,21 +52,16 @@ class _RangePickerPageState extends State<RangePickerPage> {
     DatePickerRangeStyles styles = DatePickerRangeStyles(
       selectedPeriodLastDecoration: BoxDecoration(
           color: selectedPeriodLastColor,
-          borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(24.0),
-              bottomRight: Radius.circular(24.0))),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(10.0),
+              bottomRight: Radius.circular(10.0))),
       selectedPeriodStartDecoration: BoxDecoration(
         color: selectedPeriodStartColor,
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24.0),
-            bottomLeft: Radius.circular(24.0)
-        ),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
       ),
       selectedPeriodMiddleDecoration: BoxDecoration(
           color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
-      nextIcon: const Icon(Icons.arrow_right),
-      prevIcon: const Icon(Icons.arrow_left),
-      dayHeaderStyleBuilder: _dayHeaderStyleBuilder
     );
 
     return Flex(
@@ -73,14 +70,15 @@ class _RangePickerPageState extends State<RangePickerPage> {
           : Axis.horizontal,
       children: <Widget>[
         Expanded(
-          child: RangePicker(
-            selectedPeriod: _selectedPeriod,
+          child: WeekPicker(
+            selectedDate: _selectedDate,
             onChanged: _onSelectedDateChanged,
             firstDate: _firstDate,
             lastDate: _lastDate,
             datePickerStyles: styles,
-            eventDecorationBuilder: _eventDecorationBuilder,
+            onSelectionError: _onSelectionError,
             selectableDayPredicate: _isSelectableCustom,
+            eventDecorationBuilder: _eventDecorationBuilder,
           ),
         ),
         Container(
@@ -104,28 +102,8 @@ class _RangePickerPageState extends State<RangePickerPage> {
     );
   }
 
-  // block witch show information about selected date and boundaries of the selected period
-  Widget _selectedBlock() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _selectedPeriod != null
-            ? Column(children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                  child: Text("Selected period boundaries:"),
-                ),
-                Text(_selectedPeriod.start.toString()),
-                Text(_selectedPeriod.end.toString()),
-              ])
-            : Container()
-      ],
-    );
-  }
-
   // block witt color buttons insede
-  Widget _stylesBlock() {
-    return Padding(
+  Widget _stylesBlock() => Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -151,7 +129,28 @@ class _RangePickerPageState extends State<RangePickerPage> {
         ],
       ),
     );
-  }
+
+  // Block with  information about selected date
+  // and boundaries of the selected period.
+  Widget _selectedBlock() => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text("Selected: $_selectedDate"),
+        ),
+        _selectedPeriod != null
+            ? Column(children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                  child: Text("Selected period boundaries:"),
+                ),
+                Text(_selectedPeriod.start.toString()),
+                Text(_selectedPeriod.end.toString()),
+              ])
+            : Container()
+      ],
+    );
 
   // select background color for the first date of the selected period
   void _showSelectedStartColorDialog() async {
@@ -161,10 +160,11 @@ class _RangePickerPageState extends State<RangePickerPage> {
               selectedColor: selectedPeriodStartColor,
             ));
 
-    if (newSelectedColor != null)
+    if (newSelectedColor != null) {
       setState(() {
         selectedPeriodStartColor = newSelectedColor;
       });
+    }
   }
 
   // select background color for the last date of the selected period
@@ -175,10 +175,11 @@ class _RangePickerPageState extends State<RangePickerPage> {
               selectedColor: selectedPeriodLastColor,
             ));
 
-    if (newSelectedColor != null)
+    if (newSelectedColor != null) {
       setState(() {
         selectedPeriodLastColor = newSelectedColor;
       });
+    }
   }
 
   // select background color for the middle dates of the selected period
@@ -189,48 +190,54 @@ class _RangePickerPageState extends State<RangePickerPage> {
               selectedColor: selectedPeriodMiddleColor,
             ));
 
-    if (newSelectedColor != null)
+    if (newSelectedColor != null) {
       setState(() {
         selectedPeriodMiddleColor = newSelectedColor;
       });
+    }
   }
 
   void _onSelectedDateChanged(DatePeriod newPeriod) {
     setState(() {
+      _selectedDate = newPeriod.start;
       _selectedPeriod = newPeriod;
     });
   }
 
+  void _onSelectionError(Object e){
+    if (e is UnselectablePeriodException) print("catch error: $e");
+  }
+
+// ignore: prefer_expression_function_bodies
+  bool _isSelectableCustom (DateTime day) {
+//    return day.weekday < 6;
+    return day.day != DateTime.now().add(Duration(days: 7)).day ;
+  }
+
   EventDecoration _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events?.map<DateTime>((Event e) => e.date)?.toList();
-    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year && date.month == d.month && d.day == date.day) ?? false;
+    List<DateTime> eventsDates = widget.events
+        ?.map<DateTime>((Event e) => e.date)
+        ?.toList();
+
+    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year
+        && date.month == d.month
+        && d.day == date.day) ?? false;
 
     BoxDecoration roundedBorder = BoxDecoration(
+        color: Colors.blue,
         border: Border.all(
-          color: Colors.green,
+          color: Colors.blue,
         ),
         borderRadius: BorderRadius.all(Radius.circular(3.0))
     );
 
+    TextStyle whiteText = Theme.of(context)
+        .textTheme
+        .bodyText2
+        .copyWith(color: Colors.white);
+
     return isEventDate
-        ? EventDecoration(boxDecoration: roundedBorder)
+        ? EventDecoration(boxDecoration: roundedBorder, textStyle: whiteText)
         : null;
-  }
-
-  bool _isSelectableCustom (DateTime day) {
-    return true;
-//    return day.weekday < 6;
-//    return day.day != DateTime.now().add(Duration(days: 7)).day ;
-  }
-
-  // 0 is Sunday, 6 is Saturday
-  DayHeaderStyle _dayHeaderStyleBuilder(int weekday) {
-    bool isWeekend = weekday == 0 || weekday == 6;
-
-    return DayHeaderStyle(
-        textStyle: TextStyle(
-            color: isWeekend ? Colors.red : Colors.teal
-        )
-    );
   }
 }

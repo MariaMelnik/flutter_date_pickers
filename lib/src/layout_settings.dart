@@ -2,17 +2,23 @@ import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'day_picker.dart';
+import 'month_picker.dart';
+import 'range_picker.dart';
+import 'week_picker.dart';
 
 // layout defaults
-const Duration _kPageScrollDuration = const Duration(milliseconds: 200);
+const Duration _kPageScrollDuration = Duration(milliseconds: 200);
 const double _kDayPickerRowHeight = 42.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 const double _kMonthPickerPortraitWidth = 330.0;
 const EdgeInsetsGeometry _kContentPadding =
-    const EdgeInsets.symmetric(horizontal: 8.0);
+    EdgeInsets.symmetric(horizontal: 8.0);
 
+/// Settings for the layout of the [DayPicker], [WeekPicker], [RangePicker]
+/// and [MonthPicker].
 class DatePickerLayoutSettings {
-  /// Duration for scroll to previous or next page
+  /// Duration for scroll to previous or next page.
   final Duration pagesScrollDuration;
 
   /// Determines the scroll physics of a date picker widget.
@@ -20,9 +26,18 @@ class DatePickerLayoutSettings {
   /// Can be null. In this case default physics for [ScrollView] will be used.
   final ScrollPhysics scrollPhysics;
 
+  /// Height of the one row in picker including headers.
+  ///
+  /// Default is [_kDayPickerRowHeight].
   final double dayPickerRowHeight;
+
+  /// Width of the day based pickers.
   final double monthPickerPortraitWidth;
+
+  ///
   final int maxDayPickerRowCount;
+
+  /// Padding for the entire picker.
   final EdgeInsetsGeometry contentPadding;
 
   /// If the first dates from the next month should be shown
@@ -37,13 +52,23 @@ class DatePickerLayoutSettings {
   /// false by default.
   final bool showPrevMonthEnd;
 
+  /// Grid delegate for the picker according to [dayPickerRowHeight] and
+  /// [maxDayPickerRowCount].
   SliverGridDelegate get dayPickerGridDelegate =>
       _DayPickerGridDelegate(dayPickerRowHeight, maxDayPickerRowCount);
 
-  // Two extra rows: one for the day-of-week header and one for the month header.
+  /// Maximum height of the day based picker according to [dayPickerRowHeight]
+  /// and [maxDayPickerRowCount].
+  ///
+  /// Two extra rows:
+  /// one for the day-of-week header and one for the month header.
   double get maxDayPickerHeight =>
       dayPickerRowHeight * (maxDayPickerRowCount + 2);
 
+  /// Creates layout settings for the date picker.
+  ///
+  /// Usually used in [DayPicker], [WeekPicker], [RangePicker]
+  /// and [MonthPicker].
   const DatePickerLayoutSettings({
     this.pagesScrollDuration = _kPageScrollDuration,
     this.dayPickerRowHeight = _kDayPickerRowHeight,
@@ -61,6 +86,7 @@ class DatePickerLayoutSettings {
         assert(showNextMonthStart != null),
         assert(showPrevMonthEnd != null);
 }
+
 
 class _DayPickerGridDelegate extends SliverGridDelegate {
   final double _dayPickerRowHeight;

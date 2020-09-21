@@ -1,22 +1,21 @@
+/// Bunch of useful functions for date pickers.
 class DatePickerUtils {
-// returns if two objects have same year, month and day
-// time doesn't matter
-  static bool sameDate(DateTime dateTimeOne, DateTime dateTimeTwo) {
-    return dateTimeOne.year == dateTimeTwo.year &&
-        dateTimeOne.month == dateTimeTwo.month &&
-        dateTimeOne.day == dateTimeTwo.day;
-  }
+  /// Returns if two objects have same year, month and day.
+  /// Time doesn't matter.
+  static bool sameDate(DateTime dateTimeOne, DateTime dateTimeTwo) =>
+     dateTimeOne.year == dateTimeTwo.year &&
+     dateTimeOne.month == dateTimeTwo.month &&
+     dateTimeOne.day == dateTimeTwo.day;
 
-// returns if two objects have same year and month
-// day and time don't matter
-  static bool sameMonth(DateTime dateTimeOne, DateTime dateTimeTwo) {
-    return dateTimeOne.year == dateTimeTwo.year &&
-        dateTimeOne.month == dateTimeTwo.month;
-  }
+  /// Returns if two objects have same year and month.
+  /// Day and time don't matter/
+  static bool sameMonth(DateTime dateTimeOne, DateTime dateTimeTwo) =>
+      dateTimeOne.year == dateTimeTwo.year
+      && dateTimeOne.month == dateTimeTwo.month;
 
 
   // Do not use this directly - call getDaysInMonth instead.
-  static const List<int> _daysInMonth = const <int>[
+  static const List<int> _daysInMonth = <int>[
     31,
     -1,
     31,
@@ -48,29 +47,27 @@ class DatePickerUtils {
 
 
   /// Returns number of months between [startDate] and [endDate]
-  static int monthDelta(DateTime startDate, DateTime endDate) {
-    return (endDate.year - startDate.year) * 12 +
+  static int monthDelta(DateTime startDate, DateTime endDate) =>
+     (endDate.year - startDate.year) * 12 +
         endDate.month -
         startDate.month;
-  }
 
 
   /// Add months to a month truncated date.
-  static DateTime addMonthsToMonthDate(DateTime monthDate, int monthsToAdd) {
+  static DateTime addMonthsToMonthDate(DateTime monthDate, int monthsToAdd) =>
     // year is switched automatically if new month > 12
-    return DateTime(monthDate.year, monthDate.month + monthsToAdd);
-  }
+    DateTime(monthDate.year, monthDate.month + monthsToAdd);
 
 
   /// Returns number of years between [startDate] and [endDate]
-  static int yearDelta(DateTime startDate, DateTime endDate) {
-    return (endDate.year - startDate.year);
-  }
+  static int yearDelta(DateTime startDate, DateTime endDate) =>
+     endDate.year - startDate.year;
 
 
   /// Returns start of the first day of the week with given day.
   ///
-  /// Start of the week calculated using firstDayIndex which is int from 0 to 6 where 0 points to Sunday and 6 points to Saturday.
+  /// Start of the week calculated using firstDayIndex which is int from 0 to 6
+  /// where 0 points to Sunday and 6 points to Saturday.
   /// (according to MaterialLocalization.firstDayIfWeekIndex)
   static DateTime getFirstDayOfWeek(DateTime day, int firstDayIndex) {
     // from 1 to 7 where 1 points to Monday and 7 points to Sunday
@@ -89,7 +86,8 @@ class DatePickerUtils {
 
   /// Returns end of the last day of the week with given day.
   ///
-  /// Start of the week calculated using firstDayIndex which is int from 0 to 6 where 0 points to Sunday and 6 points to Saturday.
+  /// Start of the week calculated using firstDayIndex which is int from 0 to 6
+  /// where 0 points to Sunday and 6 points to Saturday.
   /// (according to MaterialLocalization.firstDayIfWeekIndex)
   static DateTime getLastDayOfWeek(DateTime day, int firstDayIndex) {
     // from 1 to 7 where 1 points to Monday and 7 points to Sunday
@@ -112,23 +110,35 @@ class DatePickerUtils {
   /// Returns end of the given day.
   ///
   /// End time is 1 millisecond before start of the next day.
-  static DateTime endOfTheDay(DateTime date) {
-    return DateTime(date.year, date.month, date.day).add(Duration(days: 1)).subtract(Duration(milliseconds: 1));
-  }
+  static DateTime endOfTheDay(DateTime date) =>
+     DateTime(date.year, date.month, date.day)
+        .add(const Duration(days: 1))
+        .subtract(const Duration(milliseconds: 1));
 
   /// Returns start of the given day.
   ///
   /// Start time is 00:00:00.
-  static DateTime startOfTheDay(DateTime date) {
-    return DateTime(date.year, date.month, date.day);
-  }
+  static DateTime startOfTheDay(DateTime date) =>
+     DateTime(date.year, date.month, date.day);
 
-  static DateTime firstShownDate(DateTime curMonth, bool showEndOfPrevMonth, int firstDayOfWeekFromSunday) {
+  /// Returns first shown date for the [curMonth].
+  ///
+  /// First shown date is not always 1st day of the [curMonth].
+  /// It can be day from previous month if [showEndOfPrevMonth] is true.
+  ///
+  /// If [showEndOfPrevMonth] empty day cells before 1st [curMonth]
+  /// are filled with days from the previous month.
+  static DateTime firstShownDate({
+      DateTime curMonth,
+      bool showEndOfPrevMonth,
+      int firstDayOfWeekFromSunday}) {
+
     DateTime result = DateTime(curMonth.year, curMonth.month, 1);
 
     if (showEndOfPrevMonth) {
       assert(firstDayOfWeekFromSunday != null);
-      int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month, firstDayOfWeekFromSunday);
+      int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month,
+          firstDayOfWeekFromSunday);
       if (firstDayOffset == 0) return null;
 
 
@@ -147,13 +157,26 @@ class DatePickerUtils {
     return result;
   }
 
-  static DateTime lastShownDate(DateTime curMonth, bool showStartNextMonth, int firstDayOfWeekFromSunday) {
+
+  /// Returns last shown date for the [curMonth].
+  ///
+  /// Last shown date is not always last day of the [curMonth].
+  /// It can be day from next month if [showStartNextMonth] is true.
+  ///
+  /// If [showStartNextMonth] empty day cells after last day of [curMonth]
+  /// are filled with days from the next month.
+  static DateTime lastShownDate({
+      DateTime curMonth,
+      bool showStartNextMonth,
+      int firstDayOfWeekFromSunday}) {
+
     int daysInCurMonth = getDaysInMonth(curMonth.year, curMonth.month);
     DateTime result = DateTime(curMonth.year, curMonth.month, daysInCurMonth);
 
     if (showStartNextMonth) {
       assert(firstDayOfWeekFromSunday != null);
-      int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month, firstDayOfWeekFromSunday);
+      int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month,
+          firstDayOfWeekFromSunday);
 
       int totalDays = firstDayOffset + daysInCurMonth;
       int trailingDaysCount = 7 - totalDays % 7;
@@ -194,9 +217,9 @@ class DatePickerUtils {
   ///
   /// - [DateTime.weekday] provides a 1-based index into days of week, with 1
   ///   falling on Monday.
-  /// - [MaterialLocalizations.firstDayOfWeekIndex] provides a 0-based index
-  ///   into the [MaterialLocalizations.narrowWeekdays] list.
-  /// - [MaterialLocalizations.narrowWeekdays] list provides localized names of
+  /// - MaterialLocalizations.firstDayOfWeekIndex provides a 0-based index
+  ///   into the MaterialLocalizations.narrowWeekdays list.
+  /// - MaterialLocalizations.narrowWeekdays list provides localized names of
   ///   days of week, always starting with Sunday and ending with Saturday.
   static int computeFirstDayOffset(
       int year, int month, int firstDayOfWeekFromSunday) {

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
+/// Dialog with some Material colors ([materialColors]) to pick one of them.
 class ColorPickerDialog extends StatefulWidget {
+
+  /// Initially selected color.
+  ///
+  /// If pre-selected color is not from [materialColors] [Colors.blue] will be
+  /// used.
   final Color selectedColor;
 
+  ///
   const ColorPickerDialog({Key key, this.selectedColor}) : super(key: key);
 
   @override
@@ -18,12 +25,12 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
     super.initState();
 
     _mainColor = !materialColors.contains(widget.selectedColor)
-        ? Colors
-            .blue // pre-select color if [widget.selectedColor] is not in main material colors palette
+        ? Colors.blue
         : widget.selectedColor;
   }
 
   @override
+  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: const EdgeInsets.all(6.0),
