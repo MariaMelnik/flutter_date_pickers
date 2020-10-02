@@ -290,6 +290,80 @@ class DaySelectable extends ISelectablePicker<DateTime> {
   }
 }
 
+/// Selection logic for [day_picker.DayPicker] where many single days can be
+/// selected.
+class DayMultiSelectable extends ISelectablePicker<List<DateTime>> {
+  /// Currently selected dates.
+  List<DateTime> selectedDates;
+
+  /// Creates selection logic for [day_picker.DayPicker].
+  ///
+  /// Every day can be selected if it is between [firstDate] and [lastDate]
+  /// and not unselectable according to the [selectableDayPredicate].
+  ///
+  /// If day is not selectable according to the [selectableDayPredicate]
+  /// nothing will be returned as selection
+  /// but [UnselectablePeriodException] will be thrown.
+  DayMultiSelectable(this.selectedDates, DateTime firstDate, DateTime lastDate,
+      {SelectableDayPredicate selectableDayPredicate})
+      : super(firstDate, lastDate, selectableDayPredicate);
+
+  @override
+  bool get curSelectionIsCorrupted => _checkCurSelection();
+
+  @override
+  DayType getDayType(DateTime date) {
+    DayType result;
+
+    if (isDisabled(date)) {
+      result = DayType.disabled;
+    } else if (_isDaySelected(date)) {
+      result = DayType.single;
+    } else {
+      result = DayType.notSelected;
+    }
+
+    return result;
+  }
+
+  @override
+  void onDayTapped(DateTime selectedDate) {
+    bool alreadyExist = selectedDates
+        .any((d) => DatePickerUtils.sameDate(d, selectedDate));
+
+    if (alreadyExist) {
+      List<DateTime> newSelectedDates = List.from(selectedDates)
+          ..removeWhere((d) => DatePickerUtils.sameDate(d, selectedDate));
+
+      onUpdateController.add(newSelectedDates);
+
+    } else {
+      DateTime newSelected = DatePickerUtils.sameDate(firstDate, selectedDate)
+          ? selectedDate
+          : DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+      List<DateTime> newSelectedDates = List.from(selectedDates)
+          ..add(newSelected);
+
+      onUpdateController.add(newSelectedDates);
+    }
+  }
+
+  bool _isDaySelected(DateTime date) =>
+      selectedDates.any((d) => DatePickerUtils.sameDate(date, d));
+
+  // Returns if current selection is disabled
+  // according to the [_selectableDayPredicate].
+  //
+  // Returns false if there is no any selection.
+  bool _checkCurSelection() {
+    if (selectedDates == null || selectedDates.isEmpty) return false;
+    bool selectedIsBroken = selectedDates.every(_selectableDayPredicate);
+
+    return selectedIsBroken;
+  }
+}
+
 /// Selection logic for [RangePicker].
 class RangeSelectable extends ISelectablePicker<DatePeriod> {
   /// Initially selected period.

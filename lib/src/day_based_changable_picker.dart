@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_date_pickers/src/day_picker_selection.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'basic_day_based_widget.dart';
@@ -22,7 +23,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// The currently selected date.
   ///
   /// This date is highlighted in the picker.
-  final DateTime selectedDate;
+  final DayPickerSelection selection;
 
   /// Called when the user picks a new T.
   final ValueChanged<T> onChanged;
@@ -58,9 +59,9 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   final ValueChanged<DateTime> onMonthChanged;
 
   /// Create picker with option to change month.
-  const DayBasedChangeablePicker(
+  DayBasedChangeablePicker(
       {Key key,
-      this.selectedDate,
+      @required this.selection,
       this.onChanged,
       @required this.firstDate,
       @required this.lastDate,
@@ -73,6 +74,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
       this.onMonthChanged})
       : assert(datePickerLayoutSettings != null),
         assert(datePickerStyles != null),
+        assert(selection != null && selection.isNotEmpty),
         super(key: key);
 
   @override
@@ -103,7 +105,7 @@ class _DayBasedChangeablePickerState<T>
 
     // Initially display the pre-selected date.
     final int monthPage =
-        DatePickerUtils.monthDelta(widget.firstDate, widget.selectedDate);
+        DatePickerUtils.monthDelta(widget.firstDate, widget.selection.earliest);
     _dayPickerController = PageController(initialPage: monthPage);
 
     _changesSubscription = widget.selectablePicker.onUpdate
@@ -112,11 +114,13 @@ class _DayBasedChangeablePickerState<T>
               ? widget.onSelectionError(e)
               : print(e.toString()));
 
+    // todo: do we really need to do it. Above we have calculation month page
+    // todo: for the PageController.
     // Give information about initial selection to presenter.
     // It should be done after first frame when PageView is already created.
     // Otherwise event from presenter will cause a error.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _presenter.setSelectedDate(widget.selectedDate);
+      _presenter.setSelectedDate(widget.selection.earliest);
     });
 
     _updateCurrentDate();
@@ -126,8 +130,8 @@ class _DayBasedChangeablePickerState<T>
   void didUpdateWidget(DayBasedChangeablePicker oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.selectedDate != oldWidget.selectedDate) {
-      _presenter.setSelectedDate(widget.selectedDate);
+    if (widget.selection.earliest != oldWidget.selection.earliest) {
+      _presenter.setSelectedDate(widget.selection.earliest);
     }
 
     if (widget.datePickerStyles != oldWidget.datePickerStyles) {

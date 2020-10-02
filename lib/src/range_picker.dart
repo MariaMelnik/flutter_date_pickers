@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_date_pickers/src/day_picker_selection.dart';
 
 import 'date_period.dart';
 import 'date_picker_keys.dart';
@@ -84,7 +85,7 @@ class RangePicker extends StatelessWidget {
 
     return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: rangeSelectablePicker,
-      selectedDate: selectedPeriod.start,
+      selection: DayPickerRangeSelection(selectedPeriod),
       firstDate: firstDate,
       lastDate: lastDate,
       onChanged: onChanged,

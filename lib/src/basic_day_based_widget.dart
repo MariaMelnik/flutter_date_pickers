@@ -100,8 +100,6 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   }
 
   List<Widget> _buildHeaders(MaterialLocalizations localizations) {
-    Map m;
-    m[1] = 2;
     final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
         localizations.firstDayOfWeekIndex;
 
