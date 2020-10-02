@@ -1,21 +1,39 @@
+import 'date_period.dart';
+import 'utils.dart';
 
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:flutter_date_pickers/src/utils.dart';
-
+/// Base class for day based pickers selection.
 abstract class DayPickerSelection {
+
+  /// If this is before [dateTime].
   bool isBefore(DateTime dateTime);
+
+  /// If this is after [dateTime].
   bool isAfter(DateTime dateTime);
+
+  /// Returns earliest [DateTime] in this selection.
   DateTime get earliest;
+
+  /// If this selection is empty.
   bool get isEmpty;
+
+  /// If this selection is not empty.
   bool get isNotEmpty;
 
-  // This constructor allows children to have constant constructor.
+  /// Constructor to allow children to have constant constructor.
   const DayPickerSelection();
 }
 
+/// Selection with only one selected date.
+///
+/// See also:
+/// * [DayPickerMultiSelection] - selection with one or many single dates.
+/// * [DayPickerRangeSelection] - date period selection.
 class DayPickerSingleSelection extends DayPickerSelection {
+
+  /// Selected date.
   final DateTime selectedDate;
 
+  /// Creates selection with only one selected date.
   const DayPickerSingleSelection(this.selectedDate)
       : assert(selectedDate != null);
 
@@ -35,9 +53,18 @@ class DayPickerSingleSelection extends DayPickerSelection {
   bool get isNotEmpty => selectedDate != null;
 }
 
+
+/// Selection with one or many single dates.
+///
+/// See also:
+/// * [DayPickerSingleSelection] - selection with only one selected date.
+/// * [DayPickerRangeSelection] - date period selection.
 class DayPickerMultiSelection extends DayPickerSelection {
+
+  /// List of the selected dates.
   final List<DateTime> selectedDates;
 
+  /// Selection with one or many single dates.
   DayPickerMultiSelection(this.selectedDates)
       : assert(selectedDates != null && selectedDates.isNotEmpty);
 
@@ -61,9 +88,18 @@ class DayPickerMultiSelection extends DayPickerSelection {
 }
 
 
+
+/// Date period selection.
+///
+/// See also:
+/// * [DayPickerSingleSelection] - selection with only one selected date.
+/// * [DayPickerMultiSelection] - selection with one or many single dates.
 class DayPickerRangeSelection extends DayPickerSelection {
+
+  /// Selected period.
   final DatePeriod selectedRange;
 
+  /// Date period selection.
   const DayPickerRangeSelection(this.selectedRange)
       : assert(selectedRange != null);
 
