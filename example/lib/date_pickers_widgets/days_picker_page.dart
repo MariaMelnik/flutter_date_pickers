@@ -5,20 +5,20 @@ import '../color_picker_dialog.dart';
 import '../color_selector_btn.dart';
 import '../event.dart';
 
-/// Page with [dp.DayPicker].
-class DayPickerPage extends StatefulWidget {
+/// Page with [dp.DayPicker] where many single days can be selected.
+class DaysPickerPage extends StatefulWidget {
   /// Custom events.
   final List<Event> events;
 
-  ///
-  const DayPickerPage({Key key, this.events}) : super(key: key);
+  /// 
+  const DaysPickerPage({Key key, this.events}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _DayPickerPageState();
+  State<StatefulWidget> createState() => _DaysPickerPageState();
 }
 
-class _DayPickerPageState extends State<DayPickerPage> {
-  DateTime _selectedDate;
+class _DaysPickerPageState extends State<DaysPickerPage> {
+  List<DateTime> _selectedDates;
   DateTime _firstDate;
   DateTime _lastDate;
   Color selectedDateStyleColor;
@@ -28,7 +28,14 @@ class _DayPickerPageState extends State<DayPickerPage> {
   void initState() {
     super.initState();
 
-    _selectedDate = DateTime.now();
+    final now = DateTime.now();
+
+    _selectedDates = [
+      now,
+      now.subtract(Duration(days: 10)),
+      now.add(Duration(days: 7))
+    ];
+
     _firstDate = DateTime.now().subtract(Duration(days: 45));
     _lastDate = DateTime.now().add(Duration(days: 45));
   }
@@ -59,8 +66,8 @@ class _DayPickerPageState extends State<DayPickerPage> {
           : Axis.horizontal,
       children: <Widget>[
         Expanded(
-          child: dp.DayPicker.single(
-            selectedDate: _selectedDate,
+          child: dp.DayPicker.multi(
+            selectedDates: _selectedDates,
             onChanged: _onSelectedDateChanged,
             firstDate: _firstDate,
             lastDate: _lastDate,
@@ -108,7 +115,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
                     ],
                   ),
                 ),
-                Text("Selected: $_selectedDate")
+                Text("Selected: $_selectedDates")
               ],
             ),
           ),
@@ -147,9 +154,9 @@ class _DayPickerPageState extends State<DayPickerPage> {
     }
   }
 
-  void _onSelectedDateChanged(DateTime newDate) {
+  void _onSelectedDateChanged(List<DateTime> newDates) {
     setState(() {
-      _selectedDate = newDate;
+      _selectedDates = newDates;
     });
   }
 

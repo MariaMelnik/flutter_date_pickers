@@ -231,4 +231,20 @@ class DatePickerUtils {
     // and the day corresponding to the 1-st of the month.
     return (weekdayFromMonday - firstDayOfWeekFromMonday) % 7;
   }
+
+  /// Returns earliest [DateTime] from the list.
+  ///
+  /// [dates] must not be null.
+  /// In case it is null, [ArgumentError] will be thrown.
+  static DateTime getEarliestFromList(List<DateTime> dates) {
+    ArgumentError.checkNotNull(dates, "dates");
+
+    return dates.fold(dates[0], getEarliest);
+  }
+
+  /// Returns earliest [DateTime] from two.
+  ///
+  /// If two [DateTime]s is the same moment first ([a]) will be return.
+  static DateTime getEarliest(DateTime a, DateTime b)
+    => a.isBefore(b) ? a : b;
 }

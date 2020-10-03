@@ -5,6 +5,7 @@ import 'date_period.dart';
 import 'date_picker_keys.dart';
 import 'date_picker_styles.dart';
 import 'day_based_changable_picker.dart';
+import 'day_picker_selection.dart';
 import 'day_type.dart';
 import 'event_decoration.dart';
 import 'i_selectable_picker.dart';
@@ -90,7 +91,9 @@ class WeekPicker extends StatelessWidget {
 
     return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: weekSelectablePicker,
-      selectedDate: selectedDate,
+      // todo: maybe create selection for week
+      // todo: and change logic here to work with it
+      selection: DayPickerSingleSelection(selectedDate),
       firstDate: firstDate,
       lastDate: lastDate,
       onChanged: onChanged,

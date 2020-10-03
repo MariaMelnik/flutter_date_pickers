@@ -5,6 +5,7 @@ import 'date_period.dart';
 import 'date_picker_keys.dart';
 import 'date_picker_styles.dart';
 import 'day_based_changable_picker.dart';
+import 'day_picker_selection.dart';
 import 'day_type.dart';
 import 'event_decoration.dart';
 import 'i_selectable_picker.dart';
@@ -84,7 +85,7 @@ class RangePicker extends StatelessWidget {
 
     return DayBasedChangeablePicker<DatePeriod>(
       selectablePicker: rangeSelectablePicker,
-      selectedDate: selectedPeriod.start,
+      selection: DayPickerRangeSelection(selectedPeriod),
       firstDate: firstDate,
       lastDate: lastDate,
       onChanged: onChanged,
