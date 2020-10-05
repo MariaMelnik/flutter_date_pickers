@@ -1,15 +1,15 @@
 # flutter_date_pickers
 
-Allows to use date pickers without dialog.
-Provides some customizable styles for date pickers.
+Allows to use date pickers(calendars) without dialog.
+Provides many customizable styles for date pickers.
 
 A set of date pickers:
-   * `DayPicker` for one day
+   * `DayPicker` for single day (one day or multiple days)
    * `WeekPicker` for whole week
    * `RangePicker` for random range
    * `MonthPicker` for month
 
-![](demoDatePickers2.gif)
+![](demoDatePickers3.gif)
 
 ## How to style date picker
 Every date picker constructor take a style object as a parameter (if no styles passed - defaults will be used).
@@ -29,6 +29,10 @@ for all date pickers
 | TextStyle selectedDateStyle | style for selected date |
 | BoxDecoration selectedSingleDateDecoration | decoration for selected date in case single value is selected |
 | TextStyle defaultDateTextStyle | style for date which is neither current nor disabled nor selected |
+| DayHeaderStyleBuilder dayHeaderStyleBuilder | builder for day headers styles |
+| int firstDayOfeWeekIndex | index of the first day in the week (Sunday is 0, Saturday is 6)
+| Widget prevIcon | icon for back arrow near month title |
+| Widget nextIcon | icon for forward arrow near month title |
 
 only for range date pickers (WeekPicker, RangePicker)
 
