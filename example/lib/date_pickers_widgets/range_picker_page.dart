@@ -31,8 +31,8 @@ class _RangePickerPageState extends State<RangePickerPage> {
   void initState() {
     super.initState();
 
-    _firstDate = DateTime.now().subtract(Duration(days: 45));
-    _lastDate = DateTime.now().add(Duration(days: 45));
+    _firstDate = DateTime.now().subtract(Duration(days: 345));
+    _lastDate = DateTime.now().add(Duration(days: 345));
 
     DateTime selectedPeriodStart = DateTime.now().subtract(Duration(days: 4));
     DateTime selectedPeriodEnd = DateTime.now().add(Duration(days: 8));
@@ -86,6 +86,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
             datePickerStyles: styles,
             eventDecorationBuilder: _eventDecorationBuilder,
             selectableDayPredicate: _isSelectableCustom,
+            onSelectionError: _onSelectionError,
           ),
         ),
         Container(
@@ -229,9 +230,34 @@ class _RangePickerPageState extends State<RangePickerPage> {
 
   // ignore: prefer_expression_function_bodies
   bool _isSelectableCustom (DateTime day) {
-    return true;
+    DateTime now = DateTime.now();
+    DateTime yesterday = now.subtract(Duration(days: 1));
+    DateTime tomorrow = now.add(Duration(days: 1));
+    bool isYesterday = sameDate(day, yesterday);
+    bool isTomorrow = sameDate(day, tomorrow);
+
+    return !isYesterday && !isTomorrow;
+
+    // return true;
 //    return day.weekday < 6;
 //    return day.day != DateTime.now().add(Duration(days: 7)).day ;
+  }
+
+  void _onSelectionError(UnselectablePeriodException exception) {
+    DatePeriod errorPeriod = exception.period;
+
+    // If user supposed to set another start of the period.
+    bool selectStart = _selectedPeriod.start != errorPeriod.start;
+
+    DateTime newSelection = selectStart
+        ? errorPeriod.start
+        : errorPeriod.end;
+
+    DatePeriod newPeriod = DatePeriod(newSelection, newSelection);
+
+    setState(() {
+      _selectedPeriod = newPeriod;
+    });
   }
 
   // 0 is Sunday, 6 is Saturday
@@ -244,4 +270,9 @@ class _RangePickerPageState extends State<RangePickerPage> {
         )
     );
   }
+}
+
+
+bool sameDate(DateTime first, DateTime second) {
+  return first.year == second.year && first.month == second.month && first.day == second.day;
 }
