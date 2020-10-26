@@ -27,3 +27,6 @@ Added two customizable fields to DatePickerLayoutSettings: showNextMonthStart, s
 ## [0.1.7] - 25 August 2020
 Added onMonthChange callback for all day based pickers.
 Added newPeriod field to UnselectablePeriodError class.
+
+## [0.1.8] - 26 October 2020
+Fixed selection in RangePicker which is on the edge of date when time changes (#44).
