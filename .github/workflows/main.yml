@@ -9,5 +9,5 @@ jobs:
         with:
           channel: "stable"
       - run: flutter pub get
-      - run: sh ./tools/flutter_analyze.sh
+      - run: sh ./tool/flutter_analyze.sh
       - run: flutter test test/*_test.dart
