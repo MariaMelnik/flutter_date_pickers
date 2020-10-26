@@ -110,10 +110,13 @@ class DatePickerUtils {
   /// Returns end of the given day.
   ///
   /// End time is 1 millisecond before start of the next day.
-  static DateTime endOfTheDay(DateTime date) =>
-     DateTime(date.year, date.month, date.day)
-        .add(const Duration(days: 1))
-        .subtract(const Duration(milliseconds: 1));
+  static DateTime endOfTheDay(DateTime date) {
+    DateTime tomorrowStart = DateTime(date.year, date.month, date.day + 1);
+    DateTime result = tomorrowStart.subtract(const Duration(milliseconds: 1));
+
+    return result;
+  }
+
 
   /// Returns start of the given day.
   ///
