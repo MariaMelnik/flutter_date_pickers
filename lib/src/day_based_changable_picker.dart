@@ -41,7 +41,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
   /// Styles what can be customized by user
-  final DatePickerRangeStyles datePickerStyles;
+  final DatePickerStyles datePickerStyles;
 
   /// Some keys useful for integration tests
   final DatePickerKeys datePickerKeys;
@@ -74,7 +74,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
       this.onMonthChanged})
       : assert(datePickerLayoutSettings != null),
         assert(datePickerStyles != null),
-        assert(selection != null && selection.isNotEmpty),
+        assert(selection != null),
         super(key: key);
 
   @override
@@ -104,8 +104,7 @@ class _DayBasedChangeablePickerState<T>
     super.initState();
 
     // Initially display the pre-selected date.
-    final int monthPage =
-        DatePickerUtils.monthDelta(widget.firstDate, widget.selection.earliest);
+    final int monthPage = _getInitPage();
     _dayPickerController = PageController(initialPage: monthPage);
 
     _changesSubscription = widget.selectablePicker.onUpdate
@@ -114,25 +113,12 @@ class _DayBasedChangeablePickerState<T>
               ? widget.onSelectionError(e)
               : print(e.toString()));
 
-    // todo: do we really need to do it. Above we have calculation month page
-    // todo: for the PageController.
-    // Give information about initial selection to presenter.
-    // It should be done after first frame when PageView is already created.
-    // Otherwise event from presenter will cause a error.
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _presenter.setSelectedDate(widget.selection.earliest);
-    });
-
     _updateCurrentDate();
   }
 
   @override
   void didUpdateWidget(DayBasedChangeablePicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    if (widget.selection.earliest != oldWidget.selection.earliest) {
-      _presenter.setSelectedDate(widget.selection.earliest);
-    }
 
     if (widget.datePickerStyles != oldWidget.datePickerStyles) {
       final ThemeData theme = Theme.of(context);
@@ -182,8 +168,7 @@ class _DayBasedChangeablePickerState<T>
                   height: widget.datePickerLayoutSettings.dayPickerRowHeight,
                   child: Padding(
                       //match _DayPicker main layout padding
-                      padding: widget.datePickerLayoutSettings
-                          .contentPadding,
+                      padding: widget.datePickerLayoutSettings.contentPadding,
                       child: _buildMonthNavigationRow()),
                 ),
                 Expanded(
@@ -257,15 +242,14 @@ class _DayBasedChangeablePickerState<T>
         });
   }
 
-  Widget _buildDayPickerPageView() =>
-     PageView.builder(
-      controller: _dayPickerController,
-      scrollDirection: Axis.horizontal,
-      itemCount:
-          DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
-      itemBuilder: _buildCalendar,
-      onPageChanged: _handleMonthPageChanged,
-    );
+  Widget _buildDayPickerPageView() => PageView.builder(
+        controller: _dayPickerController,
+        scrollDirection: Axis.horizontal,
+        itemCount:
+            DatePickerUtils.monthDelta(widget.firstDate, widget.lastDate) + 1,
+        itemBuilder: _buildCalendar,
+        onPageChanged: _handleMonthPageChanged,
+      );
 
   Widget _buildCalendar(BuildContext context, int index) {
     final DateTime targetDate =
@@ -285,6 +269,17 @@ class _DayBasedChangeablePickerState<T>
     );
   }
 
+  int _getInitPage() {
+    int initPage = 0;
+
+    if (widget.selection.isNotEmpty) {
+      initPage = DatePickerUtils.monthDelta(
+          widget.firstDate, widget.selection.earliest);
+    }
+
+    return initPage;
+  }
+
   void _initPresenter() {
     _presenter = DayBasedChangeablePickerPresenter(
         firstDate: widget.firstDate,
@@ -294,7 +289,19 @@ class _DayBasedChangeablePickerState<T>
         showNextMonthDates: widget.datePickerLayoutSettings.showNextMonthStart,
         firstDayOfWeekIndex: widget.datePickerStyles.firstDayOfeWeekIndex);
     _presenter.data.listen(_onStateChanged);
-//    _presenter.setSelectedData(widget.selectedDate);
+
+    // date used to define what month should be shown
+    DateTime initSelection = widget.firstDate;
+    if (widget.selection.isNotEmpty) {
+      initSelection = widget.selection.earliest;
+    }
+
+    // Give information about initial selection to presenter.
+    // It should be done after first frame when PageView is already created.
+    // Otherwise event from presenter will cause a error.
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _presenter.setSelectedDate(initSelection);
+    });
   }
 
   void _onStateChanged(DayBasedChangeablePickerState newState) {

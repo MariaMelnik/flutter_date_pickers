@@ -45,7 +45,7 @@ class DayBasedChangeablePickerPresenter {
   }): firstDayOfWeekIndex = firstDayOfWeekIndex
           ?? localizations.firstDayOfWeekIndex;
 
-  /// Sets [selectedDate] and update state if it needs.
+  /// Update state according to the [selectedDate] if it needs.
   void setSelectedDate(DateTime selectedDate) {
     bool firstAndLastNotNull = _firstShownDate != null
         && _lastShownDate != null;

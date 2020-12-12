@@ -66,7 +66,7 @@ class DayPickerMultiSelection extends DayPickerSelection {
 
   /// Selection with one or many single dates.
   DayPickerMultiSelection(this.selectedDates)
-      : assert(selectedDates != null && selectedDates.isNotEmpty);
+      : assert(selectedDates != null);
 
 
   @override
