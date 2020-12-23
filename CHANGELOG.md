@@ -30,3 +30,7 @@ Added newPeriod field to UnselectablePeriodError class.
 
 ## [0.1.8] - 26 October 2020
 Fixed selection in RangePicker which is on the edge of date when time changes (#44).
+
+## [0.1.9] - 23 December 2020
+Increased intl dependency version.
+Minor changes.
