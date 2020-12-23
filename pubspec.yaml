@@ -1,6 +1,6 @@
 name: flutter_date_pickers
 description: Flutter package for day, week, range and month date pickers.
-version: 0.1.9
+version: 0.1.10
 author: Maria Melnik <melnikmk@gmail.com>
 homepage: https://github.com/MariaMelnik/flutter_date_pickers
 issue_tracker: https://github.com/MariaMelnik/flutter_date_pickers/issues

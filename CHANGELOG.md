@@ -34,3 +34,6 @@ Fixed selection in RangePicker which is on the edge of date when time changes (#
 ## [0.1.9] - 23 December 2020
 Increased intl dependency version.
 Minor changes.
+
+## [0.1.10] - 23 December 2020
+Increased intl dependency version according to one used on pub.dev.
