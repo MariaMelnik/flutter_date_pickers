@@ -165,7 +165,7 @@ class _DayBasedChangeablePickerState<T>
             child: Column(
               children: <Widget>[
                 widget.datePickerLayoutSettings.hideMonthNavigationRow 
-                ? Container() 
+                ? const SizedBox()
                 : SizedBox(
                   height: widget.datePickerLayoutSettings.dayPickerRowHeight,
                   child: Padding(
