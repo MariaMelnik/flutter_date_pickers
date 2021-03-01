@@ -51,6 +51,10 @@ class DatePickerLayoutSettings {
   ///
   /// false by default.
   final bool showPrevMonthEnd;
+    
+  /// Hide Month navigation row
+  /// false by default.
+  final bool hideMonthNavigationRow;
 
   /// Grid delegate for the picker according to [dayPickerRowHeight] and
   /// [maxDayPickerRowCount].
@@ -77,6 +81,7 @@ class DatePickerLayoutSettings {
     this.contentPadding = _kContentPadding,
     this.showNextMonthStart = false,
     this.showPrevMonthEnd = false,
+    this.hideMonthNavigationRow = false,
     this.scrollPhysics
   }) : assert(pagesScrollDuration != null),
         assert(dayPickerRowHeight != null),
