@@ -164,7 +164,9 @@ class _DayBasedChangeablePickerState<T>
             height: widget.datePickerLayoutSettings.maxDayPickerHeight,
             child: Column(
               children: <Widget>[
-                SizedBox(
+                widget.datePickerLayoutSettings.hideMonthNavigationRow 
+                ? const SizedBox()
+                : SizedBox(
                   height: widget.datePickerLayoutSettings.dayPickerRowHeight,
                   child: Padding(
                       //match _DayPicker main layout padding
