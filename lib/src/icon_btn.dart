@@ -12,19 +12,19 @@ class IconBtn extends StatelessWidget {
   /// Function called when user tap on the button.
   ///
   /// Can be null. In this case button will be disabled.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// Tooltip for button.
   ///
   /// Applied only for material style buttons.
   /// It means only if widget has [MaterialApp] ancestor.
-  final String tooltip;
+  final String? tooltip;
 
   /// Creates button with [icon] different
   /// depends on [MaterialApp] or [CupertinoApp] ancestor.
   const IconBtn({
-    Key key,
-    @required this.icon,
+    Key? key,
+    required this.icon,
     this.onTap,
     this.tooltip
   }) : super(key: key);

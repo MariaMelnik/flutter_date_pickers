@@ -12,7 +12,7 @@ class ColorSelectorBtn extends StatelessWidget {
   final Color color;
 
   /// onTap callback.
-  final Function showDialogFunction;
+  final VoidCallback showDialogFunction;
 
   /// Size of the circle.
   ///
@@ -21,10 +21,10 @@ class ColorSelectorBtn extends StatelessWidget {
 
   ///
   const ColorSelectorBtn(
-      {Key key,
-      @required this.title,
-      @required this.color,
-      @required this.showDialogFunction,
+      {Key? key,
+      required this.title,
+      required this.color,
+      required this.showDialogFunction,
       this.colorBtnSize = _kBtnSize})
       : super(key: key);
 
@@ -42,7 +42,7 @@ class ColorSelectorBtn extends StatelessWidget {
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 8.0,
           ),
           Expanded(

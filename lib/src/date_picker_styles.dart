@@ -3,7 +3,7 @@ import 'range_picker.dart';
 import 'week_picker.dart';
 
 /// 0 points to Sunday, and 6 points to Saturday.
-typedef DayHeaderStyleBuilder = DayHeaderStyle Function(int dayOfTheWeek);
+typedef DayHeaderStyleBuilder = DayHeaderStyle? Function(int dayOfTheWeek);
 
 /// Common styles for date pickers.
 ///
@@ -13,28 +13,28 @@ typedef DayHeaderStyleBuilder = DayHeaderStyle Function(int dayOfTheWeek);
 class DatePickerStyles {
   /// Styles for title of displayed period
   /// (e.g. month for day picker and year for month picker).
-  final TextStyle displayedPeriodTitle;
+  final TextStyle? displayedPeriodTitle;
 
   /// Style for the number of current date.
-  final TextStyle currentDateStyle;
+  final TextStyle? currentDateStyle;
 
   /// Style for the numbers of disabled dates.
-  final TextStyle disabledDateStyle;
+  final TextStyle? disabledDateStyle;
 
   /// Style for the number of selected date.
-  final TextStyle selectedDateStyle;
+  final TextStyle? selectedDateStyle;
 
   /// Used for date which is neither current nor disabled nor selected.
-  final TextStyle defaultDateTextStyle;
+  final TextStyle? defaultDateTextStyle;
 
   /// Day cell decoration for selected date in case only one date is selected.
-  final BoxDecoration selectedSingleDateDecoration;
+  final BoxDecoration? selectedSingleDateDecoration;
 
   /// Style for the day header.
   ///
   /// If you need to customize day header's style depends on day of the week
   /// use [dayHeaderStyleBuilder] instead.
-  final DayHeaderStyle dayHeaderStyle;
+  final DayHeaderStyle? dayHeaderStyle;
 
   /// Builder to customize styles for day headers depends on day of the week.
   /// Where 0 points to Sunday and 6 points to Saturday.
@@ -43,7 +43,7 @@ class DatePickerStyles {
   ///
   /// If styles should be the same for any day of the week
   /// use [dayHeaderStyle] instead.
-  final DayHeaderStyleBuilder dayHeaderStyleBuilder;
+  final DayHeaderStyleBuilder? dayHeaderStyleBuilder;
 
   /// Widget which will be shown left side of the shown page title.
   /// User goes to previous data period by click on it.
@@ -57,7 +57,7 @@ class DatePickerStyles {
   /// Saturday. Must not be less 0 or more then 6.
   ///
   /// Can be null. In this case value from current locale will be used.
-  final int firstDayOfeWeekIndex;
+  final int? firstDayOfeWeekIndex;
 
   /// Styles for date picker.
   DatePickerStyles({
@@ -70,8 +70,8 @@ class DatePickerStyles {
     this.dayHeaderStyleBuilder,
     this.dayHeaderStyle,
     this.firstDayOfeWeekIndex,
-    Widget prevIcon,
-    Widget nextIcon
+    this.prevIcon = const Icon(Icons.chevron_left),
+    this.nextIcon = const Icon(Icons.chevron_right)
   }) : assert(!(dayHeaderStyle != null && dayHeaderStyleBuilder != null),
         "Should be only one from: dayHeaderStyleBuilder, dayHeaderStyle."),
        assert(dayHeaderStyleBuilder == null
@@ -79,24 +79,22 @@ class DatePickerStyles {
         "dayHeaderStyleBuilder must return not null value from every weekday "
             "(from 0 to 6)."),
        assert(_validateFirstDayOfWeek(firstDayOfeWeekIndex),
-        "firstDayOfeWeekIndex must be null or in correct range (from 0 to 6)."),
-      nextIcon = nextIcon ?? const Icon(Icons.chevron_right),
-      prevIcon = prevIcon ?? const Icon(Icons.chevron_left);
+        "firstDayOfeWeekIndex must be null or in correct range (from 0 to 6).");
 
   /// Return new [DatePickerStyles] object where fields
   /// with null values set with defaults from theme.
   DatePickerStyles fulfillWithTheme(ThemeData theme) {
     Color accentColor = theme.accentColor;
 
-    TextStyle _displayedPeriodTitle =
+    TextStyle? _displayedPeriodTitle =
         displayedPeriodTitle ?? theme.textTheme.subtitle1;
-    TextStyle _currentDateStyle = currentDateStyle ??
-        theme.textTheme.bodyText1.copyWith(color: theme.accentColor);
-    TextStyle _disabledDateStyle = disabledDateStyle ??
-        theme.textTheme.bodyText2.copyWith(color: theme.disabledColor);
-    TextStyle _selectedDateStyle =
+    TextStyle? _currentDateStyle = currentDateStyle ??
+        theme.textTheme.bodyText1?.copyWith(color: theme.accentColor);
+    TextStyle? _disabledDateStyle = disabledDateStyle ??
+        theme.textTheme.bodyText2?.copyWith(color: theme.disabledColor);
+    TextStyle? _selectedDateStyle =
         selectedDateStyle ?? theme.accentTextTheme.bodyText1;
-    TextStyle _defaultDateTextStyle =
+    TextStyle? _defaultDateTextStyle =
         defaultDateTextStyle ?? theme.textTheme.bodyText2;
     BoxDecoration _selectedSingleDateDecoration =
         selectedSingleDateDecoration ??
@@ -104,7 +102,7 @@ class DatePickerStyles {
                 color: accentColor,
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)));
 
-    DayHeaderStyle _dayHeaderStyle;
+    DayHeaderStyle? _dayHeaderStyle;
     if (dayHeaderStyleBuilder == null) {
       _dayHeaderStyle = DayHeaderStyle(textStyle: theme.textTheme.caption);
     }
@@ -167,7 +165,7 @@ class DatePickerStyles {
     return valid;
   }
 
-  static bool _validateFirstDayOfWeek(int index) {
+  static bool _validateFirstDayOfWeek(int? index) {
     if (index == null) return true;
 
     bool valid = index >= 0 && index <= 6;
@@ -181,32 +179,32 @@ class DatePickerStyles {
 @immutable
 class DatePickerRangeStyles extends DatePickerStyles {
   /// Decoration for the first date of the selected range.
-  final BoxDecoration selectedPeriodStartDecoration;
+  final BoxDecoration? selectedPeriodStartDecoration;
 
   /// Text style for the first date of the selected range.
   ///
   /// If null - default [DatePickerStyles.selectedDateStyle] will be used.
-  final TextStyle selectedPeriodStartTextStyle;
+  final TextStyle? selectedPeriodStartTextStyle;
 
   /// Decoration for the last date of the selected range.
-  final BoxDecoration selectedPeriodLastDecoration;
+  final BoxDecoration? selectedPeriodLastDecoration;
 
   /// Text style for the last date of the selected range.
   ///
   /// If null - default [DatePickerStyles.selectedDateStyle] will be used.
-  final TextStyle selectedPeriodEndTextStyle;
+  final TextStyle? selectedPeriodEndTextStyle;
 
   /// Decoration for the date of the selected range
   /// which is not first date and not end date of this range.
   ///
   /// If there is only one date selected
   /// [DatePickerStyles.selectedSingleDateDecoration] will be used.
-  final BoxDecoration selectedPeriodMiddleDecoration;
+  final BoxDecoration? selectedPeriodMiddleDecoration;
 
   /// Text style for the middle date of the selected range.
   ///
   /// If null - default [DatePickerStyles.selectedDateStyle] will be used.
-  final TextStyle selectedPeriodMiddleTextStyle;
+  final TextStyle? selectedPeriodMiddleTextStyle;
 
   /// Return new [DatePickerRangeStyles] object
   /// where fields with null values set with defaults from given theme.
@@ -241,13 +239,13 @@ class DatePickerRangeStyles extends DatePickerStyles {
               shape: BoxShape.rectangle,
             );
 
-    final TextStyle _selectedPeriodStartTextStyle =
+    final TextStyle? _selectedPeriodStartTextStyle =
         selectedPeriodStartTextStyle ?? commonStyles.selectedDateStyle;
 
-    final TextStyle _selectedPeriodMiddleTextStyle =
+    final TextStyle? _selectedPeriodMiddleTextStyle =
         selectedPeriodMiddleTextStyle ?? commonStyles.selectedDateStyle;
 
-    final TextStyle _selectedPeriodEndTextStyle =
+    final TextStyle? _selectedPeriodEndTextStyle =
         selectedPeriodEndTextStyle ?? commonStyles.selectedDateStyle;
 
     return DatePickerRangeStyles(
@@ -280,8 +278,8 @@ class DatePickerRangeStyles extends DatePickerStyles {
     defaultDateTextStyle,
     dayHeaderStyle,
     dayHeaderStyleBuilder,
-    nextIcon,
-    prevIcon,
+    Widget nextIcon = const Icon(Icons.chevron_right),
+    Widget prevIcon = const Icon(Icons.chevron_left),
     firstDayOfWeekIndex,
     this.selectedPeriodLastDecoration,
     this.selectedPeriodMiddleDecoration,
@@ -352,14 +350,14 @@ class DatePickerRangeStyles extends DatePickerStyles {
 }
 
 
-/// Style for the day header in date picker.
+/// User styles for the day header in date picker.
 @immutable
 class DayHeaderStyle {
   /// If null - textTheme.caption from the Theme will be used.
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// If null - no decoration will be applied for the day header;
-  final BoxDecoration decoration;
+  final BoxDecoration? decoration;
 
   /// Creates styles for the day headers in date pickers.
   ///

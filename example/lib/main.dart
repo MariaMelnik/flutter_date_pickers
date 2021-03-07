@@ -34,7 +34,6 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
         title: 'flutter_date_pickers Demo',
       ),
-//      locale: Locale('en', 'US'),
     );
   }
 }
@@ -45,19 +44,19 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   ///
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({
+    required this.title,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  DateTime startOfPeriod;
-  DateTime endOfPeriod;
-  DateTime firstDate;
-  DateTime lastDate;
-
-  int _selectedTab;
+  DateTime startOfPeriod = DateTime.now().subtract(Duration(days: 10));
+  DateTime endOfPeriod = DateTime.now().add(Duration(days: 10));
+  int _selectedTab = 0;
 
   final List<Widget> datePickers = <Widget>[
     DayPickerPage(events: events,),
@@ -66,21 +65,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     RangePickerPage(events: events,),
     MonthPickerPage()
   ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectedTab = 0;
-
-    DateTime now = DateTime.now();
-
-    firstDate = now.subtract(Duration(days: 10));
-    lastDate = now.add(Duration(minutes: 10));
-
-    startOfPeriod = firstDate;
-    endOfPeriod = lastDate;
-  }
 
   @override
     // ignore: prefer_expression_function_bodies
@@ -102,15 +86,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Day")),
+                icon: Icon(Icons.date_range), label: "Day"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Days")),
+                icon: Icon(Icons.date_range), label: "Days"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Week")),
+                icon: Icon(Icons.date_range), label: "Week"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Range")),
+                icon: Icon(Icons.date_range), label: "Range"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), title: Text("Month")),
+                icon: Icon(Icons.date_range), label: "Month"),
           ],
           fixedColor: Colors.yellow,
           currentIndex: _selectedTab,

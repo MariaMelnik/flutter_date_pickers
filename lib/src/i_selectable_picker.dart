@@ -10,6 +10,8 @@ import 'unselectable_period_error.dart';
 import 'utils.dart';
 
 /// Interface for selection logic of the different date pickers.
+///
+/// T - is selection type.
 abstract class ISelectablePicker<T> {
   /// The earliest date the user is permitted to pick.
   /// (only year, month and day matter, time doesn't matter)
@@ -34,12 +36,10 @@ abstract class ISelectablePicker<T> {
 
   /// Constructor with required fields that used in non-abstract methods
   /// ([isDisabled]).
-  ISelectablePicker(
-      this.firstDate,
-      this.lastDate,
-      this._selectableDayPredicate
-      ) : assert(firstDate != null),
-          assert(lastDate != null);
+  ISelectablePicker(this.firstDate, this.lastDate,
+      {SelectableDayPredicate? selectableDayPredicate})
+      : _selectableDayPredicate =
+            selectableDayPredicate ?? _defaultSelectableDayPredicate;
 
   /// If current selection exists and includes day/days that can't be selected
   /// according to the [_selectableDayPredicate]'
@@ -75,13 +75,17 @@ abstract class ISelectablePicker<T> {
   void dispose() {
     onUpdateController.close();
   }
-}
 
+  static bool _defaultSelectableDayPredicate(_) => true;
+}
 
 /// Selection logic for WeekPicker.
 class WeekSelectable extends ISelectablePicker<DatePeriod> {
-  DateTime _firstDayOfSelectedWeek;
-  DateTime _lastDayOfSelectedWeek;
+  /// Initialized in ctor body.
+  late DateTime _firstDayOfSelectedWeek;
+
+  /// Initialized in ctor body.
+  late DateTime _lastDayOfSelectedWeek;
 
   // It is int from 0 to 6 where 0 points to Sunday and 6 points to Saturday.
   // According to MaterialLocalization.firstDayOfWeekIndex.
@@ -108,8 +112,9 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
   /// but [UnselectablePeriodException] will be thrown.
   WeekSelectable(DateTime selectedDate, this._firstDayOfWeekIndex,
       DateTime firstDate, DateTime lastDate,
-      {SelectableDayPredicate selectableDayPredicate})
-      : super(firstDate, lastDate, selectableDayPredicate) {
+      {SelectableDayPredicate? selectableDayPredicate})
+      : super(firstDate, lastDate,
+            selectableDayPredicate: selectableDayPredicate) {
     DatePeriod selectedWeek = _getNewSelectedPeriod(selectedDate);
     _firstDayOfSelectedWeek = selectedWeek.start;
     _lastDayOfSelectedWeek = selectedWeek.end;
@@ -218,8 +223,8 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
   // Returns if current selection contains disabled dates.
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    bool noSelection = _firstDayOfSelectedWeek == null
-        || _lastDayOfSelectedWeek == null;
+    bool noSelection =
+        _firstDayOfSelectedWeek == null || _lastDayOfSelectedWeek == null;
 
     if (noSelection) return false;
 
@@ -249,8 +254,9 @@ class DaySelectable extends ISelectablePicker<DateTime> {
   /// nothing will be returned as selection
   /// but [UnselectablePeriodException] will be thrown.
   DaySelectable(this.selectedDate, DateTime firstDate, DateTime lastDate,
-      {SelectableDayPredicate selectableDayPredicate})
-      : super(firstDate, lastDate, selectableDayPredicate);
+      {SelectableDayPredicate? selectableDayPredicate})
+      : super(firstDate, lastDate,
+            selectableDayPredicate: selectableDayPredicate);
 
   @override
   DayType getDayType(DateTime date) {
@@ -305,8 +311,9 @@ class DayMultiSelectable extends ISelectablePicker<List<DateTime>> {
   /// nothing will be returned as selection
   /// but [UnselectablePeriodException] will be thrown.
   DayMultiSelectable(this.selectedDates, DateTime firstDate, DateTime lastDate,
-      {SelectableDayPredicate selectableDayPredicate})
-      : super(firstDate, lastDate, selectableDayPredicate);
+      {SelectableDayPredicate? selectableDayPredicate})
+      : super(firstDate, lastDate,
+            selectableDayPredicate: selectableDayPredicate);
 
   @override
   bool get curSelectionIsCorrupted => _checkCurSelection();
@@ -328,22 +335,21 @@ class DayMultiSelectable extends ISelectablePicker<List<DateTime>> {
 
   @override
   void onDayTapped(DateTime selectedDate) {
-    bool alreadyExist = selectedDates
-        .any((d) => DatePickerUtils.sameDate(d, selectedDate));
+    bool alreadyExist =
+        selectedDates.any((d) => DatePickerUtils.sameDate(d, selectedDate));
 
     if (alreadyExist) {
       List<DateTime> newSelectedDates = List.from(selectedDates)
-          ..removeWhere((d) => DatePickerUtils.sameDate(d, selectedDate));
+        ..removeWhere((d) => DatePickerUtils.sameDate(d, selectedDate));
 
       onUpdateController.add(newSelectedDates);
-
     } else {
       DateTime newSelected = DatePickerUtils.sameDate(firstDate, selectedDate)
           ? selectedDate
           : DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
       List<DateTime> newSelectedDates = List.from(selectedDates)
-          ..add(newSelected);
+        ..add(newSelected);
 
       onUpdateController.add(newSelectedDates);
     }
@@ -384,8 +390,9 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
   /// [selectableDayPredicate] nothing will be returned as selection
   /// but [UnselectablePeriodException] will be thrown.
   RangeSelectable(this.selectedPeriod, DateTime firstDate, DateTime lastDate,
-      {SelectableDayPredicate selectableDayPredicate})
-      : super(firstDate, lastDate, selectableDayPredicate);
+      {SelectableDayPredicate? selectableDayPredicate})
+      : super(firstDate, lastDate,
+            selectableDayPredicate: selectableDayPredicate);
 
   @override
   DayType getDayType(DateTime date) {
@@ -446,21 +453,16 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
       if (selectedAlreadySelectedDay) {
         if (isSelectedFirstDay && isSelectedLastDay) {
           newPeriod = DatePeriod(firstDate, lastDate);
-
         } else if (isSelectedFirstDay) {
           newPeriod =
               DatePeriod(firstDate, DatePickerUtils.endOfTheDay(firstDate));
-
         } else if (isSelectedLastDay) {
           newPeriod =
               DatePeriod(DatePickerUtils.startOfTheDay(lastDate), lastDate);
-        }
-
-        else {
+        } else {
           newPeriod = DatePeriod(DatePickerUtils.startOfTheDay(tappedDate),
               DatePickerUtils.endOfTheDay(tappedDate));
         }
-
       } else {
         DateTime startOfTheSelectedDay =
             DatePickerUtils.startOfTheDay(selectedPeriod.start);
@@ -486,15 +488,12 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
 
       if (sameAsFirst && sameAsLast) {
         newPeriod = DatePeriod(firstDate, lastDate);
-
       } else if (sameAsFirst) {
         newPeriod =
             DatePeriod(firstDate, DatePickerUtils.endOfTheDay(firstDate));
-
       } else if (sameAsLast) {
         newPeriod =
             DatePeriod(DatePickerUtils.startOfTheDay(tappedDate), lastDate);
-
       } else {
         newPeriod = DatePeriod(DatePickerUtils.startOfTheDay(tappedDate),
             DatePickerUtils.endOfTheDay(tappedDate));

@@ -12,38 +12,31 @@ class RangePickerPage extends StatefulWidget {
   final List<Event> events;
 
   ///
-  const RangePickerPage({Key key, this.events}) : super(key: key);
+  const RangePickerPage({
+    Key? key,
+    this.events = const []
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _RangePickerPageState();
 }
 
 class _RangePickerPageState extends State<RangePickerPage> {
-  DateTime _firstDate;
-  DateTime _lastDate;
-  DatePeriod _selectedPeriod;
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 345));
+  DateTime _lastDate = DateTime.now().add(Duration(days: 345));
+  DatePeriod _selectedPeriod = DatePeriod(
+      DateTime.now().subtract(Duration(days: 4)),
+      DateTime.now().add(Duration(days: 8))
+  );
 
-  Color selectedPeriodStartColor;
-  Color selectedPeriodLastColor;
-  Color selectedPeriodMiddleColor;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _firstDate = DateTime.now().subtract(Duration(days: 345));
-    _lastDate = DateTime.now().add(Duration(days: 345));
-
-    DateTime selectedPeriodStart = DateTime.now().subtract(Duration(days: 4));
-    DateTime selectedPeriodEnd = DateTime.now().add(Duration(days: 8));
-    _selectedPeriod = DatePeriod(selectedPeriodStart, selectedPeriodEnd);
-  }
+  Color selectedPeriodStartColor = Colors.blue;
+  Color selectedPeriodLastColor = Colors.blue;
+  Color selectedPeriodMiddleColor = Colors.blue;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // defaults for styles
     selectedPeriodLastColor = Theme.of(context).accentColor;
     selectedPeriodMiddleColor = Theme.of(context).accentColor;
     selectedPeriodStartColor = Theme.of(context).accentColor;
@@ -158,7 +151,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
 
   // select background color for the first date of the selected period
   void _showSelectedStartColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedPeriodStartColor,
@@ -173,7 +166,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
 
   // select background color for the last date of the selected period
   void _showSelectedEndColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedPeriodLastColor,
@@ -188,7 +181,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
 
   // select background color for the middle dates of the selected period
   void _showSelectedMiddleColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedPeriodMiddleColor,
@@ -207,14 +200,15 @@ class _RangePickerPageState extends State<RangePickerPage> {
     });
   }
 
-  EventDecoration _eventDecorationBuilder(DateTime date) {
+  EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates = widget.events
-        ?.map<DateTime>((Event e) => e.date)
-        ?.toList();
+        .map<DateTime>((Event e) => e.date)
+        .toList();
 
-    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year
+    bool isEventDate = eventsDates.any((DateTime d) =>
+    date.year == d.year
         && date.month == d.month
-        && d.day == date.day) ?? false;
+        && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
         border: Border.all(

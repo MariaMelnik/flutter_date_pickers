@@ -32,7 +32,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
   ///  Key fo selected month (useful for integration tests)
-  final Key selectedPeriodKey;
+  final Key? selectedPeriodKey;
 
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
@@ -41,35 +41,30 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   ///
   /// All event styles are overridden by selected styles
   /// except days with dayType is [DayType.notSelected].
-  final EventDecorationBuilder eventDecorationBuilder;
+  final EventDecorationBuilder? eventDecorationBuilder;
+
+  /// Localizations used to get strings for prev/next button tooltips,
+  /// weekday headers and display values for days numbers.
+  final MaterialLocalizations localizations;
 
   /// Creates main date picker view where every cell is day.
   DayBasedPicker(
-      {Key key,
-      @required this.currentDate,
-      @required this.firstDate,
-      @required this.lastDate,
-      @required this.displayedMonth,
-      @required this.datePickerLayoutSettings,
-      @required this.selectedPeriodKey,
-      @required this.datePickerStyles,
-      @required this.selectablePicker,
+      {Key? key,
+      required this.currentDate,
+      required this.firstDate,
+      required this.lastDate,
+      required this.displayedMonth,
+      required this.datePickerLayoutSettings,
+      required this.datePickerStyles,
+      required this.selectablePicker,
+      required this.localizations,
+      this.selectedPeriodKey,
       this.eventDecorationBuilder})
-      : assert(currentDate != null),
-        assert(displayedMonth != null),
-        assert(datePickerLayoutSettings != null),
-        assert(!firstDate.isAfter(lastDate)),
-        assert(selectablePicker != null),
-        assert(datePickerLayoutSettings != null),
-        assert(datePickerStyles != null),
+      : assert(!firstDate.isAfter(lastDate)),
         super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
-
     final List<Widget> labels = <Widget>[];
 
     List<Widget> headers = _buildHeaders(localizations);
@@ -105,8 +100,8 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
 
     DayHeaderStyleBuilder dayHeaderStyleBuilder =
         datePickerStyles.dayHeaderStyleBuilder ??
-                // ignore: avoid_types_on_closure_parameters
-                (int i) => datePickerStyles.dayHeaderStyle;
+            // ignore: avoid_types_on_closure_parameters
+            (int i) => datePickerStyles.dayHeaderStyle;
 
     List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder,
         localizations.narrowWeekdays, firstDayOfWeekIndex);
@@ -122,26 +117,23 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
         localizations.firstDayOfWeekIndex;
     final int firstDayOffset =
-      computeFirstDayOffset(year, month, firstDayOfWeekIndex);
+        computeFirstDayOffset(year, month, firstDayOfWeekIndex);
 
     final bool showDates = datePickerLayoutSettings.showPrevMonthEnd;
     if (showDates) {
       int prevMonth = month - 1;
       if (prevMonth < 1) prevMonth = 12;
-      int prevYear = prevMonth == 12
-        ? year - 1
-        : year;
+      int prevYear = prevMonth == 12 ? year - 1 : year;
 
       int daysInPrevMonth = DatePickerUtils.getDaysInMonth(prevYear, prevMonth);
-      List<Widget> days = List
-          .generate(firstDayOffset, (index) => index)
+      List<Widget> days = List.generate(firstDayOffset, (index) => index)
           .reversed
           .map((i) => daysInPrevMonth - i)
           .map((day) => _buildCell(prevYear, prevMonth, day))
           .toList();
 
       result = days;
-    } else  {
+    } else {
       result = List.generate(firstDayOffset, (_) => const SizedBox.shrink());
     }
 
@@ -173,11 +165,11 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
         localizations.firstDayOfWeekIndex;
     final int firstDayOffset =
-      computeFirstDayOffset(year, month, firstDayOfWeekIndex);
+        computeFirstDayOffset(year, month, firstDayOfWeekIndex);
     final int daysInMonth = DatePickerUtils.getDaysInMonth(year, month);
     final int totalFilledDays = firstDayOffset + daysInMonth;
 
-    int reminder =  totalFilledDays % 7;
+    int reminder = totalFilledDays % 7;
     if (reminder == 0) return result;
     final int emptyCellsNum = 7 - reminder;
 
@@ -201,6 +193,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
       selectablePicker: selectablePicker,
       datePickerStyles: datePickerStyles,
       eventDecorationBuilder: eventDecorationBuilder,
+      localizations: localizations,
     );
 
     if (dayType != DayType.disabled) {
@@ -229,7 +222,6 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   }
 }
 
-
 class _DayCell extends StatelessWidget {
   /// Day for this cell.
   final DateTime day;
@@ -247,31 +239,26 @@ class _DayCell extends StatelessWidget {
   ///
   /// All event styles are overridden by selected styles
   /// except days with dayType is [DayType.notSelected].
-  final EventDecorationBuilder eventDecorationBuilder;
+  final EventDecorationBuilder? eventDecorationBuilder;
 
-  const _DayCell({
-    Key key,
-    @required this.day,
-    @required this.selectablePicker,
-    @required this.datePickerStyles,
-    @required this.currentDate,
-    this.eventDecorationBuilder
-  }) : assert(day != null),
-       assert(selectablePicker != null),
-       assert(datePickerStyles != null),
-       assert(currentDate != null),
-       super(key: key);
+  final MaterialLocalizations localizations;
 
+  const _DayCell(
+      {Key? key,
+      required this.day,
+      required this.selectablePicker,
+      required this.datePickerStyles,
+      required this.currentDate,
+      required this.localizations,
+      this.eventDecorationBuilder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations =
-    MaterialLocalizations.of(context);
-
     DayType dayType = selectablePicker.getDayType(day);
 
-    BoxDecoration decoration;
-    TextStyle itemStyle;
+    BoxDecoration? decoration;
+    TextStyle? itemStyle;
 
     if (dayType != DayType.disabled && dayType != DayType.notSelected) {
       itemStyle = _getSelectedTextStyle(dayType);
@@ -290,7 +277,10 @@ class _DayCell extends StatelessWidget {
     // If day is current day it is also gets event decoration
     // instead of decoration for current date.
     if (dayType == DayType.notSelected && eventDecorationBuilder != null) {
-      EventDecoration eDecoration = eventDecorationBuilder(day);
+      EventDecoration? eDecoration = eventDecorationBuilder != null
+          ? eventDecorationBuilder!.call(day)
+          : null;
+
       decoration = eDecoration?.boxDecoration ?? decoration;
       itemStyle = eDecoration?.textStyle ?? itemStyle;
     }
@@ -298,8 +288,8 @@ class _DayCell extends StatelessWidget {
     String semanticLabel = '${localizations.formatDecimal(day.day)}, '
         '${localizations.formatFullDate(day)}';
 
-    bool daySelected = dayType != DayType.disabled
-        && dayType != DayType.notSelected;
+    bool daySelected =
+        dayType != DayType.disabled && dayType != DayType.notSelected;
 
     Widget dayWidget = Container(
       decoration: decoration,
@@ -323,8 +313,8 @@ class _DayCell extends StatelessWidget {
     return dayWidget;
   }
 
-  BoxDecoration _getSelectedDecoration(DayType dayType) {
-    BoxDecoration result;
+  BoxDecoration? _getSelectedDecoration(DayType dayType) {
+    BoxDecoration? result;
 
     if (dayType == DayType.single) {
       result = datePickerStyles.selectedSingleDateDecoration;
@@ -339,8 +329,8 @@ class _DayCell extends StatelessWidget {
     return result;
   }
 
-  TextStyle _getSelectedTextStyle(DayType dayType) {
-    TextStyle result;
+  TextStyle? _getSelectedTextStyle(DayType dayType) {
+    TextStyle? result;
 
     if (dayType == DayType.single) {
       result = datePickerStyles.selectedDateStyle;

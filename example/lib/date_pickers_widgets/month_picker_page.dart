@@ -11,29 +11,20 @@ class MonthPickerPage extends StatefulWidget {
 }
 
 class _MonthPickerPageState extends State<MonthPickerPage> {
-  DateTime _firstDate;
-  DateTime _lastDate;
-  DateTime _selectedDate;
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
+  DateTime _lastDate = DateTime.now().add(Duration(days: 350));
+  DateTime _selectedDate = DateTime.now();
 
-  Color selectedDateStyleColor;
-  Color selectedSingleDateDecorationColor;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _firstDate = DateTime.now().subtract(Duration(days: 350));
-    _lastDate = DateTime.now().add(Duration(days: 350));
-
-    _selectedDate = DateTime.now();
-  }
+  Color selectedDateStyleColor = Colors.blue;
+  Color selectedSingleDateDecorationColor = Colors.red;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // defaults for styles
-    selectedDateStyleColor = Theme.of(context).accentTextTheme.bodyText1.color;
+    Color? bodyTextColor = Theme.of(context).accentTextTheme.bodyText1?.color;
+    if (bodyTextColor != null) selectedDateStyleColor = bodyTextColor;
+
     selectedSingleDateDecorationColor = Theme.of(context).accentColor;
   }
 
@@ -44,7 +35,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
             .bodyText1
-            .copyWith(color: selectedDateStyleColor),
+            ?.copyWith(color: selectedDateStyleColor),
         selectedSingleDateDecoration: BoxDecoration(
             color: selectedSingleDateDecorationColor, shape: BoxShape.circle));
 
@@ -107,7 +98,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
 
   // select text color of the selected date
   void _showSelectedDateDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedDateStyleColor,
@@ -122,7 +113,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
 
   // select background color of the selected date
   void _showSelectedBackgroundColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedSingleDateDecorationColor,

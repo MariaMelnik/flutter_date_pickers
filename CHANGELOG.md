@@ -37,3 +37,7 @@ Minor changes.
 
 ## [0.1.10] - 23 December 2020
 Increased intl dependency version according to one used on pub.dev.
+
+## [0.2.0] - 7 March 2021
+Migrated to null-safety.
+Added DatePickerLayoutSettings.hideMonthNavigationRow option.

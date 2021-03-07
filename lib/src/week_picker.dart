@@ -16,11 +16,11 @@ import 'typedefs.dart';
 class WeekPicker extends StatelessWidget {
   /// Creates a month picker.
   WeekPicker(
-      {Key key,
-      @required this.selectedDate,
-      @required this.onChanged,
-      @required this.firstDate,
-      @required this.lastDate,
+      {Key? key,
+      required this.selectedDate,
+      required this.onChanged,
+      required this.firstDate,
+      required this.lastDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerStyles,
       this.datePickerKeys,
@@ -28,9 +28,7 @@ class WeekPicker extends StatelessWidget {
       this.onSelectionError,
       this.eventDecorationBuilder,
       this.onMonthChanged})
-      : assert(selectedDate != null),
-        assert(onChanged != null),
-        assert(!firstDate.isAfter(lastDate)),
+      : assert(!firstDate.isAfter(lastDate)),
         assert(!lastDate.isBefore(firstDate)),
         assert(!selectedDate.isBefore(firstDate)),
         assert(!selectedDate.isAfter(lastDate)),
@@ -47,7 +45,7 @@ class WeekPicker extends StatelessWidget {
   /// Called when the error was thrown after user selection.
   /// (e.g. when user selected a week with one or more days
   /// what can't be selected)
-  final OnSelectionError onSelectionError;
+  final OnSelectionError? onSelectionError;
 
   /// The earliest date the user is permitted to pick.
   final DateTime firstDate;
@@ -59,31 +57,30 @@ class WeekPicker extends StatelessWidget {
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
   /// Some keys useful for integration tests
-  final DatePickerKeys datePickerKeys;
+  final DatePickerKeys? datePickerKeys;
 
   /// Styles what can be customized by user
-  final DatePickerRangeStyles datePickerStyles;
+  final DatePickerRangeStyles? datePickerStyles;
 
   /// Function returns if day can be selected or not.
-  final SelectableDayPredicate selectableDayPredicate;
+  final SelectableDayPredicate? selectableDayPredicate;
 
   /// Builder to get event decoration for each date.
   ///
   /// All event styles are overriden by selected styles
   /// except days with dayType is [DayType.notSelected].
-  final EventDecorationBuilder eventDecorationBuilder;
-
+  final EventDecorationBuilder? eventDecorationBuilder;
 
   /// Called when the user changes the month.
   /// New DateTime object represents first day of new month and 00:00 time.
-  final ValueChanged<DateTime> onMonthChanged;
+  final ValueChanged<DateTime>? onMonthChanged;
 
   @override
   Widget build(BuildContext context) {
     MaterialLocalizations localizations = MaterialLocalizations.of(context);
 
-    int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex
-        ?? localizations.firstDayOfWeekIndex;
+    int firstDayOfWeekIndex = datePickerStyles?.firstDayOfeWeekIndex ??
+        localizations.firstDayOfWeekIndex;
 
     ISelectablePicker<DatePeriod> weekSelectablePicker = WeekSelectable(
         selectedDate, firstDayOfWeekIndex, firstDate, lastDate,

@@ -12,7 +12,7 @@ import 'week_picker.dart';
 /// * [DayPicker.eventDecorationBuilder]
 /// * [WeekPicker.eventDecorationBuilder]
 /// * [RangePicker.eventDecorationBuilder]
-typedef EventDecorationBuilder = EventDecoration Function(DateTime date);
+typedef EventDecorationBuilder = EventDecoration? Function(DateTime date);
 
 
 /// Class to store styles for event (specific day in the date picker).
@@ -20,10 +20,10 @@ typedef EventDecorationBuilder = EventDecoration Function(DateTime date);
 class EventDecoration {
 
   /// Cell decoration for the specific day in the date picker (event).
-  final BoxDecoration boxDecoration;
+  final BoxDecoration? boxDecoration;
 
   /// Style for number of the specific day in the date picker (event).
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// Creates decoration for special day.
   ///

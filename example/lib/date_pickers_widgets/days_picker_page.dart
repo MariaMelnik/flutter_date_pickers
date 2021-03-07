@@ -11,18 +11,22 @@ class DaysPickerPage extends StatefulWidget {
   final List<Event> events;
 
   /// 
-  const DaysPickerPage({Key key, this.events}) : super(key: key);
+  const DaysPickerPage({
+    Key? key,
+    this.events = const []
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _DaysPickerPageState();
 }
 
 class _DaysPickerPageState extends State<DaysPickerPage> {
-  List<DateTime> _selectedDates;
-  DateTime _firstDate;
-  DateTime _lastDate;
-  Color selectedDateStyleColor;
-  Color selectedSingleDateDecorationColor;
+  List<DateTime> _selectedDates = [];
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
+  DateTime _lastDate = DateTime.now().add(Duration(days: 45));
+
+  Color selectedDateStyleColor = Colors.blue;
+  Color selectedSingleDateDecorationColor = Colors.red;
 
   @override
   void initState() {
@@ -35,28 +39,26 @@ class _DaysPickerPageState extends State<DaysPickerPage> {
       now.subtract(Duration(days: 10)),
       now.add(Duration(days: 7))
     ];
-
-    _firstDate = DateTime.now().subtract(Duration(days: 45));
-    _lastDate = DateTime.now().add(Duration(days: 45));
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // defaults for styles
-    selectedDateStyleColor = Theme.of(context).accentTextTheme.bodyText1.color;
+    Color? bodyTextColor = Theme.of(context).accentTextTheme.bodyText1?.color;
+    if (bodyTextColor != null) selectedDateStyleColor = bodyTextColor;
+
     selectedSingleDateDecorationColor = Theme.of(context).accentColor;
   }
 
   @override
   Widget build(BuildContext context) {
     // add selected colors to default settings
-    dp.DatePickerStyles styles = dp.DatePickerRangeStyles(
+    dp.DatePickerRangeStyles styles = dp.DatePickerRangeStyles(
         selectedDateStyle: Theme.of(context)
             .accentTextTheme
             .bodyText1
-            .copyWith(color: selectedDateStyleColor),
+            ?.copyWith(color: selectedDateStyleColor),
         selectedSingleDateDecoration: BoxDecoration(
             color: selectedSingleDateDecorationColor, shape: BoxShape.circle));
 
@@ -126,7 +128,7 @@ class _DaysPickerPageState extends State<DaysPickerPage> {
 
   // select text color of the selected date
   void _showSelectedDateDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedDateStyleColor,
@@ -141,7 +143,7 @@ class _DaysPickerPageState extends State<DaysPickerPage> {
 
   // select background color of the selected date
   void _showSelectedBackgroundColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedSingleDateDecorationColor,
@@ -165,14 +167,15 @@ class _DaysPickerPageState extends State<DaysPickerPage> {
     return day.weekday < 6;
   }
 
-  dp.EventDecoration _eventDecorationBuilder(DateTime date) {
+  dp.EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates = widget.events
-        ?.map<DateTime>((Event e) => e.date)
-        ?.toList();
+        .map<DateTime>((Event e) => e.date)
+        .toList();
 
-    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year
+    bool isEventDate = eventsDates.any((DateTime d) =>
+    date.year == d.year
         && date.month == d.month
-        && d.day == date.day) ?? false;
+        && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
         border: Border.all(
