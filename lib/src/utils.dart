@@ -129,20 +129,19 @@ class DatePickerUtils {
   /// First shown date is not always 1st day of the [curMonth].
   /// It can be day from previous month if [showEndOfPrevMonth] is true.
   ///
-  /// If [showEndOfPrevMonth] empty day cells before 1st [curMonth]
+  /// If [showEndOfPrevMonth] is true empty day cells before 1st [curMonth]
   /// are filled with days from the previous month.
   static DateTime firstShownDate({
-      DateTime curMonth,
-      bool showEndOfPrevMonth,
-      int firstDayOfWeekFromSunday}) {
+      required DateTime curMonth,
+      required bool showEndOfPrevMonth,
+      required int firstDayOfWeekFromSunday}) {
 
     DateTime result = DateTime(curMonth.year, curMonth.month, 1);
 
     if (showEndOfPrevMonth) {
-      assert(firstDayOfWeekFromSunday != null);
       int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month,
           firstDayOfWeekFromSunday);
-      if (firstDayOffset == 0) return null;
+      if (firstDayOffset == 0) return result;
 
 
       int prevMonth = curMonth.month - 1;
@@ -166,25 +165,24 @@ class DatePickerUtils {
   /// Last shown date is not always last day of the [curMonth].
   /// It can be day from next month if [showStartNextMonth] is true.
   ///
-  /// If [showStartNextMonth] empty day cells after last day of [curMonth]
-  /// are filled with days from the next month.
+  /// If [showStartNextMonth] is true empty day cells after last day
+  /// of [curMonth] are filled with days from the next month.
   static DateTime lastShownDate({
-      DateTime curMonth,
-      bool showStartNextMonth,
-      int firstDayOfWeekFromSunday}) {
+      required DateTime curMonth,
+      required bool showStartNextMonth,
+      required int firstDayOfWeekFromSunday}) {
 
     int daysInCurMonth = getDaysInMonth(curMonth.year, curMonth.month);
     DateTime result = DateTime(curMonth.year, curMonth.month, daysInCurMonth);
 
     if (showStartNextMonth) {
-      assert(firstDayOfWeekFromSunday != null);
       int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month,
           firstDayOfWeekFromSunday);
 
       int totalDays = firstDayOffset + daysInCurMonth;
       int trailingDaysCount = 7 - totalDays % 7;
       bool fullWeekTrailing = trailingDaysCount == 7;
-      if (fullWeekTrailing) return null;
+      if (fullWeekTrailing) return result;
 
       result = DateTime(curMonth.year, curMonth.month + 1, trailingDaysCount);
     }

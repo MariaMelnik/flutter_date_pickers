@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'package:intl/intl.dart' as intl;
+
 import 'basic_day_based_widget.dart';
 import 'date_picker_keys.dart';
 import 'date_picker_styles.dart';
@@ -17,6 +19,9 @@ import 'semantic_sorting.dart';
 import 'typedefs.dart';
 import 'utils.dart';
 
+
+const Locale _defaultLocale = Locale('en', 'US');
+
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
 /// Allows select previous/next month.
 class DayBasedChangeablePicker<T> extends StatefulWidget {
@@ -29,7 +34,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   final ValueChanged<T> onChanged;
 
   /// Called when the error was thrown after user selection.
-  final OnSelectionError onSelectionError;
+  final OnSelectionError? onSelectionError;
 
   /// The earliest date the user is permitted to pick.
   final DateTime firstDate;
@@ -41,10 +46,10 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
   /// Styles what can be customized by user
-  final DatePickerStyles datePickerStyles;
+  final DatePickerRangeStyles datePickerStyles;
 
   /// Some keys useful for integration tests
-  final DatePickerKeys datePickerKeys;
+  final DatePickerKeys? datePickerKeys;
 
   /// Logic for date selections.
   final ISelectablePicker<T> selectablePicker;
@@ -53,29 +58,26 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   ///
   /// All event styles are overridden by selected styles
   /// except days with dayType is [DayType.notSelected].
-  final EventDecorationBuilder eventDecorationBuilder;
+  final EventDecorationBuilder? eventDecorationBuilder;
 
   /// Called when the user changes the month
-  final ValueChanged<DateTime> onMonthChanged;
+  final ValueChanged<DateTime>? onMonthChanged;
 
   /// Create picker with option to change month.
   DayBasedChangeablePicker(
-      {Key key,
-      @required this.selection,
-      this.onChanged,
-      @required this.firstDate,
-      @required this.lastDate,
-      @required this.datePickerLayoutSettings,
-      @required this.datePickerStyles,
-      @required this.selectablePicker,
+      {Key? key,
+      required this.selection,
+      required this.onChanged,
+      required this.firstDate,
+      required this.lastDate,
+      required this.datePickerLayoutSettings,
+      required this.datePickerStyles,
+      required this.selectablePicker,
       this.datePickerKeys,
       this.onSelectionError,
       this.eventDecorationBuilder,
       this.onMonthChanged})
-      : assert(datePickerLayoutSettings != null),
-        assert(datePickerStyles != null),
-        assert(selection != null),
-        super(key: key);
+      : super(key: key);
 
   @override
   State<DayBasedChangeablePicker<T>> createState() =>
@@ -86,18 +88,21 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
 // todo: (ISelectablePicker.curSelectionIsCorrupted);
 class _DayBasedChangeablePickerState<T>
     extends State<DayBasedChangeablePicker<T>> {
-  MaterialLocalizations localizations;
-  Locale curLocale;
-  TextDirection textDirection;
+  DateTime _todayDate = DateTime.now();
 
-  DateTime _todayDate;
+  Locale curLocale = _defaultLocale;
+
+  MaterialLocalizations localizations = _defaultLocalizations;
+
+  PageController _dayPickerController = PageController();
 
   // Styles from widget fulfilled with current Theme.
-  DatePickerStyles _resultStyles;
-  Timer _timer;
-  PageController _dayPickerController;
-  StreamSubscription<T> _changesSubscription;
-  DayBasedChangeablePickerPresenter _presenter;
+  DatePickerRangeStyles _resultStyles = DatePickerRangeStyles();
+
+  DayBasedChangeablePickerPresenter _presenter = _defaultPresenter;
+
+  Timer? _timer;
+  StreamSubscription<T>? _changesSubscription;
 
   @override
   void initState() {
@@ -108,16 +113,17 @@ class _DayBasedChangeablePickerState<T>
     _dayPickerController = PageController(initialPage: monthPage);
 
     _changesSubscription = widget.selectablePicker.onUpdate
-        .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
+        .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
           ..onError((e) => widget.onSelectionError != null
-              ? widget.onSelectionError(e)
+              ? widget.onSelectionError!.call(e)
               : print(e.toString()));
 
     _updateCurrentDate();
+    _initPresenter();
   }
 
   @override
-  void didUpdateWidget(DayBasedChangeablePicker oldWidget) {
+  void didUpdateWidget(DayBasedChangeablePicker<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.datePickerStyles != oldWidget.datePickerStyles) {
@@ -127,9 +133,9 @@ class _DayBasedChangeablePickerState<T>
 
     if (widget.selectablePicker != oldWidget.selectablePicker) {
       _changesSubscription = widget.selectablePicker.onUpdate
-          .listen((newSelectedDate) => widget.onChanged?.call(newSelectedDate))
+          .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
             ..onError((e) => widget.onSelectionError != null
-                ? widget.onSelectionError(e)
+                ? widget.onSelectionError!.call(e)
                 : print(e.toString()));
     }
   }
@@ -138,11 +144,11 @@ class _DayBasedChangeablePickerState<T>
   void didChangeDependencies() {
     super.didChangeDependencies();
     curLocale = Localizations.localeOf(context);
-    textDirection = Directionality.of(context);
 
-    MaterialLocalizations newLocalizations = MaterialLocalizations.of(context);
-    if (newLocalizations != localizations) {
-      localizations = newLocalizations;
+    MaterialLocalizations? curLocalizations =
+        Localizations.of<MaterialLocalizations>(context, MaterialLocalizations);
+    if (curLocalizations != null && localizations != curLocalizations) {
+      localizations = curLocalizations;
       _initPresenter();
     }
 
@@ -153,45 +159,35 @@ class _DayBasedChangeablePickerState<T>
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
-    return Localizations(
-      locale: curLocale,
-      delegates: GlobalMaterialLocalizations.delegates,
-      child: Builder(
-        builder: (c) {
-          localizations = MaterialLocalizations.of(c);
-          return SizedBox(
-            width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
-            height: widget.datePickerLayoutSettings.maxDayPickerHeight,
-            child: Column(
-              children: <Widget>[
-                widget.datePickerLayoutSettings.hideMonthNavigationRow 
+    return SizedBox(
+        width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
+        height: widget.datePickerLayoutSettings.maxDayPickerHeight,
+        child: Column(
+          children: <Widget>[
+            widget.datePickerLayoutSettings.hideMonthNavigationRow
                 ? const SizedBox()
                 : SizedBox(
-                  height: widget.datePickerLayoutSettings.dayPickerRowHeight,
-                  child: Padding(
-                      //match _DayPicker main layout padding
-                      padding: widget.datePickerLayoutSettings.contentPadding,
-                      child: _buildMonthNavigationRow()),
-                ),
-                Expanded(
-                  child: Semantics(
-                    sortKey: MonthPickerSortKey.calendar,
-                    child: _buildDayPickerPageView(),
+                    height: widget.datePickerLayoutSettings.dayPickerRowHeight,
+                    child: Padding(
+                        //match _DayPicker main layout padding
+                        padding: widget.datePickerLayoutSettings.contentPadding,
+                        child: _buildMonthNavigationRow()),
                   ),
-                ),
-              ],
+            Expanded(
+              child: Semantics(
+                sortKey: MonthPickerSortKey.calendar,
+                child: _buildDayPickerPageView(),
+              ),
             ),
-          );
-        },
-      ),
-    );
+          ],
+        ));
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _dayPickerController?.dispose();
-    _changesSubscription.cancel();
+    _dayPickerController.dispose();
+    _changesSubscription?.cancel();
     widget.selectablePicker.dispose();
     _presenter.dispose();
     super.dispose();
@@ -222,7 +218,7 @@ class _DayBasedChangeablePickerState<T>
             );
           }
 
-          DayBasedChangeablePickerState state = snapshot.data;
+          DayBasedChangeablePickerState state = snapshot.data!;
 
           return MonthNavigationRow(
             previousPageIconKey: widget.datePickerKeys?.previousPageIconKey,
@@ -268,6 +264,7 @@ class _DayBasedChangeablePickerState<T>
       selectedPeriodKey: widget.datePickerKeys?.selectedPeriodKeys,
       datePickerStyles: _resultStyles,
       eventDecorationBuilder: widget.eventDecorationBuilder,
+      localizations: localizations,
     );
   }
 
@@ -283,6 +280,8 @@ class _DayBasedChangeablePickerState<T>
   }
 
   void _initPresenter() {
+    _presenter.dispose();
+
     _presenter = DayBasedChangeablePickerPresenter(
         firstDate: widget.firstDate,
         lastDate: widget.lastDate,
@@ -301,7 +300,7 @@ class _DayBasedChangeablePickerState<T>
     // Give information about initial selection to presenter.
     // It should be done after first frame when PageView is already created.
     // Otherwise event from presenter will cause a error.
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       _presenter.setSelectedDate(initSelection);
     });
   }
@@ -318,8 +317,32 @@ class _DayBasedChangeablePickerState<T>
     DateTime firstMonth = widget.firstDate;
     DateTime newMonth =
         DateTime(firstMonth.year, firstMonth.month + monthPage, firstMonth.day);
-    _presenter?.changeMonth(newMonth);
+    _presenter.changeMonth(newMonth);
 
     widget.onMonthChanged?.call(newMonth);
   }
+
+  static MaterialLocalizations get _defaultLocalizations =>
+      MaterialLocalizationEn(
+        twoDigitZeroPaddedFormat:
+            intl.NumberFormat('00', _defaultLocale.toString()),
+        fullYearFormat: intl.DateFormat.y(_defaultLocale.toString()),
+        longDateFormat: intl.DateFormat.yMMMMEEEEd(_defaultLocale.toString()),
+        shortMonthDayFormat: intl.DateFormat.MMMd(_defaultLocale.toString()),
+        decimalFormat:
+            intl.NumberFormat.decimalPattern(_defaultLocale.toString()),
+        shortDateFormat: intl.DateFormat.yMMMd(_defaultLocale.toString()),
+        mediumDateFormat: intl.DateFormat.MMMEd(_defaultLocale.toString()),
+        compactDateFormat: intl.DateFormat.yMd(_defaultLocale.toString()),
+        yearMonthFormat: intl.DateFormat.yMMMM(_defaultLocale.toString()),
+      );
+
+  static DayBasedChangeablePickerPresenter get _defaultPresenter =>
+      DayBasedChangeablePickerPresenter(
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now(),
+          localizations: _defaultLocalizations,
+          showPrevMonthDates: false,
+          showNextMonthDates: false,
+          firstDayOfWeekIndex: 1);
 }

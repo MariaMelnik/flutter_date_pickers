@@ -24,7 +24,7 @@ class DatePickerLayoutSettings {
   /// Determines the scroll physics of a date picker widget.
   ///
   /// Can be null. In this case default physics for [ScrollView] will be used.
-  final ScrollPhysics scrollPhysics;
+  final ScrollPhysics? scrollPhysics;
 
   /// Height of the one row in picker including headers.
   ///
@@ -83,13 +83,7 @@ class DatePickerLayoutSettings {
     this.showPrevMonthEnd = false,
     this.hideMonthNavigationRow = false,
     this.scrollPhysics
-  }) : assert(pagesScrollDuration != null),
-        assert(dayPickerRowHeight != null),
-        assert(monthPickerPortraitWidth != null),
-        assert(maxDayPickerRowCount != null),
-        assert(contentPadding != null),
-        assert(showNextMonthStart != null),
-        assert(showPrevMonthEnd != null);
+  });
 }
 
 

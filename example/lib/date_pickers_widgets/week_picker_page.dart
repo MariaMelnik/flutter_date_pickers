@@ -11,30 +11,24 @@ class WeekPickerPage extends StatefulWidget {
   final List<Event> events;
 
   ///
-  const WeekPickerPage({Key key, this.events}) : super(key: key);
+  const WeekPickerPage({
+    Key? key,
+    this.events = const []
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _WeekPickerPageState();
 }
 
 class _WeekPickerPageState extends State<WeekPickerPage> {
-  DateTime _selectedDate;
-  DateTime _firstDate;
-  DateTime _lastDate;
-  DatePeriod _selectedPeriod;
+  DateTime _selectedDate = DateTime.now();
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
+  DateTime _lastDate = DateTime.now().add(Duration(days: 45));
+  DatePeriod? _selectedPeriod;
 
-  Color selectedPeriodStartColor;
-  Color selectedPeriodLastColor;
-  Color selectedPeriodMiddleColor;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectedDate = DateTime.now();
-    _firstDate = DateTime.now().subtract(Duration(days: 45));
-    _lastDate = DateTime.now().add(Duration(days: 45));
-  }
+  Color selectedPeriodStartColor = Colors.blue;
+  Color selectedPeriodLastColor = Colors.blue;
+  Color selectedPeriodMiddleColor = Colors.blue;
 
   @override
   void didChangeDependencies() {
@@ -145,8 +139,8 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
                   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                   child: Text("Selected period boundaries:"),
                 ),
-                Text(_selectedPeriod.start.toString()),
-                Text(_selectedPeriod.end.toString()),
+                Text(_selectedPeriod!.start.toString()),
+                Text(_selectedPeriod!.end.toString()),
               ])
             : Container()
       ],
@@ -154,7 +148,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
 
   // select background color for the first date of the selected period
   void _showSelectedStartColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedPeriodStartColor,
@@ -169,7 +163,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
 
   // select background color for the last date of the selected period
   void _showSelectedEndColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedPeriodLastColor,
@@ -214,14 +208,16 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
     return day.day != DateTime.now().add(Duration(days: 7)).day ;
   }
 
-  EventDecoration _eventDecorationBuilder(DateTime date) {
+  EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates = widget.events
-        ?.map<DateTime>((Event e) => e.date)
-        ?.toList();
+        .map<DateTime>((Event e) => e.date)
+        .toList();
 
-    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year
+    bool isEventDate = eventsDates.any((DateTime d) => date.year == d.year
         && date.month == d.month
-        && d.day == date.day) ?? false;
+        && d.day == date.day);
+
+    if (!isEventDate) return null;
 
     BoxDecoration roundedBorder = BoxDecoration(
         color: Colors.blue,
@@ -231,10 +227,10 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
         borderRadius: BorderRadius.all(Radius.circular(3.0))
     );
 
-    TextStyle whiteText = Theme.of(context)
+    TextStyle? whiteText = Theme.of(context)
         .textTheme
         .bodyText2
-        .copyWith(color: Colors.white);
+        ?.copyWith(color: Colors.white);
 
     return isEventDate
         ? EventDecoration(boxDecoration: roundedBorder, textStyle: whiteText)

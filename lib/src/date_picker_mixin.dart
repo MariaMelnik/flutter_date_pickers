@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'date_picker_styles.dart';
 
+///
 mixin CommonDatePickerFunctions {
 
   /// Builds widgets showing abbreviated days of week. The first widget in the
@@ -30,16 +31,16 @@ mixin CommonDatePickerFunctions {
     final List<Widget> result = <Widget>[];
 
     for (int i = firstDayOfWeekIndex; true; i = (i + 1) % 7) {
-      DayHeaderStyle headerStyle = headerStyleBuilder(i);
+      DayHeaderStyle? headerStyle = headerStyleBuilder(i);
       final String weekday = narrowWeekdays[i];
 
       Widget header = ExcludeSemantics(
         child: Container(
-          decoration: headerStyle.decoration,
+          decoration: headerStyle?.decoration,
           child: Center(
               child: Text(
                   weekday,
-                  style: headerStyle.textStyle
+                  style: headerStyle?.textStyle
               )
           ),
         ),

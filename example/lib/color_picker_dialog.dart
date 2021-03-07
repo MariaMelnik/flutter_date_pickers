@@ -11,22 +11,26 @@ class ColorPickerDialog extends StatefulWidget {
   final Color selectedColor;
 
   ///
-  const ColorPickerDialog({Key key, this.selectedColor}) : super(key: key);
+  const ColorPickerDialog({
+    Key? key,
+    required this.selectedColor
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ColorPickerDialogState();
 }
 
 class _ColorPickerDialogState extends State<ColorPickerDialog> {
-  ColorSwatch _mainColor;
+  Color _mainColor = Colors.blue;
 
   @override
   void initState() {
     super.initState();
 
-    _mainColor = !materialColors.contains(widget.selectedColor)
-        ? Colors.blue
-        : widget.selectedColor;
+    bool isSelectedMaterial = materialColors.contains(widget.selectedColor);
+    if (isSelectedMaterial) {
+      _mainColor = widget.selectedColor;
+    }
   }
 
   @override
@@ -34,26 +38,34 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: const EdgeInsets.all(6.0),
-      title: Text("Color picker"),
+      title: const Text("Color picker"),
       content: MaterialColorPicker(
         selectedColor: _mainColor,
         allowShades: false,
-        onMainColorChange: (color) => setState(() => _mainColor = color),
+        onMainColorChange: _onMainColorChange,
       ),
       actions: [
-        FlatButton(
-          child: Text('CANCEL'),
+        TextButton(
+          child: const Text('CANCEL'),
           onPressed: () {
             Navigator.of(context).pop(null);
           },
         ),
-        FlatButton(
-          child: Text('SUBMIT'),
+        TextButton(
+          child: const Text('SUBMIT'),
           onPressed: () {
             Navigator.of(context).pop(_mainColor);
           },
         ),
       ],
     );
+  }
+
+  void _onMainColorChange (Color? newColor) {
+    if (newColor == null) return;
+
+    setState(() {
+      _mainColor = newColor;
+    });
   }
 }

@@ -11,27 +11,30 @@ class RangePickerPageStyled extends StatefulWidget {
   final List<Event> events;
 
   ///
-  const RangePickerPageStyled({Key key, this.events}) : super(key: key);
+  const RangePickerPageStyled({
+    Key? key,
+    this.events = const []
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _RangePickerPageStyledState();
 }
 
 class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
-  DateTime _firstDate;
-  DateTime _lastDate;
-  DatePeriod _selectedPeriod;
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 345));
+  DateTime _lastDate = DateTime.now().add(Duration(days: 345));
+  DatePeriod _selectedPeriod = DatePeriod(
+      DateTime.now().subtract(Duration(days: 4)),
+      DateTime.now().add(Duration(days: 8))
+  );
 
-  Color selectedPeriodStartColor;
-  Color selectedPeriodLastColor;
-  Color selectedPeriodMiddleColor;
+  Color selectedPeriodStartColor = Colors.blue;
+  Color selectedPeriodLastColor = Colors.blue;
+  Color selectedPeriodMiddleColor = Colors.blue;
 
   @override
   void initState() {
     super.initState();
-
-    _firstDate = DateTime.now().subtract(Duration(days: 345));
-    _lastDate = DateTime.now().add(Duration(days: 345));
 
     DateTime selectedPeriodStart = DateTime.now().subtract(Duration(days: 4));
     DateTime selectedPeriodEnd = DateTime.now().add(Duration(days: 8));
@@ -152,14 +155,15 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
     });
   }
 
-  EventDecoration _eventDecorationBuilder(DateTime date) {
+  EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates = widget.events
-        ?.map<DateTime>((Event e) => e.date)
-        ?.toList();
+        .map<DateTime>((Event e) => e.date)
+        .toList();
 
-    bool isEventDate = eventsDates?.any((DateTime d) => date.year == d.year
+    bool isEventDate = eventsDates.any((DateTime d) =>
+    date.year == d.year
         && date.month == d.month
-        && d.day == date.day) ?? false;
+        && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
         border: Border.all(
@@ -178,8 +182,8 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
     DateTime tomorrow = now.add(Duration(days: 1));
-    bool isYesterday = sameDate(day, yesterday);
-    bool isTomorrow = sameDate(day, tomorrow);
+    bool isYesterday = _sameDate(day, yesterday);
+    bool isTomorrow = _sameDate(day, tomorrow);
 
     return !isYesterday && !isTomorrow;
 
@@ -218,6 +222,7 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
 }
 
 
-bool sameDate(DateTime first, DateTime second) {
-  return first.year == second.year && first.month == second.month && first.day == second.day;
-}
+bool _sameDate(DateTime first, DateTime second) =>
+      first.year == second.year 
+      && first.month == second.month 
+      && first.day == second.day;
