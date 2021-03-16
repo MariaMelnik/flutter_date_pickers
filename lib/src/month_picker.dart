@@ -430,18 +430,11 @@ class _MonthPicker extends StatelessWidget {
     );
   }
 
-  // Returns only month from "MaterialLocalizations.formatShortMonthDay"
-  // which might be formatted differently.
-  /// Examples:
-  /// - US English: Feb 21 (will return "Feb")
-  /// - Russian: 21 февр. (will return "февр.")
+  // Returns only month made with intl.DateFormat.MMM() for current [locale].
+  // We can'r use [localizations] here because MaterialLocalizations doesn't
+  // provide short month string.
   String _getMonthStr(DateTime date) {
-    String monthWithDay = localizations.formatShortMonthDay(date);
-    String month =
-        monthWithDay.split("").where((s) => !isDigit(s) && s != " ").join("");
-
+    String month = intl.DateFormat.MMM(locale.toString()).format(date);
     return month;
   }
-
-  static bool isDigit(String char) => int.tryParse(char) != null;
 }

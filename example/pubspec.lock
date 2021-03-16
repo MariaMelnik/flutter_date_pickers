@@ -80,7 +80,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "286596b1e0167877bcdb87011bff77364338ba57"
-      url: "git@github.com:Bwolfs2/flutter_material_color_picker.git"
+      url: "git://github.com/Bwolfs2/flutter_material_color_picker.git"
     source: git
     version: "1.0.5-nullsafety.0"
   flutter_test:
