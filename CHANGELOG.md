@@ -41,3 +41,6 @@ Increased intl dependency version according to one used on pub.dev.
 ## [0.2.0] - 7 March 2021
 Migrated to null-safety.
 Added DatePickerLayoutSettings.hideMonthNavigationRow option.
+
+## [0.2.1] - 16 March 2021
+Used intl for getting short month name for MonthPicker (fixed #54)
