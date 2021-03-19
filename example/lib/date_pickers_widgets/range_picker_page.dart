@@ -25,8 +25,8 @@ class _RangePickerPageState extends State<RangePickerPage> {
   DateTime _firstDate = DateTime.now().subtract(Duration(days: 345));
   DateTime _lastDate = DateTime.now().add(Duration(days: 345));
   DatePeriod _selectedPeriod = DatePeriod(
-      DateTime.now().subtract(Duration(days: 4)),
-      DateTime.now().add(Duration(days: 8))
+      DateTime.now().subtract(Duration(days: 30)),
+      DateTime.now().subtract(Duration(days: 12))
   );
 
   Color selectedPeriodStartColor = Colors.blue;
@@ -72,6 +72,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
       children: <Widget>[
         Expanded(
           child: RangePicker(
+            initiallyShowDate: DateTime.now(),
             selectedPeriod: _selectedPeriod,
             onChanged: _onSelectedDateChanged,
             firstDate: _firstDate,

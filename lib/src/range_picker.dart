@@ -14,13 +14,14 @@ import 'typedefs.dart';
 
 /// Date picker for range selection.
 class RangePicker extends StatelessWidget {
-  /// Creates a month picker.
+  /// Creates a range picker.
   RangePicker(
       {Key? key,
       required this.selectedPeriod,
       required this.onChanged,
       required this.firstDate,
       required this.lastDate,
+      this.initiallyShowDate,
       this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
       this.datePickerStyles,
       this.datePickerKeys,
@@ -32,6 +33,10 @@ class RangePicker extends StatelessWidget {
         assert(!lastDate.isBefore(firstDate)),
         assert(!selectedPeriod.start.isBefore(firstDate)),
         assert(!selectedPeriod.end.isAfter(lastDate)),
+        assert(initiallyShowDate == null
+            || !initiallyShowDate.isAfter(lastDate)),
+        assert(initiallyShowDate == null
+            || !initiallyShowDate.isBefore(firstDate)),
         super(key: key);
 
   /// The currently selected period.
@@ -52,6 +57,11 @@ class RangePicker extends StatelessWidget {
 
   /// The latest date the user is permitted to pick.
   final DateTime lastDate;
+
+  /// Date for defining what month should be shown initially.
+  ///
+  /// In case of null start of the [selectedPeriod] will be shown.
+  final DateTime? initiallyShowDate;
 
   /// Layout settings what can be customized by user
   final DatePickerLayoutSettings datePickerLayoutSettings;
@@ -86,6 +96,7 @@ class RangePicker extends StatelessWidget {
       selection: DayPickerRangeSelection(selectedPeriod),
       firstDate: firstDate,
       lastDate: lastDate,
+      initiallyShownDate: initiallyShowDate,
       onChanged: onChanged,
       onSelectionError: onSelectionError,
       datePickerLayoutSettings: datePickerLayoutSettings,

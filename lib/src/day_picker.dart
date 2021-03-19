@@ -17,6 +17,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
     required this.lastDate,
     required this.selectionLogic,
     required this.selection,
+    this.initiallyShowDate,
     this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
     this.datePickerStyles,
     this.datePickerKeys,
@@ -36,6 +37,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
     required DateTime lastDate,
     DatePickerLayoutSettings datePickerLayoutSettings
       = const DatePickerLayoutSettings(),
+    DateTime? initiallyShowDate,
     DatePickerRangeStyles? datePickerStyles,
     DatePickerKeys? datePickerKeys,
     SelectableDayPredicate? selectableDayPredicate,
@@ -47,6 +49,10 @@ class DayPicker<T extends Object> extends StatelessWidget {
     assert(!lastDate.isBefore(firstDate));
     assert(!selectedDate.isBefore(firstDate));
     assert(!selectedDate.isAfter(lastDate));
+    assert(initiallyShowDate == null
+        || !initiallyShowDate.isAfter(lastDate));
+    assert(initiallyShowDate == null
+    || !initiallyShowDate.isBefore(firstDate));
 
     final selection = DayPickerSingleSelection(selectedDate);
     final selectionLogic = DaySelectable(
@@ -57,6 +63,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
         onChanged: onChanged,
         firstDate: firstDate,
         lastDate: lastDate,
+        initiallyShowDate: initiallyShowDate,
         selectionLogic: selectionLogic,
         selection: selection,
         eventDecorationBuilder: eventDecorationBuilder,
@@ -81,6 +88,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
     required DateTime lastDate,
     DatePickerLayoutSettings datePickerLayoutSettings
       = const DatePickerLayoutSettings(),
+    DateTime? initiallyShowDate,
     DatePickerRangeStyles? datePickerStyles,
     DatePickerKeys? datePickerKeys,
     SelectableDayPredicate? selectableDayPredicate,
@@ -89,6 +97,10 @@ class DayPicker<T extends Object> extends StatelessWidget {
   {
     assert(!firstDate.isAfter(lastDate));
     assert(!lastDate.isBefore(firstDate));
+    assert(initiallyShowDate == null
+        || !initiallyShowDate.isAfter(lastDate));
+    assert(initiallyShowDate == null
+    || !initiallyShowDate.isBefore(lastDate));
 
     final selection =  DayPickerMultiSelection(selectedDates);
     final selectionLogic =  DayMultiSelectable(
@@ -99,6 +111,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
       onChanged: onChanged,
       firstDate: firstDate,
       lastDate: lastDate,
+      initiallyShowDate: initiallyShowDate,
       selectionLogic: selectionLogic,
       selection: selection,
       eventDecorationBuilder: eventDecorationBuilder,
@@ -123,6 +136,11 @@ class DayPicker<T extends Object> extends StatelessWidget {
 
   /// The latest date the user is permitted to pick.
   final DateTime lastDate;
+
+  /// Date for defining what month should be shown initially.
+  ///
+  /// In case of null earliest of the [selection] will be shown.
+  final DateTime? initiallyShowDate;
 
   /// Layout settings what can be customized by user
   final DatePickerLayoutSettings datePickerLayoutSettings;
@@ -159,6 +177,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
       selection: selection,
       firstDate: firstDate,
       lastDate: lastDate,
+      initiallyShownDate: initiallyShowDate,
       onChanged: onChanged,
       datePickerLayoutSettings: datePickerLayoutSettings,
       datePickerStyles: datePickerStyles ?? DatePickerRangeStyles(),

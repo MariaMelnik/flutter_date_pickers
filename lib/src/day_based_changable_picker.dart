@@ -42,6 +42,11 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// The latest date the user is permitted to pick.
   final DateTime lastDate;
 
+  /// Date for defining what month should be shown initially.
+  ///
+  /// Default value is [selection.earliest].
+  final DateTime initiallyShowDate;
+
   /// Layout settings what can be customized by user
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
@@ -73,11 +78,13 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
       required this.datePickerLayoutSettings,
       required this.datePickerStyles,
       required this.selectablePicker,
+      DateTime? initiallyShownDate,
       this.datePickerKeys,
       this.onSelectionError,
       this.eventDecorationBuilder,
       this.onMonthChanged})
-      : super(key: key);
+      : initiallyShowDate = initiallyShownDate ?? selection.earliest,
+        super(key: key);
 
   @override
   State<DayBasedChangeablePicker<T>> createState() =>
@@ -213,9 +220,7 @@ class _DayBasedChangeablePickerState<T>
         initialData: _presenter.lastVal,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return const SizedBox();
           }
 
           DayBasedChangeablePickerState state = snapshot.data!;
@@ -268,13 +273,27 @@ class _DayBasedChangeablePickerState<T>
     );
   }
 
-  int _getInitPage() {
-    int initPage = 0;
-
-    if (widget.selection.isNotEmpty) {
-      initPage = DatePickerUtils.monthDelta(
-          widget.firstDate, widget.selection.earliest);
+  // Returns appropriate date to be shown for init.
+  // If [widget.initiallyShowDate] is out of bounds [widget.firstDate]
+  // - [widget.lastDate], nearest bound will be used.
+  DateTime _getCheckedInitialDate() {
+    DateTime initiallyShowDateChecked = widget.initiallyShowDate;
+    if (initiallyShowDateChecked.isBefore(widget.firstDate)) {
+      initiallyShowDateChecked = widget.firstDate;
     }
+
+    if (initiallyShowDateChecked.isAfter(widget.lastDate)) {
+      initiallyShowDateChecked = widget.lastDate;
+    }
+
+    return initiallyShowDateChecked;
+  }
+
+  int _getInitPage() {
+    final initialDate = _getCheckedInitialDate();
+    int initPage = DatePickerUtils.monthDelta(
+        widget.firstDate, initialDate
+    );
 
     return initPage;
   }
@@ -292,10 +311,7 @@ class _DayBasedChangeablePickerState<T>
     _presenter.data.listen(_onStateChanged);
 
     // date used to define what month should be shown
-    DateTime initSelection = widget.firstDate;
-    if (widget.selection.isNotEmpty) {
-      initSelection = widget.selection.earliest;
-    }
+    DateTime initSelection = _getCheckedInitialDate();
 
     // Give information about initial selection to presenter.
     // It should be done after first frame when PageView is already created.
