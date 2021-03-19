@@ -44,3 +44,6 @@ Added DatePickerLayoutSettings.hideMonthNavigationRow option.
 
 ## [0.2.1] - 16 March 2021
 Used intl for getting short month name for MonthPicker (fixed #54)
+
+## [0.2.2] - 20 March 2021
+Added **initiallyShowDate optional property for DayPicker, WeekPicker and RangePicker.
