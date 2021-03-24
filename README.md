@@ -1,13 +1,24 @@
-# flutter_date_pickers
-
+# flutter_date_pickers  
+  
+[![Actions Status](https://github.com/MariaMelnik/flutter_date_pickers/workflows/Test/badge.svg)](https://github.com/MariaMelnik/flutter_date_pickers/actions)
+[![Pub](https://img.shields.io/pub/v/flutter_date_pickers.svg)](https://pub.dev/packages/flutter_date_pickers)
+[![Likes](https://img.shields.io/badge/dynamic/json?color=blue&label=likes&query=likes&url=http://www.pubscore.gq/likes?package=flutter_date_pickers&style=flat-square&cacheSeconds=90000)](https://pub.dev/packages/flutter_date_pickers)
+[![Health](https://img.shields.io/badge/dynamic/json?color=blue&label=health&query=pub_points&url=http://www.pubscore.gq/pub-points?package=flutter_date_pickers&style=flat-square&cacheSeconds=90000)](https://pub.dev/packages/flutter_date_pickers/score)
+[![Code size](https://img.shields.io/github/languages/code-size/MariaMelnik/flutter_date_pickers?logo=github&logoColor=white)](https://github.com/MariaMelnik/flutter_date_pickers)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![GitHub stars](https://img.shields.io/github/stars/MariaMelnik/flutter_date_pickers?style=social)](https://github.com/MariaMelnik/flutter_date_pickers/)
+<!--[![Coverage](https://codecov.io/gh/MariaMelnik/flutter_date_pickers/branch/master/graph/badge.svg)](https://codecov.io/gh/MariaMelnik/flutter_date_pickers)
+[![effective_dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)-->
+  
+  
 Allows to use date pickers without dialog.
 Provides some customizable styles for date pickers.
 
 A set of date pickers:
-   * `DayPicker` for one day
-   * `WeekPicker` for whole week
-   * `RangePicker` for random range
-   * `MonthPicker` for month
+* `DayPicker` for one day
+* `WeekPicker` for whole week
+* `RangePicker` for random range
+* `MonthPicker` for month
 
 ![](demoDatePickers2.gif)
 
