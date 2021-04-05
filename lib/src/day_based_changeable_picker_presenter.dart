@@ -101,7 +101,7 @@ class DayBasedChangeablePickerPresenter {
 
     String? nextTooltip = isLastMonth
         ? null
-        : "${localizations.nextMonthTooltip} $nextMonth";
+        : "${localizations.nextMonthTooltip} $nextMonthStr";
 
     DayBasedChangeablePickerState newState = DayBasedChangeablePickerState(
         currentMonth: curMonth,
