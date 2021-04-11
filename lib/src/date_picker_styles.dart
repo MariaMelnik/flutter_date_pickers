@@ -102,8 +102,8 @@ class DatePickerStyles {
                 color: accentColor,
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)));
 
-    DayHeaderStyle? _dayHeaderStyle;
-    if (dayHeaderStyleBuilder == null) {
+    DayHeaderStyle? _dayHeaderStyle = dayHeaderStyle;
+    if (dayHeaderStyleBuilder == null && _dayHeaderStyle == null) {
       _dayHeaderStyle = DayHeaderStyle(textStyle: theme.textTheme.caption);
     }
 
