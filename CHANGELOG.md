@@ -50,3 +50,6 @@ Added **initiallyShowDate** optional property for DayPicker, WeekPicker and Rang
 
 ## [0.2.3] - 05 April 2021
 Fixed nextTooltip initializing (#57).
+
+## [0.2.3+1] - 11 April 2021
+Fixed defining DayHeaderStyle in DatePickerStyles.fulfillWithTheme
