@@ -24,8 +24,7 @@ class DayPickerPage extends StatefulWidget {
 class _DayPickerPageState extends State<DayPickerPage> {
   DateTime _selectedDate = DateTime.now();
 
-  DateTime _firstDate = DateTime(2021, 3, 31);
-  // DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
   DateTime _lastDate = DateTime.now().add(Duration(days: 45));
 
   Color selectedDateStyleColor = Colors.blue;
