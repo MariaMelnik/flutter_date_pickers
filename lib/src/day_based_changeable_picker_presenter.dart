@@ -61,14 +61,16 @@ class DayBasedChangeablePickerPresenter {
   /// Update state to show previous month.
   void gotoPrevMonth() {
     DateTime oldCur = _lastVal!.currentMonth;
-    DateTime newCurDate = DateTime(oldCur.year, oldCur.month - 1, oldCur.day);
+    DateTime newCurDate = DateTime(oldCur.year, oldCur.month - 1);
+
     changeMonth(newCurDate);
   }
 
   /// Update state to show next month.
   void gotoNextMonth() {
     DateTime oldCur = _lastVal!.currentMonth;
-    DateTime newCurDate = DateTime(oldCur.year, oldCur.month + 1, oldCur.day);
+    DateTime newCurDate = DateTime(oldCur.year, oldCur.month + 1);
+
     changeMonth(newCurDate);
   }
 

@@ -331,8 +331,7 @@ class _DayBasedChangeablePickerState<T>
 
   void _handleMonthPageChanged(int monthPage) {
     DateTime firstMonth = widget.firstDate;
-    DateTime newMonth =
-        DateTime(firstMonth.year, firstMonth.month + monthPage, firstMonth.day);
+    DateTime newMonth = DateTime(firstMonth.year, firstMonth.month + monthPage);
     _presenter.changeMonth(newMonth);
 
     widget.onMonthChanged?.call(newMonth);
