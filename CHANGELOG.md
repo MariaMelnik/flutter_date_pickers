@@ -56,3 +56,6 @@ Fixed defining DayHeaderStyle in DatePickerStyles.fulfillWithTheme.
 
 ## [0.2.4] - 29 April 2021
 Fixed incorrect new month calculations (#56).
+
+## [0.2.5] - 9 October 2021
+Added dayHeaderTitleBuilder to DatePickerStyles (#64).
