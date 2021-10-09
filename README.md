@@ -40,6 +40,9 @@ for all date pickers
 | TextStyle selectedDateStyle | style for selected date |
 | BoxDecoration selectedSingleDateDecoration | decoration for selected date in case single value is selected |
 | TextStyle defaultDateTextStyle | style for date which is neither current nor disabled nor selected |
+| DayHeaderStyle dayHeaderStyle | style for all weekday headers. For more control under weekday headers styles use dayHeaderStyleBuilder |
+| DayHeaderStyleBuilder dayHeaderStyleBuilder | builder to customize weekday header's style |
+| DayHeaderTitleBuilder dayHeaderTitleBuilder | builder to customize weekday header's title |
 
 only for range date pickers (WeekPicker, RangePicker)
 
