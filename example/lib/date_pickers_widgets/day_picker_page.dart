@@ -56,7 +56,8 @@ class _DayPickerPageState extends State<DayPickerPage> {
             textStyle: TextStyle(
                 color: Colors.red
             )
-        )
+        ),
+        dayHeaderTitleBuilder: _dayHeaderTitleBuilder
     );
 
     return Flex(
@@ -186,3 +187,6 @@ class _DayPickerPageState extends State<DayPickerPage> {
         : null;
   }
 }
+ 
+String _dayHeaderTitleBuilder(int dayOfTheWeek, List<String> localizedHeaders)
+  => localizedHeaders[dayOfTheWeek].substring(0,3);
