@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'date_picker_styles.dart';
+import 'styles/date_picker_styles.dart';
 
 ///
 mixin CommonDatePickerFunctions {

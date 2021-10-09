@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'date_picker_mixin.dart';
-import 'date_picker_styles.dart';
+import 'styles/date_picker_styles.dart';
 import 'day_type.dart';
-import 'event_decoration.dart';
+import 'styles/event_decoration.dart';
 import 'i_selectable_picker.dart';
-import 'layout_settings.dart';
+import 'styles/layout_settings.dart';
 import 'utils.dart';
+import 'package:intl/intl.dart' as intl hide Locale;
 
 /// Widget for date pickers based on days and cover entire month.
 /// Each cell of this picker is day.
@@ -45,6 +46,10 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
 
   /// Localizations used to get strings for prev/next button tooltips,
   /// weekday headers and display values for days numbers.
+  ///
+  // ignore: comment_references
+  /// If day headers builder is provided [datePickerStyles.dayHeaderBuilder]
+  /// it will be used for building weekday headers instead of localizations.
   final MaterialLocalizations localizations;
 
   /// Creates main date picker view where every cell is day.
@@ -67,7 +72,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   Widget build(BuildContext context) {
     final List<Widget> labels = <Widget>[];
 
-    List<Widget> headers = _buildHeaders(localizations);
+    List<Widget> headers = _buildHeaders(localizations, context);
     List<Widget> daysBeforeMonthStart = _buildCellsBeforeStart(localizations);
     List<Widget> monthDays = _buildMonthCells(localizations);
     List<Widget> daysAfterMonthEnd = _buildCellsAfterEnd(localizations);
@@ -94,7 +99,10 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     );
   }
 
-  List<Widget> _buildHeaders(MaterialLocalizations localizations) {
+  List<Widget> _buildHeaders(
+    MaterialLocalizations localizations,
+    BuildContext context,
+  ) {
     final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
         localizations.firstDayOfWeekIndex;
 
@@ -103,10 +111,36 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
             // ignore: avoid_types_on_closure_parameters
             (int i) => datePickerStyles.dayHeaderStyle;
 
-    List<Widget> headers = getDayHeaders(dayHeaderStyleBuilder,
-        localizations.narrowWeekdays, firstDayOfWeekIndex);
+    final weekdayTitles = _getWeekdayTitles(context);
+    List<Widget> headers = getDayHeaders(
+      dayHeaderStyleBuilder,
+      weekdayTitles,
+      firstDayOfWeekIndex,
+    );
 
     return headers;
+  }
+
+  List<String> _getWeekdayTitles(BuildContext context) {
+    final curLocale = Localizations.maybeLocaleOf(context) ?? _defaultLocale;
+
+    // There is no access to weekdays full titles from [MaterialLocalizations]
+    // so use intl to get it.
+    final fullLocalizedWeekdayHeaders =
+        intl.DateFormat.E(curLocale.toLanguageTag()).dateSymbols.WEEKDAYS;
+
+    final narrowLocalizedWeekdayHeaders = localizations.narrowWeekdays;
+
+    final weekdayTitles =
+        List.generate(fullLocalizedWeekdayHeaders.length, (dayOfWeek) {
+      final builtHeader = datePickerStyles.dayHeaderTitleBuilder
+          ?.call(dayOfWeek, fullLocalizedWeekdayHeaders);
+      final result = builtHeader ?? narrowLocalizedWeekdayHeaders[dayOfWeek];
+
+      return result;
+    });
+
+    return weekdayTitles;
   }
 
   List<Widget> _buildCellsBeforeStart(MaterialLocalizations localizations) {
@@ -345,3 +379,5 @@ class _DayCell extends StatelessWidget {
     return result;
   }
 }
+
+Locale _defaultLocale = const Locale('en', 'US');
