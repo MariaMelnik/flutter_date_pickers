@@ -6,9 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'date_picker_keys.dart';
-import 'date_picker_styles.dart';
-import 'layout_settings.dart';
 import 'semantic_sorting.dart';
+import 'styles/date_picker_styles.dart';
+import 'styles/layout_settings.dart';
 import 'utils.dart';
 
 const Locale _defaultLocale = Locale('en', 'US');

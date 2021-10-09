@@ -3,13 +3,13 @@ import 'package:flutter/rendering.dart';
 
 import 'date_period.dart';
 import 'date_picker_keys.dart';
-import 'date_picker_styles.dart';
 import 'day_based_changable_picker.dart';
 import 'day_picker_selection.dart';
 import 'day_type.dart';
-import 'event_decoration.dart';
 import 'i_selectable_picker.dart';
-import 'layout_settings.dart';
+import 'styles/date_picker_styles.dart';
+import 'styles/event_decoration.dart';
+import 'styles/layout_settings.dart';
 import 'typedefs.dart';
 
 /// Date picker for range selection.

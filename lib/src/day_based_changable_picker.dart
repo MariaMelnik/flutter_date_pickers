@@ -7,15 +7,15 @@ import 'package:intl/intl.dart' as intl;
 
 import 'basic_day_based_widget.dart';
 import 'date_picker_keys.dart';
-import 'date_picker_styles.dart';
 import 'day_based_changeable_picker_presenter.dart';
 import 'day_picker_selection.dart';
 import 'day_type.dart';
-import 'event_decoration.dart';
 import 'i_selectable_picker.dart';
-import 'layout_settings.dart';
 import 'month_navigation_row.dart';
 import 'semantic_sorting.dart';
+import 'styles/date_picker_styles.dart';
+import 'styles/event_decoration.dart';
+import 'styles/layout_settings.dart';
 import 'typedefs.dart';
 import 'utils.dart';
 
