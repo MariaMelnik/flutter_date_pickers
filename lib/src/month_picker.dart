@@ -100,7 +100,7 @@ class MonthPicker<T extends Object> extends StatefulWidget {
     assert(!lastDate.isBefore(firstDate));
 
     final selection = MonthPickerMultiSelection(selectedDates);
-    final selectionLogic = DayMultiSelectable(
+    final selectionLogic = MonthMultiSelectable(
         selectedDates, firstDate, lastDate,
         selectableDayPredicate: selectableDayPredicate);
 
@@ -421,20 +421,6 @@ class _MonthPicker<T> extends StatelessWidget {
       Key? key})
       : assert(!firstDate.isAfter(lastDate)),
         super(key: key);
-
-  // // We only need to know if month of passed day
-  // // before the month of the firstDate or after the month of the lastDate.
-  // //
-  // // Don't need to compare day and time.
-  // bool _isDisabled(DateTime month) {
-  //   DateTime beginningOfTheFirstDateMonth =
-  //       DateTime(firstDate.year, firstDate.month);
-  //   DateTime endOfTheLastDateMonth = DateTime(lastDate.year, lastDate.month + 1)
-  //       .subtract(Duration(microseconds: 1));
-  //
-  //   return month.isAfter(endOfTheLastDateMonth) ||
-  //       month.isBefore(beginningOfTheFirstDateMonth);
-  // }
 
   @override
   Widget build(BuildContext context) {
