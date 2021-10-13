@@ -30,12 +30,12 @@ class MonthPicker<T extends Object> extends StatefulWidget {
     required this.datePickerStyles,
   })  : assert(!firstDate.isAfter(lastDate)),
         assert(
-            !selection.isBefore(firstDate),
+            selection.isEmpty || !selection.isBefore(firstDate),
             'Selection must not be before first date. '
             'Earliest selection is: ${selection.earliest}. '
             'First date is: $firstDate'),
         assert(
-            !selection.isAfter(lastDate),
+            selection.isEmpty || !selection.isAfter(lastDate),
             'Selection must not be after last date. '
             'Latest selection is: ${selection.latest}. '
             'First date is: $lastDate'),
@@ -174,35 +174,16 @@ class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
   @override
   void initState() {
     super.initState();
-    // Initially display the pre-selected date.
-    final int yearPage =
-        DatePickerUtils.yearDelta(widget.firstDate, widget.selection.earliest);
-
-    _changesSubscription = widget.selectionLogic.onUpdate
-        .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
-      ..onError((e) => print(e.toString()));
-
-    _monthPickerController.dispose();
-    _monthPickerController = PageController(initialPage: yearPage);
-    _handleYearPageChanged(yearPage);
+    _initWidgetData();
     _updateCurrentDate();
   }
 
   @override
   void didUpdateWidget(MonthPicker<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selection != oldWidget.selection) {
-      final int yearPage = DatePickerUtils.yearDelta(
-          widget.firstDate, widget.selection.earliest);
-      _monthPickerController = PageController(initialPage: yearPage);
-      _handleYearPageChanged(yearPage);
-    }
-
-    if (widget.selectionLogic != oldWidget.selectionLogic) {
-      _changesSubscription?.cancel();
-      _changesSubscription = widget.selectionLogic.onUpdate
-          .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
-        ..onError((e) => print(e.toString()));
+    if (widget.selection != oldWidget.selection ||
+        widget.selectionLogic != oldWidget.selectionLogic) {
+      _initWidgetData();
     }
   }
 
@@ -226,6 +207,86 @@ class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
       // and ".of" method throws error
       // trying to cast null to MaterialLocalizations.
     } on TypeError catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int yearsCount =
+        DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) + 1;
+
+    return SizedBox(
+      width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
+      height: widget.datePickerLayoutSettings.maxDayPickerHeight,
+      child: Stack(
+        children: <Widget>[
+          Semantics(
+            sortKey: YearPickerSortKey.calendar,
+            child: PageView.builder(
+              // key: ValueKey<DateTime>(widget.selection),
+              controller: _monthPickerController,
+              scrollDirection: Axis.horizontal,
+              itemCount: yearsCount,
+              itemBuilder: _buildItems,
+              onPageChanged: _handleYearPageChanged,
+            ),
+          ),
+          PositionedDirectional(
+            top: 0.0,
+            start: 8.0,
+            child: Semantics(
+              sortKey: YearPickerSortKey.previousYear,
+              child: IconButton(
+                key: widget.datePickerKeys?.previousPageIconKey,
+                icon: widget.datePickerStyles.prevIcon,
+                tooltip: _isDisplayingFirstYear
+                    ? null
+                    : '${localizations.formatYear(_previousYearDate)}',
+                onPressed: _isDisplayingFirstYear ? null : _handlePreviousYear,
+              ),
+            ),
+          ),
+          PositionedDirectional(
+            top: 0.0,
+            end: 8.0,
+            child: Semantics(
+              sortKey: YearPickerSortKey.nextYear,
+              child: IconButton(
+                key: widget.datePickerKeys?.nextPageIconKey,
+                icon: widget.datePickerStyles.nextIcon,
+                tooltip: _isDisplayingLastYear
+                    ? null
+                    : '${localizations.formatYear(_nextYearDate)}',
+                onPressed: _isDisplayingLastYear ? null : _handleNextYear,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _changesSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initWidgetData() {
+    final initiallyShowDate =
+        widget.selection.isEmpty ? DateTime.now() : widget.selection.earliest;
+
+    // Initially display the pre-selected date.
+    final int yearPage =
+        DatePickerUtils.yearDelta(widget.firstDate, initiallyShowDate);
+
+    _changesSubscription?.cancel();
+    _changesSubscription = widget.selectionLogic.onUpdate
+        .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
+      ..onError((e) => print(e.toString()));
+
+    _monthPickerController.dispose();
+    _monthPickerController = PageController(initialPage: yearPage);
+    _handleYearPageChanged(yearPage);
   }
 
   void _updateCurrentDate() {
@@ -295,68 +356,6 @@ class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
           _addYearsToYearDate(widget.firstDate, yearPage);
       _nextYearDate = _addYearsToYearDate(widget.firstDate, yearPage + 1);
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    int yearsCount =
-        DatePickerUtils.yearDelta(widget.firstDate, widget.lastDate) + 1;
-
-    return SizedBox(
-      width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
-      height: widget.datePickerLayoutSettings.maxDayPickerHeight,
-      child: Stack(
-        children: <Widget>[
-          Semantics(
-            sortKey: YearPickerSortKey.calendar,
-            child: PageView.builder(
-              // key: ValueKey<DateTime>(widget.selection),
-              controller: _monthPickerController,
-              scrollDirection: Axis.horizontal,
-              itemCount: yearsCount,
-              itemBuilder: _buildItems,
-              onPageChanged: _handleYearPageChanged,
-            ),
-          ),
-          PositionedDirectional(
-            top: 0.0,
-            start: 8.0,
-            child: Semantics(
-              sortKey: YearPickerSortKey.previousYear,
-              child: IconButton(
-                key: widget.datePickerKeys?.previousPageIconKey,
-                icon: widget.datePickerStyles.prevIcon,
-                tooltip: _isDisplayingFirstYear
-                    ? null
-                    : '${localizations.formatYear(_previousYearDate)}',
-                onPressed: _isDisplayingFirstYear ? null : _handlePreviousYear,
-              ),
-            ),
-          ),
-          PositionedDirectional(
-            top: 0.0,
-            end: 8.0,
-            child: Semantics(
-              sortKey: YearPickerSortKey.nextYear,
-              child: IconButton(
-                key: widget.datePickerKeys?.nextPageIconKey,
-                icon: widget.datePickerStyles.nextIcon,
-                tooltip: _isDisplayingLastYear
-                    ? null
-                    : '${localizations.formatYear(_nextYearDate)}',
-                onPressed: _isDisplayingLastYear ? null : _handleNextYear,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _changesSubscription?.cancel();
-    super.dispose();
   }
 
   static MaterialLocalizations get _defaultLocalizations =>
