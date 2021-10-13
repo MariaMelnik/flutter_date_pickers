@@ -243,9 +243,25 @@ class DatePickerUtils {
     return dates.fold(dates[0], getEarliest);
   }
 
+  /// Returns latest [DateTime] from the list.
+  ///
+  /// [dates] must not be null.
+  /// In case it is null, [ArgumentError] will be thrown.
+  static DateTime getLatestFromList(List<DateTime> dates) {
+    ArgumentError.checkNotNull(dates, "dates");
+
+    return dates.fold(dates[0], getLatest);
+  }
+
   /// Returns earliest [DateTime] from two.
   ///
   /// If two [DateTime]s is the same moment first ([a]) will be return.
   static DateTime getEarliest(DateTime a, DateTime b)
     => a.isBefore(b) ? a : b;
+
+  /// Returns latest [DateTime] from two.
+  ///
+  /// If two [DateTime]s is the same moment first ([a]) will be return.
+  static DateTime getLatest(DateTime a, DateTime b)
+  => a.isAfter(b) ? a : b;
 }
