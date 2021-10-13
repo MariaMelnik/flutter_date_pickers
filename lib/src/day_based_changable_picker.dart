@@ -19,7 +19,6 @@ import 'styles/layout_settings.dart';
 import 'typedefs.dart';
 import 'utils.dart';
 
-
 const Locale _defaultLocale = Locale('en', 'US');
 
 /// Date picker based on [DayBasedPicker] picker (for days, weeks, ranges).
@@ -44,7 +43,8 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
 
   /// Date for defining what month should be shown initially.
   ///
-  /// Default value is [selection.earliest].
+  /// Default value is [selection.earliest] for non empty selection
+  /// and [DateTime.now()] for empty selection.
   final DateTime initiallyShowDate;
 
   /// Layout settings what can be customized by user
@@ -83,7 +83,8 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
       this.onSelectionError,
       this.eventDecorationBuilder,
       this.onMonthChanged})
-      : initiallyShowDate = initiallyShownDate ?? selection.earliest,
+      : initiallyShowDate =
+            _getInitiallyShownDate(initiallyShownDate, selection),
         super(key: key);
 
   @override
@@ -121,9 +122,9 @@ class _DayBasedChangeablePickerState<T>
 
     _changesSubscription = widget.selectablePicker.onUpdate
         .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
-          ..onError((e) => widget.onSelectionError != null
-              ? widget.onSelectionError!.call(e)
-              : print(e.toString()));
+      ..onError((e) => widget.onSelectionError != null
+          ? widget.onSelectionError!.call(e)
+          : print(e.toString()));
 
     _updateCurrentDate();
     _initPresenter();
@@ -141,9 +142,9 @@ class _DayBasedChangeablePickerState<T>
     if (widget.selectablePicker != oldWidget.selectablePicker) {
       _changesSubscription = widget.selectablePicker.onUpdate
           .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
-            ..onError((e) => widget.onSelectionError != null
-                ? widget.onSelectionError!.call(e)
-                : print(e.toString()));
+        ..onError((e) => widget.onSelectionError != null
+            ? widget.onSelectionError!.call(e)
+            : print(e.toString()));
     }
   }
 
@@ -291,9 +292,7 @@ class _DayBasedChangeablePickerState<T>
 
   int _getInitPage() {
     final initialDate = _getCheckedInitialDate();
-    int initPage = DatePickerUtils.monthDelta(
-        widget.firstDate, initialDate
-    );
+    int initPage = DatePickerUtils.monthDelta(widget.firstDate, initialDate);
 
     return initPage;
   }
@@ -360,4 +359,13 @@ class _DayBasedChangeablePickerState<T>
           showPrevMonthDates: false,
           showNextMonthDates: false,
           firstDayOfWeekIndex: 1);
+}
+
+DateTime _getInitiallyShownDate(
+  DateTime? initiallyShowDate,
+  DayPickerSelection selection,
+) {
+  if (initiallyShowDate != null) return initiallyShowDate;
+  if (selection.isNotEmpty) return selection.earliest;
+  return DateTime.now();
 }
