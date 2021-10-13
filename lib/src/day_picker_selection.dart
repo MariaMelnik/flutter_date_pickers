@@ -41,7 +41,7 @@ class DayPickerSingleSelection extends DayPickerSelection {
   bool isAfter(DateTime dateTime) => selectedDate.isAfter(dateTime);
 
   @override
-  bool isBefore(DateTime dateTime) => selectedDate.isAfter(dateTime);
+  bool isBefore(DateTime dateTime) => selectedDate.isBefore(dateTime);
 
   @override
   DateTime get earliest => selectedDate;
