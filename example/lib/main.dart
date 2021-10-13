@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'date_pickers_widgets/day_picker_page.dart';
 import 'date_pickers_widgets/days_picker_page.dart';
 import 'date_pickers_widgets/month_picker_page.dart';
+import 'date_pickers_widgets/months_picker_page.dart';
 import 'date_pickers_widgets/range_picker_page.dart';
 import 'date_pickers_widgets/week_picker_page.dart';
 
@@ -63,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     DaysPickerPage(),
     WeekPickerPage(events: events,),
     RangePickerPage(events: events,),
-    MonthPickerPage()
+    MonthPickerPage(),
+    MonthsPickerPage()
   ];
 
   @override
@@ -95,6 +97,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 icon: Icon(Icons.date_range), label: "Range"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.date_range), label: "Month"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.date_range), label: "Months"),
           ],
           fixedColor: Colors.yellow,
           currentIndex: _selectedTab,

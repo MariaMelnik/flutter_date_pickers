@@ -5,15 +5,15 @@ import '../color_picker_dialog.dart';
 import '../color_selector_btn.dart';
 
 /// Page with the [dp.MonthPicker].
-class MonthPickerPage extends StatefulWidget {
+class MonthsPickerPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MonthPickerPageState();
+  State<StatefulWidget> createState() => _MonthsPickerPageState();
 }
 
-class _MonthPickerPageState extends State<MonthPickerPage> {
+class _MonthsPickerPageState extends State<MonthsPickerPage> {
   DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
   DateTime _lastDate = DateTime.now().add(Duration(days: 350));
-  DateTime _selectedDate = DateTime.now();
+  List<DateTime> _selectedDates = [DateTime.now()];
 
   Color selectedDateStyleColor = Colors.blue;
   Color selectedSingleDateDecorationColor = Colors.red;
@@ -45,8 +45,8 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
           : Axis.horizontal,
       children: <Widget>[
         Expanded(
-          child: dp.MonthPicker.single(
-            selectedDate: _selectedDate,
+          child: dp.MonthPicker.multi(
+            selectedDates: _selectedDates,
             onChanged: _onSelectedDateChanged,
             firstDate: _firstDate,
             lastDate: _lastDate,
@@ -56,7 +56,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
         Container(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -87,7 +87,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
                     ],
                   ),
                 ),
-                Text("Selected: $_selectedDate")
+                Text("Selected: $_selectedDates")
               ],
             ),
           ),
@@ -101,8 +101,8 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
     Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-              selectedColor: selectedDateStyleColor,
-            ));
+          selectedColor: selectedDateStyleColor,
+        ));
 
     if (newSelectedColor != null) {
       setState(() {
@@ -116,8 +116,8 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
     Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-              selectedColor: selectedSingleDateDecorationColor,
-            ));
+          selectedColor: selectedSingleDateDecorationColor,
+        ));
 
     if (newSelectedColor != null) {
       setState(() {
@@ -126,9 +126,9 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
     }
   }
 
-  void _onSelectedDateChanged(DateTime newDate) {
+  void _onSelectedDateChanged(List<DateTime> newDates) {
     setState(() {
-      _selectedDate = newDate;
+      _selectedDates = newDates;
     });
   }
 }
