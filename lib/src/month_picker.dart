@@ -6,6 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'date_picker_keys.dart';
+import 'day_type.dart';
+import 'i_selectable_picker.dart';
+import 'month_picker_selection.dart';
 import 'semantic_sorting.dart';
 import 'styles/date_picker_styles.dart';
 import 'styles/layout_settings.dart';
@@ -14,29 +17,112 @@ import 'utils.dart';
 const Locale _defaultLocale = Locale('en', 'US');
 
 /// Month picker widget.
-class MonthPicker extends StatefulWidget {
-  /// Month picker widget.
-  MonthPicker(
-      {Key? key,
-      required this.selectedDate,
-      required this.onChanged,
-      required this.firstDate,
-      required this.lastDate,
-      this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerKeys,
-      required this.datePickerStyles})
-      : assert(!firstDate.isAfter(lastDate)),
-        assert(!selectedDate.isBefore(firstDate)),
-        assert(!selectedDate.isAfter(lastDate)),
+class MonthPicker<T extends Object> extends StatefulWidget {
+  MonthPicker._({
+    Key? key,
+    required this.selectionLogic,
+    required this.selection,
+    required this.onChanged,
+    required this.firstDate,
+    required this.lastDate,
+    this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+    this.datePickerKeys,
+    required this.datePickerStyles,
+  })  : assert(!firstDate.isAfter(lastDate)),
+        assert(
+            !selection.isBefore(firstDate),
+            'Selection must not be before first date. '
+            'Earliest selection is: ${selection.earliest}. '
+            'First date is: $firstDate'),
+        assert(
+            !selection.isAfter(lastDate),
+            'Selection must not be after last date. '
+            'Latest selection is: ${selection.latest}. '
+            'First date is: $lastDate'),
         super(key: key);
 
-  /// The currently selected date.
+  /// Creates a month picker where only one single month can be selected.
   ///
-  /// This date is highlighted in the picker.
-  final DateTime selectedDate;
+  /// See also:
+  /// * [MonthPicker.multi] - month picker where many single months
+  ///   can be selected.
+  static MonthPicker<DateTime> single(
+      {Key? key,
+      required DateTime selectedDate,
+      required ValueChanged<DateTime> onChanged,
+      required DateTime firstDate,
+      required DateTime lastDate,
+      DatePickerLayoutSettings datePickerLayoutSettings =
+          const DatePickerLayoutSettings(),
+      DatePickerStyles? datePickerStyles,
+      DatePickerKeys? datePickerKeys,
+      SelectableDayPredicate? selectableDayPredicate,
+      ValueChanged<DateTime>? onMonthChanged}) {
+    assert(!firstDate.isAfter(lastDate));
+    assert(!lastDate.isBefore(firstDate));
+    assert(!selectedDate.isBefore(firstDate));
+    assert(!selectedDate.isAfter(lastDate));
+
+    final selection = MonthPickerSingleSelection(selectedDate);
+    final selectionLogic = MonthSelectable(selectedDate, firstDate, lastDate,
+        selectableDayPredicate: selectableDayPredicate);
+
+    return MonthPicker<DateTime>._(
+      onChanged: onChanged,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      selectionLogic: selectionLogic,
+      selection: selection,
+      datePickerKeys: datePickerKeys,
+      datePickerStyles: datePickerStyles ?? DatePickerRangeStyles(),
+      datePickerLayoutSettings: datePickerLayoutSettings,
+    );
+  }
+
+  /// Creates a month picker where many single months can be selected.
+  ///
+  /// See also:
+  /// * [MonthPicker.single] - month picker where only one single month
+  /// can be selected.
+  static MonthPicker<List<DateTime>> multi(
+      {Key? key,
+      required List<DateTime> selectedDates,
+      required ValueChanged<List<DateTime>> onChanged,
+      required DateTime firstDate,
+      required DateTime lastDate,
+      DatePickerLayoutSettings datePickerLayoutSettings =
+          const DatePickerLayoutSettings(),
+      DatePickerStyles? datePickerStyles,
+      DatePickerKeys? datePickerKeys,
+      SelectableDayPredicate? selectableDayPredicate,
+      ValueChanged<DateTime>? onMonthChanged}) {
+    assert(!firstDate.isAfter(lastDate));
+    assert(!lastDate.isBefore(firstDate));
+
+    final selection = MonthPickerMultiSelection(selectedDates);
+    final selectionLogic = MonthMultiSelectable(
+        selectedDates, firstDate, lastDate,
+        selectableDayPredicate: selectableDayPredicate);
+
+    return MonthPicker<List<DateTime>>._(
+      onChanged: onChanged,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      selectionLogic: selectionLogic,
+      selection: selection,
+      datePickerKeys: datePickerKeys,
+      datePickerStyles: datePickerStyles ?? DatePickerStyles(),
+      datePickerLayoutSettings: datePickerLayoutSettings,
+    );
+  }
+
+  /// The currently selected date or dates.
+  ///
+  /// This date or dates are highlighted in the picker.
+  final MonthPickerSelection selection;
 
   /// Called when the user picks a month.
-  final ValueChanged<DateTime> onChanged;
+  final ValueChanged<T> onChanged;
 
   /// The earliest date the user is permitted to pick.
   final DateTime firstDate;
@@ -53,11 +139,14 @@ class MonthPicker extends StatefulWidget {
   /// Styles what can be customized by user
   final DatePickerStyles datePickerStyles;
 
+  /// Logic to handle user's selections.
+  final ISelectablePicker<T> selectionLogic;
+
   @override
-  State<StatefulWidget> createState() => _MonthPickerState();
+  State<StatefulWidget> createState() => _MonthPickerState<T>();
 }
 
-class _MonthPickerState extends State<MonthPicker> {
+class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
   PageController _monthPickerController = PageController();
 
   Locale locale = _defaultLocale;
@@ -72,6 +161,7 @@ class _MonthPickerState extends State<MonthPicker> {
   DateTime _currentDisplayedYearDate = DateTime.now();
 
   Timer? _timer;
+  StreamSubscription<T>? _changesSubscription;
 
   /// True if the earliest allowable year is displayed.
   bool get _isDisplayingFirstYear =>
@@ -86,7 +176,11 @@ class _MonthPickerState extends State<MonthPicker> {
     super.initState();
     // Initially display the pre-selected date.
     final int yearPage =
-        DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
+        DatePickerUtils.yearDelta(widget.firstDate, widget.selection.earliest);
+
+    _changesSubscription = widget.selectionLogic.onUpdate
+        .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
+      ..onError((e) => print(e.toString()));
 
     _monthPickerController.dispose();
     _monthPickerController = PageController(initialPage: yearPage);
@@ -95,13 +189,20 @@ class _MonthPickerState extends State<MonthPicker> {
   }
 
   @override
-  void didUpdateWidget(MonthPicker oldWidget) {
+  void didUpdateWidget(MonthPicker<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedDate != oldWidget.selectedDate) {
-      final int yearPage =
-          DatePickerUtils.yearDelta(widget.firstDate, widget.selectedDate);
+    if (widget.selection != oldWidget.selection) {
+      final int yearPage = DatePickerUtils.yearDelta(
+          widget.firstDate, widget.selection.earliest);
       _monthPickerController = PageController(initialPage: yearPage);
       _handleYearPageChanged(yearPage);
+    }
+
+    if (widget.selectionLogic != oldWidget.selectionLogic) {
+      _changesSubscription?.cancel();
+      _changesSubscription = widget.selectionLogic.onUpdate
+          .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
+        ..onError((e) => print(e.toString()));
     }
   }
 
@@ -151,9 +252,8 @@ class _MonthPickerState extends State<MonthPicker> {
     DatePickerStyles styles = widget.datePickerStyles;
     styles = styles.fulfillWithTheme(theme);
 
-    return _MonthPicker(
+    return _MonthPicker<T>(
       key: ValueKey<DateTime>(year),
-      selectedDate: widget.selectedDate,
       currentDate: _todayDate,
       onChanged: widget.onChanged,
       firstDate: widget.firstDate,
@@ -164,6 +264,7 @@ class _MonthPickerState extends State<MonthPicker> {
       datePickerStyles: styles,
       locale: locale,
       localizations: localizations,
+      selectionLogic: widget.selectionLogic,
     );
   }
 
@@ -209,7 +310,7 @@ class _MonthPickerState extends State<MonthPicker> {
           Semantics(
             sortKey: YearPickerSortKey.calendar,
             child: PageView.builder(
-              key: ValueKey<DateTime>(widget.selectedDate),
+              // key: ValueKey<DateTime>(widget.selection),
               controller: _monthPickerController,
               scrollDirection: Axis.horizontal,
               itemCount: yearsCount,
@@ -252,6 +353,12 @@ class _MonthPickerState extends State<MonthPicker> {
     );
   }
 
+  @override
+  void dispose() {
+    _changesSubscription?.cancel();
+    super.dispose();
+  }
+
   static MaterialLocalizations get _defaultLocalizations =>
       MaterialLocalizationEn(
         twoDigitZeroPaddedFormat:
@@ -268,7 +375,7 @@ class _MonthPickerState extends State<MonthPicker> {
       );
 }
 
-class _MonthPicker extends StatelessWidget {
+class _MonthPicker<T> extends StatelessWidget {
   /// The month whose days are displayed by this picker.
   final DateTime displayedYear;
 
@@ -278,11 +385,6 @@ class _MonthPicker extends StatelessWidget {
   /// The latest date the user is permitted to pick.
   final DateTime lastDate;
 
-  /// The currently selected date.
-  ///
-  /// This date is highlighted in the picker.
-  final DateTime selectedDate;
-
   /// The current date at the time the picker is displayed.
   final DateTime currentDate;
 
@@ -290,7 +392,7 @@ class _MonthPicker extends StatelessWidget {
   final DatePickerLayoutSettings datePickerLayoutSettings;
 
   /// Called when the user picks a day.
-  final ValueChanged<DateTime> onChanged;
+  final ValueChanged<T> onChanged;
 
   ///  Key fo selected month (useful for integration tests)
   final Key? selectedPeriodKey;
@@ -300,105 +402,59 @@ class _MonthPicker extends StatelessWidget {
 
   final MaterialLocalizations localizations;
 
+  final ISelectablePicker<T> selectionLogic;
+
   final Locale locale;
 
   _MonthPicker(
       {required this.displayedYear,
       required this.firstDate,
       required this.lastDate,
-      required this.selectedDate,
       required this.currentDate,
       required this.onChanged,
       required this.datePickerLayoutSettings,
       required this.datePickerStyles,
+      required this.selectionLogic,
       required this.localizations,
       required this.locale,
       this.selectedPeriodKey,
       Key? key})
       : assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) ||
-            selectedDate.isAtSameMomentAs(firstDate)),
         super(key: key);
-
-  // We only need to know if month of passed day
-  // before the month of the firstDate or after the month of the lastDate.
-  //
-  // Don't need to compare day and time.
-  bool _isDisabled(DateTime month) {
-    DateTime beginningOfTheFirstDateMonth =
-        DateTime(firstDate.year, firstDate.month);
-    DateTime endOfTheLastDateMonth = DateTime(lastDate.year, lastDate.month + 1)
-        .subtract(Duration(microseconds: 1));
-
-    return month.isAfter(endOfTheLastDateMonth) ||
-        month.isBefore(beginningOfTheFirstDateMonth);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
     final int monthsInYear = 12;
     final int year = displayedYear.year;
     final int day = 1;
 
     final List<Widget> labels = <Widget>[];
 
-    for (int i = 0; i < monthsInYear; i += 1) {
-      final int month = i + 1;
-      final DateTime monthToBuild = DateTime(year, month, day);
+    for (int month = 1; month <= monthsInYear; month += 1) {
+      DateTime monthToBuild = DateTime(year, month, day);
+      DayType monthType = selectionLogic.getDayType(monthToBuild);
 
-      final bool disabled = _isDisabled(monthToBuild);
-      final bool isSelectedMonth =
-          selectedDate.year == year && selectedDate.month == month;
-
-      BoxDecoration? decoration;
-      TextStyle? itemStyle = themeData.textTheme.bodyText2;
-
-      if (isSelectedMonth) {
-        itemStyle = datePickerStyles.selectedDateStyle;
-        decoration = datePickerStyles.selectedSingleDateDecoration;
-      } else if (disabled) {
-        itemStyle = datePickerStyles.disabledDateStyle;
-      } else if (currentDate.year == year && currentDate.month == month) {
-        // The current month gets a different text color.
-        itemStyle = datePickerStyles.currentDateStyle;
-      } else {
-        itemStyle = datePickerStyles.defaultDateTextStyle;
-      }
-
-      String monthStr = _getMonthStr(monthToBuild);
-
-      Widget monthWidget = Container(
-        decoration: decoration,
-        child: Center(
-          child: Semantics(
-            // We want the day of month to be spoken first irrespective of the
-            // locale-specific preferences or TextDirection. This is because
-            // an accessibility user is more likely to be interested in the
-            // day of month before the rest of the date, as they are looking
-            // for the day of month. To do that we prepend day of month to the
-            // formatted full date.
-            label: '${localizations.formatDecimal(month)}, '
-                '${localizations.formatFullDate(monthToBuild)}',
-            selected: isSelectedMonth,
-            child: ExcludeSemantics(
-              child: Text(monthStr, style: itemStyle),
-            ),
-          ),
-        ),
+      Widget monthWidget = _MonthCell(
+        monthToBuild: monthToBuild,
+        currentDate: currentDate,
+        selectionLogic: selectionLogic,
+        datePickerStyles: datePickerStyles,
+        localizations: localizations,
+        locale: locale,
       );
 
-      if (!disabled) {
+      if (monthType != DayType.disabled) {
         monthWidget = GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
             DatePickerUtils.sameMonth(firstDate, monthToBuild)
-                ? onChanged(firstDate)
-                : onChanged(monthToBuild);
+                ? selectionLogic.onDayTapped(firstDate)
+                : selectionLogic.onDayTapped(monthToBuild);
           },
           child: monthWidget,
         );
       }
+
       labels.add(monthWidget);
     }
 
@@ -428,6 +484,77 @@ class _MonthPicker extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _MonthCell<T> extends StatelessWidget {
+  /// Styles what can be customized by user
+  final DatePickerStyles datePickerStyles;
+  final Locale locale;
+  final MaterialLocalizations localizations;
+  final ISelectablePicker<T> selectionLogic;
+  final DateTime monthToBuild;
+
+  /// The current date at the time the picker is displayed.
+  final DateTime currentDate;
+
+  const _MonthCell({
+    required this.monthToBuild,
+    required this.currentDate,
+    required this.selectionLogic,
+    required this.datePickerStyles,
+    required this.locale,
+    required this.localizations,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    DayType monthType = selectionLogic.getDayType(monthToBuild);
+
+    BoxDecoration? decoration;
+    TextStyle? itemStyle;
+
+    if (monthType != DayType.disabled && monthType != DayType.notSelected) {
+      itemStyle = datePickerStyles.selectedDateStyle;
+      decoration = datePickerStyles.selectedSingleDateDecoration;
+    } else if (monthType == DayType.disabled) {
+      itemStyle = datePickerStyles.disabledDateStyle;
+    } else if (DatePickerUtils.sameMonth(currentDate, monthToBuild)) {
+      itemStyle = datePickerStyles.currentDateStyle;
+    } else {
+      itemStyle = datePickerStyles.defaultDateTextStyle;
+    }
+
+    String semanticLabel =
+        '${localizations.formatDecimal(monthToBuild.month)}, '
+        '${localizations.formatFullDate(monthToBuild)}';
+
+    bool isSelectedMonth =
+        monthType != DayType.disabled && monthType != DayType.notSelected;
+
+    String monthStr = _getMonthStr(monthToBuild);
+
+    Widget monthWidget = Container(
+      decoration: decoration,
+      child: Center(
+        child: Semantics(
+          // We want the day of month to be spoken first irrespective of the
+          // locale-specific preferences or TextDirection. This is because
+          // an accessibility user is more likely to be interested in the
+          // day of month before the rest of the date, as they are looking
+          // for the day of month. To do that we prepend day of month to the
+          // formatted full date.
+          label: semanticLabel,
+          selected: isSelectedMonth,
+          child: ExcludeSemantics(
+            child: Text(monthStr, style: itemStyle),
+          ),
+        ),
+      ),
+    );
+
+    return monthWidget;
   }
 
   // Returns only month made with intl.DateFormat.MMM() for current [locale].
