@@ -267,6 +267,7 @@ class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
 
   @override
   void dispose() {
+    _timer?.cancel();
     _changesSubscription?.cancel();
     super.dispose();
   }
