@@ -7,15 +7,11 @@ import '../event.dart';
 
 /// Page with the [RangePicker].
 class RangePickerPage extends StatefulWidget {
-
   /// Custom events.
   final List<Event> events;
 
   ///
-  const RangePickerPage({
-    Key? key,
-    this.events = const []
-  }) : super(key: key);
+  const RangePickerPage({Key? key, this.events = const []}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _RangePickerPageState();
@@ -26,8 +22,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
   DateTime _lastDate = DateTime.now().add(Duration(days: 345));
   DatePeriod _selectedPeriod = DatePeriod(
       DateTime.now().subtract(Duration(days: 30)),
-      DateTime.now().subtract(Duration(days: 12))
-  );
+      DateTime.now().subtract(Duration(days: 12)));
 
   Color selectedPeriodStartColor = Colors.blue;
   Color selectedPeriodLastColor = Colors.blue;
@@ -46,24 +41,22 @@ class _RangePickerPageState extends State<RangePickerPage> {
   Widget build(BuildContext context) {
     // add selected colors to default settings
     DatePickerRangeStyles styles = DatePickerRangeStyles(
-      selectedPeriodLastDecoration: BoxDecoration(
-          color: selectedPeriodLastColor,
-          borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(24.0),
-              bottomRight: Radius.circular(24.0))),
-      selectedPeriodStartDecoration: BoxDecoration(
-        color: selectedPeriodStartColor,
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24.0),
-            bottomLeft: Radius.circular(24.0)
+        selectedPeriodLastDecoration: BoxDecoration(
+            color: selectedPeriodLastColor,
+            borderRadius: const BorderRadiusDirectional.only(
+                topEnd: Radius.circular(24.0),
+                bottomEnd: Radius.circular(24.0))),
+        selectedPeriodStartDecoration: BoxDecoration(
+          color: selectedPeriodStartColor,
+          borderRadius: const BorderRadiusDirectional.only(
+              topStart: Radius.circular(24.0),
+              bottomStart: Radius.circular(24.0)),
         ),
-      ),
-      selectedPeriodMiddleDecoration: BoxDecoration(
-          color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
-      nextIcon: const Icon(Icons.arrow_right),
-      prevIcon: const Icon(Icons.arrow_left),
-      dayHeaderStyleBuilder: _dayHeaderStyleBuilder
-    );
+        selectedPeriodMiddleDecoration: BoxDecoration(
+            color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
+        nextIcon: const Icon(Icons.arrow_right),
+        prevIcon: const Icon(Icons.arrow_left),
+        dayHeaderStyleBuilder: _dayHeaderStyleBuilder);
 
     return Flex(
       direction: MediaQuery.of(context).orientation == Orientation.portrait
@@ -107,48 +100,48 @@ class _RangePickerPageState extends State<RangePickerPage> {
   // Block with show information about selected date
   // and boundaries of the selected period.
   Widget _selectedBlock() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _selectedPeriod != null
-            ? Column(children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                  child: Text("Selected period boundaries:"),
-                ),
-                Text(_selectedPeriod.start.toString()),
-                Text(_selectedPeriod.end.toString()),
-              ])
-            : Container()
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _selectedPeriod != null
+              ? Column(children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                    child: Text("Selected period boundaries:"),
+                  ),
+                  Text(_selectedPeriod.start.toString()),
+                  Text(_selectedPeriod.end.toString()),
+                ])
+              : Container()
+        ],
+      );
 
   // block with color buttons inside
   Widget _stylesBlock() => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ColorSelectorBtn(
-              title: "Start",
-              color: selectedPeriodStartColor,
-              showDialogFunction: _showSelectedStartColorDialog),
-          SizedBox(
-            width: 12.0,
-          ),
-          ColorSelectorBtn(
-              title: "Middle",
-              color: selectedPeriodMiddleColor,
-              showDialogFunction: _showSelectedMiddleColorDialog),
-          SizedBox(
-            width: 12.0,
-          ),
-          ColorSelectorBtn(
-              title: "End",
-              color: selectedPeriodLastColor,
-              showDialogFunction: _showSelectedEndColorDialog),
-        ],
-      ),
-    );
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ColorSelectorBtn(
+                title: "Start",
+                color: selectedPeriodStartColor,
+                showDialogFunction: _showSelectedStartColorDialog),
+            SizedBox(
+              width: 12.0,
+            ),
+            ColorSelectorBtn(
+                title: "Middle",
+                color: selectedPeriodMiddleColor,
+                showDialogFunction: _showSelectedMiddleColorDialog),
+            SizedBox(
+              width: 12.0,
+            ),
+            ColorSelectorBtn(
+                title: "End",
+                color: selectedPeriodLastColor,
+                showDialogFunction: _showSelectedEndColorDialog),
+          ],
+        ),
+      );
 
   // select background color for the first date of the selected period
   void _showSelectedStartColorDialog() async {
@@ -202,29 +195,23 @@ class _RangePickerPageState extends State<RangePickerPage> {
   }
 
   EventDecoration? _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events
-        .map<DateTime>((Event e) => e.date)
-        .toList();
+    List<DateTime> eventsDates =
+        widget.events.map<DateTime>((Event e) => e.date).toList();
 
     bool isEventDate = eventsDates.any((DateTime d) =>
-    date.year == d.year
-        && date.month == d.month
-        && d.day == date.day);
+        date.year == d.year && date.month == d.month && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
         border: Border.all(
           color: Colors.green,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(3.0))
-    );
+        borderRadius: BorderRadius.all(Radius.circular(3.0)));
 
-    return isEventDate
-        ? EventDecoration(boxDecoration: roundedBorder)
-        : null;
+    return isEventDate ? EventDecoration(boxDecoration: roundedBorder) : null;
   }
 
   // ignore: prefer_expression_function_bodies
-  bool _isSelectableCustom (DateTime day) {
+  bool _isSelectableCustom(DateTime day) {
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
     DateTime tomorrow = now.add(Duration(days: 1));
@@ -244,9 +231,7 @@ class _RangePickerPageState extends State<RangePickerPage> {
     // If user supposed to set another start of the period.
     bool selectStart = _selectedPeriod.start != errorPeriod.start;
 
-    DateTime newSelection = selectStart
-        ? errorPeriod.start
-        : errorPeriod.end;
+    DateTime newSelection = selectStart ? errorPeriod.start : errorPeriod.end;
 
     DatePeriod newPeriod = DatePeriod(newSelection, newSelection);
 
@@ -260,14 +245,12 @@ class _RangePickerPageState extends State<RangePickerPage> {
     bool isWeekend = weekday == 0 || weekday == 6;
 
     return DayHeaderStyle(
-        textStyle: TextStyle(
-            color: isWeekend ? Colors.red : Colors.teal
-        )
-    );
+        textStyle: TextStyle(color: isWeekend ? Colors.red : Colors.teal));
   }
 }
 
-
 bool sameDate(DateTime first, DateTime second) {
-  return first.year == second.year && first.month == second.month && first.day == second.day;
+  return first.year == second.year &&
+      first.month == second.month &&
+      first.day == second.day;
 }

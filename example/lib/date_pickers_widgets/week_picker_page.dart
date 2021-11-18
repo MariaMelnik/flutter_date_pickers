@@ -11,10 +11,7 @@ class WeekPickerPage extends StatefulWidget {
   final List<Event> events;
 
   ///
-  const WeekPickerPage({
-    Key? key,
-    this.events = const []
-  }) : super(key: key);
+  const WeekPickerPage({Key? key, this.events = const []}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _WeekPickerPageState();
@@ -46,13 +43,13 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
     DatePickerRangeStyles styles = DatePickerRangeStyles(
       selectedPeriodLastDecoration: BoxDecoration(
           color: selectedPeriodLastColor,
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(10.0),
-              bottomRight: Radius.circular(10.0))),
+          borderRadius: BorderRadiusDirectional.only(
+              topEnd: Radius.circular(10.0), bottomEnd: Radius.circular(10.0))),
       selectedPeriodStartDecoration: BoxDecoration(
         color: selectedPeriodStartColor,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
+        borderRadius: BorderRadiusDirectional.only(
+            topStart: Radius.circular(10.0),
+            bottomStart: Radius.circular(10.0)),
       ),
       selectedPeriodMiddleDecoration: BoxDecoration(
           color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
@@ -98,53 +95,53 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
 
   // block witt color buttons insede
   Widget _stylesBlock() => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ColorSelectorBtn(
-              title: "Start",
-              color: selectedPeriodStartColor,
-              showDialogFunction: _showSelectedStartColorDialog),
-          SizedBox(
-            width: 12.0,
-          ),
-          ColorSelectorBtn(
-              title: "Middle",
-              color: selectedPeriodMiddleColor,
-              showDialogFunction: _showSelectedMiddleColorDialog),
-          SizedBox(
-            width: 12.0,
-          ),
-          ColorSelectorBtn(
-              title: "End",
-              color: selectedPeriodLastColor,
-              showDialogFunction: _showSelectedEndColorDialog),
-        ],
-      ),
-    );
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ColorSelectorBtn(
+                title: "Start",
+                color: selectedPeriodStartColor,
+                showDialogFunction: _showSelectedStartColorDialog),
+            SizedBox(
+              width: 12.0,
+            ),
+            ColorSelectorBtn(
+                title: "Middle",
+                color: selectedPeriodMiddleColor,
+                showDialogFunction: _showSelectedMiddleColorDialog),
+            SizedBox(
+              width: 12.0,
+            ),
+            ColorSelectorBtn(
+                title: "End",
+                color: selectedPeriodLastColor,
+                showDialogFunction: _showSelectedEndColorDialog),
+          ],
+        ),
+      );
 
   // Block with  information about selected date
   // and boundaries of the selected period.
   Widget _selectedBlock() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text("Selected: $_selectedDate"),
-        ),
-        _selectedPeriod != null
-            ? Column(children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                  child: Text("Selected period boundaries:"),
-                ),
-                Text(_selectedPeriod!.start.toString()),
-                Text(_selectedPeriod!.end.toString()),
-              ])
-            : Container()
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text("Selected: $_selectedDate"),
+          ),
+          _selectedPeriod != null
+              ? Column(children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                    child: Text("Selected period boundaries:"),
+                  ),
+                  Text(_selectedPeriod!.start.toString()),
+                  Text(_selectedPeriod!.end.toString()),
+                ])
+              : Container()
+        ],
+      );
 
   // select background color for the first date of the selected period
   void _showSelectedStartColorDialog() async {
@@ -198,24 +195,22 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
     });
   }
 
-  void _onSelectionError(Object e){
+  void _onSelectionError(Object e) {
     if (e is UnselectablePeriodException) print("catch error: $e");
   }
 
 // ignore: prefer_expression_function_bodies
-  bool _isSelectableCustom (DateTime day) {
+  bool _isSelectableCustom(DateTime day) {
 //    return day.weekday < 6;
-    return day.day != DateTime.now().add(Duration(days: 7)).day ;
+    return day.day != DateTime.now().add(Duration(days: 7)).day;
   }
 
   EventDecoration? _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events
-        .map<DateTime>((Event e) => e.date)
-        .toList();
+    List<DateTime> eventsDates =
+        widget.events.map<DateTime>((Event e) => e.date).toList();
 
-    bool isEventDate = eventsDates.any((DateTime d) => date.year == d.year
-        && date.month == d.month
-        && d.day == date.day);
+    bool isEventDate = eventsDates.any((DateTime d) =>
+        date.year == d.year && date.month == d.month && d.day == date.day);
 
     if (!isEventDate) return null;
 
@@ -224,13 +219,10 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
         border: Border.all(
           color: Colors.blue,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(3.0))
-    );
+        borderRadius: BorderRadius.all(Radius.circular(3.0)));
 
-    TextStyle? whiteText = Theme.of(context)
-        .textTheme
-        .bodyText2
-        ?.copyWith(color: Colors.white);
+    TextStyle? whiteText =
+        Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white);
 
     return isEventDate
         ? EventDecoration(boxDecoration: roundedBorder, textStyle: whiteText)

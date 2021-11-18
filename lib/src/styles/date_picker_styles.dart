@@ -228,18 +228,18 @@ class DatePickerRangeStyles extends DatePickerStyles {
         selectedPeriodStartDecoration ??
             BoxDecoration(
               color: accentColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10.0),
-                  bottomLeft: Radius.circular(10.0)),
+              borderRadius: const BorderRadiusDirectional.only(
+                  topStart: Radius.circular(10.0),
+                  bottomStart: Radius.circular(10.0)),
             );
 
     final BoxDecoration _selectedPeriodLastDecoration =
         selectedPeriodLastDecoration ??
             BoxDecoration(
               color: accentColor,
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0)),
+              borderRadius: const BorderRadiusDirectional.only(
+                  topEnd: Radius.circular(10.0),
+                  bottomEnd: Radius.circular(10.0)),
             );
 
     final BoxDecoration _selectedPeriodMiddleDecoration =
