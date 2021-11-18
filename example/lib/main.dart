@@ -16,16 +16,16 @@ void main() {
 
 ///
 class MyApp extends StatelessWidget {
-
   @override
-    // ignore: prefer_expression_function_bodies
+  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return MaterialApp(
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-         supportedLocales: [
-           const Locale('en', 'US'), // American English
-           const Locale('ru', 'RU'), // Russian
-           const Locale("pt") // Portuguese
+      supportedLocales: [
+        const Locale('en', 'US'), // American English
+        const Locale('ru', 'RU'), // Russian
+        const Locale("pt"), // Portuguese
+        const Locale('ar'), // Arabic
       ],
       debugShowCheckedModeBanner: false,
       title: 'Date pickers demo',
@@ -60,16 +60,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int _selectedTab = 0;
 
   final List<Widget> datePickers = <Widget>[
-    DayPickerPage(events: events,),
+    DayPickerPage(
+      events: events,
+    ),
     DaysPickerPage(),
-    WeekPickerPage(events: events,),
-    RangePickerPage(events: events,),
+    WeekPickerPage(
+      events: events,
+    ),
+    RangePickerPage(
+      events: events,
+    ),
     MonthPickerPage(),
     MonthsPickerPage()
   ];
 
   @override
-    // ignore: prefer_expression_function_bodies
+  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -87,8 +93,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.date_range), label: "Day"),
+            BottomNavigationBarItem(icon: Icon(Icons.date_range), label: "Day"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.date_range), label: "Days"),
             BottomNavigationBarItem(
