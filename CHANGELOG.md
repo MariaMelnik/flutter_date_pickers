@@ -63,3 +63,6 @@ Added dayHeaderTitleBuilder to DatePickerStyles (#64).
 ## [0.2.6] - 16 October 2021
 Fixed MonthPicker (#70).\
 Changed way to instantiate MonthPicker. Now you need to use **MonthPicker.single** instead of **MonthPicker**.
+
+## [0.2.7] - 21 November 2021
+Handled Daylight Savings Time during defining firstDayOfWeek and lastDayOfTheWeek (#79).\
