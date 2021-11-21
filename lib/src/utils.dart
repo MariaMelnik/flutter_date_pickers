@@ -3,16 +3,15 @@ class DatePickerUtils {
   /// Returns if two objects have same year, month and day.
   /// Time doesn't matter.
   static bool sameDate(DateTime dateTimeOne, DateTime dateTimeTwo) =>
-     dateTimeOne.year == dateTimeTwo.year &&
-     dateTimeOne.month == dateTimeTwo.month &&
-     dateTimeOne.day == dateTimeTwo.day;
+      dateTimeOne.year == dateTimeTwo.year &&
+      dateTimeOne.month == dateTimeTwo.month &&
+      dateTimeOne.day == dateTimeTwo.day;
 
   /// Returns if two objects have same year and month.
   /// Day and time don't matter/
   static bool sameMonth(DateTime dateTimeOne, DateTime dateTimeTwo) =>
-      dateTimeOne.year == dateTimeTwo.year
-      && dateTimeOne.month == dateTimeTwo.month;
-
+      dateTimeOne.year == dateTimeTwo.year &&
+      dateTimeOne.month == dateTimeTwo.month;
 
   // Do not use this directly - call getDaysInMonth instead.
   static const List<int> _daysInMonth = <int>[
@@ -30,7 +29,6 @@ class DatePickerUtils {
     31
   ];
 
-
   /// Returns the number of days in a month, according to the proleptic
   /// Gregorian calendar.
   ///
@@ -45,24 +43,18 @@ class DatePickerUtils {
     return _daysInMonth[month - 1];
   }
 
-
   /// Returns number of months between [startDate] and [endDate]
   static int monthDelta(DateTime startDate, DateTime endDate) =>
-     (endDate.year - startDate.year) * 12 +
-        endDate.month -
-        startDate.month;
-
+      (endDate.year - startDate.year) * 12 + endDate.month - startDate.month;
 
   /// Add months to a month truncated date.
   static DateTime addMonthsToMonthDate(DateTime monthDate, int monthsToAdd) =>
-    // year is switched automatically if new month > 12
-    DateTime(monthDate.year, monthDate.month + monthsToAdd);
-
+      // year is switched automatically if new month > 12
+      DateTime(monthDate.year, monthDate.month + monthsToAdd);
 
   /// Returns number of years between [startDate] and [endDate]
   static int yearDelta(DateTime startDate, DateTime endDate) =>
-     endDate.year - startDate.year;
-
+      endDate.year - startDate.year;
 
   /// Returns start of the first day of the week with given day.
   ///
@@ -79,8 +71,16 @@ class DatePickerUtils {
     int diff = weekday - firstDayIndex;
     if (diff < 0) diff = 7 + diff;
 
-    DateTime firstDayOfWeek = day.subtract(Duration(days: diff));
+    DateTime firstDayOfWeek = DateTime(
+      day.year,
+      day.month,
+      day.day - diff,
+      day.hour,
+      day.minute,
+      day.second,
+    );
     firstDayOfWeek = startOfTheDay(firstDayOfWeek);
+
     return firstDayOfWeek;
   }
 
@@ -102,8 +102,16 @@ class DatePickerUtils {
     int diff = lastDayIndex - weekday;
     if (diff < 0) diff = 7 + diff;
 
-    DateTime lastDayOfWeek = day.add(Duration(days: diff));
+    DateTime lastDayOfWeek = DateTime(
+      day.year,
+      day.month,
+      day.day + diff,
+      day.hour,
+      day.minute,
+      day.second,
+    );
     lastDayOfWeek = endOfTheDay(lastDayOfWeek);
+
     return lastDayOfWeek;
   }
 
@@ -117,12 +125,11 @@ class DatePickerUtils {
     return result;
   }
 
-
   /// Returns start of the given day.
   ///
   /// Start time is 00:00:00.
   static DateTime startOfTheDay(DateTime date) =>
-     DateTime(date.year, date.month, date.day);
+      DateTime(date.year, date.month, date.day);
 
   /// Returns first shown date for the [curMonth].
   ///
@@ -132,24 +139,21 @@ class DatePickerUtils {
   /// If [showEndOfPrevMonth] is true empty day cells before 1st [curMonth]
   /// are filled with days from the previous month.
   static DateTime firstShownDate({
-      required DateTime curMonth,
-      required bool showEndOfPrevMonth,
-      required int firstDayOfWeekFromSunday}) {
-
+    required DateTime curMonth,
+    required bool showEndOfPrevMonth,
+    required int firstDayOfWeekFromSunday,
+  }) {
     DateTime result = DateTime(curMonth.year, curMonth.month, 1);
 
     if (showEndOfPrevMonth) {
-      int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month,
-          firstDayOfWeekFromSunday);
+      int firstDayOffset = computeFirstDayOffset(
+          curMonth.year, curMonth.month, firstDayOfWeekFromSunday);
       if (firstDayOffset == 0) return result;
-
 
       int prevMonth = curMonth.month - 1;
       if (prevMonth < 1) prevMonth = 12;
 
-      int prevYear = prevMonth == 12
-        ? curMonth.year - 1
-        : curMonth.year;
+      int prevYear = prevMonth == 12 ? curMonth.year - 1 : curMonth.year;
 
       int daysInPrevMonth = getDaysInMonth(prevYear, prevMonth);
       int firstShownDay = daysInPrevMonth - firstDayOffset + 1;
@@ -159,7 +163,6 @@ class DatePickerUtils {
     return result;
   }
 
-
   /// Returns last shown date for the [curMonth].
   ///
   /// Last shown date is not always last day of the [curMonth].
@@ -168,16 +171,16 @@ class DatePickerUtils {
   /// If [showStartNextMonth] is true empty day cells after last day
   /// of [curMonth] are filled with days from the next month.
   static DateTime lastShownDate({
-      required DateTime curMonth,
-      required bool showStartNextMonth,
-      required int firstDayOfWeekFromSunday}) {
-
+    required DateTime curMonth,
+    required bool showStartNextMonth,
+    required int firstDayOfWeekFromSunday,
+  }) {
     int daysInCurMonth = getDaysInMonth(curMonth.year, curMonth.month);
     DateTime result = DateTime(curMonth.year, curMonth.month, daysInCurMonth);
 
     if (showStartNextMonth) {
-      int firstDayOffset = computeFirstDayOffset(curMonth.year, curMonth.month,
-          firstDayOfWeekFromSunday);
+      int firstDayOffset = computeFirstDayOffset(
+          curMonth.year, curMonth.month, firstDayOfWeekFromSunday);
 
       int totalDays = firstDayOffset + daysInCurMonth;
       int trailingDaysCount = 7 - totalDays % 7;
@@ -256,12 +259,10 @@ class DatePickerUtils {
   /// Returns earliest [DateTime] from two.
   ///
   /// If two [DateTime]s is the same moment first ([a]) will be return.
-  static DateTime getEarliest(DateTime a, DateTime b)
-    => a.isBefore(b) ? a : b;
+  static DateTime getEarliest(DateTime a, DateTime b) => a.isBefore(b) ? a : b;
 
   /// Returns latest [DateTime] from two.
   ///
   /// If two [DateTime]s is the same moment first ([a]) will be return.
-  static DateTime getLatest(DateTime a, DateTime b)
-  => a.isAfter(b) ? a : b;
+  static DateTime getLatest(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
 }

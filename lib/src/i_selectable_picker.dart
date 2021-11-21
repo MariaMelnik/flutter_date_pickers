@@ -181,6 +181,7 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
 
     DateTime firstDayOfTappedWeek =
         DatePickerUtils.getFirstDayOfWeek(tappedDay, _firstDayOfWeekIndex);
+
     DateTime lastDayOfTappedWeek =
         DatePickerUtils.getLastDayOfWeek(tappedDay, _firstDayOfWeekIndex);
 
@@ -555,7 +556,7 @@ class MonthSelectable extends ISelectablePicker<DateTime> {
   MonthSelectable(this.selectedDate, DateTime firstDate, DateTime lastDate,
       {SelectableDayPredicate? selectableDayPredicate})
       : super(firstDate, lastDate,
-      selectableDayPredicate: selectableDayPredicate);
+            selectableDayPredicate: selectableDayPredicate);
 
   @override
   DayType getDayType(DateTime date) {
@@ -594,7 +595,6 @@ class MonthSelectable extends ISelectablePicker<DateTime> {
     return selectedIsBroken;
   }
 
-
   // We only need to know if month of passed day
   // before the month of the firstDate or after the month of the lastDate.
   //
@@ -603,9 +603,16 @@ class MonthSelectable extends ISelectablePicker<DateTime> {
   @override
   bool isDisabled(DateTime month) {
     DateTime beginningOfTheFirstDateMonth =
-    DateTime(firstDate.year, firstDate.month);
-    DateTime endOfTheLastDateMonth = DateTime(lastDate.year, lastDate.month + 1)
-        .subtract(Duration(microseconds: 1));
+        DateTime(firstDate.year, firstDate.month);
+
+    DateTime endOfTheLastDateMonth = DateTime(
+        lastDate.year,
+        lastDate.month + 1,
+        lastDate.day,
+        lastDate.hour,
+        lastDate.minute,
+        lastDate.second,
+        lastDate.millisecond - 1);
 
     return month.isAfter(endOfTheLastDateMonth) ||
         month.isBefore(beginningOfTheFirstDateMonth);
@@ -626,10 +633,13 @@ class MonthMultiSelectable extends ISelectablePicker<List<DateTime>> {
   /// If day is not selectable according to the [selectableDayPredicate]
   /// nothing will be returned as selection
   /// but [UnselectablePeriodException] will be thrown.
-  MonthMultiSelectable(this.selectedDates, DateTime firstDate, DateTime lastDate,
-      {SelectableDayPredicate? selectableDayPredicate})
-      : super(firstDate, lastDate,
-      selectableDayPredicate: selectableDayPredicate);
+  MonthMultiSelectable(
+    this.selectedDates,
+    DateTime firstDate,
+    DateTime lastDate, {
+    SelectableDayPredicate? selectableDayPredicate,
+  }) : super(firstDate, lastDate,
+            selectableDayPredicate: selectableDayPredicate);
 
   @override
   bool get curSelectionIsCorrupted => _checkCurSelection();
@@ -652,7 +662,7 @@ class MonthMultiSelectable extends ISelectablePicker<List<DateTime>> {
   @override
   void onDayTapped(DateTime selectedDate) {
     bool alreadyExist =
-    selectedDates.any((d) => DatePickerUtils.sameMonth(d, selectedDate));
+        selectedDates.any((d) => DatePickerUtils.sameMonth(d, selectedDate));
 
     if (alreadyExist) {
       List<DateTime> newSelectedDates = List.from(selectedDates)
