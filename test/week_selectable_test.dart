@@ -1,8 +1,8 @@
 import 'package:flutter_date_pickers/src/day_type.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
+import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'date_time_utils.dart';
 
 void main() {
   group("WeekSelectable test.", () {
@@ -16,7 +16,7 @@ void main() {
 
       // ignore: prefer_function_declarations_over_variables
       final selectablePredicate = (DateTime d)
-      => !DateTimeUtils.sameDate(d, disabledDate);
+      => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = WeekSelectable(
           selectedDate, firstDayOfWeekIndex, firstDate, lastDate,
@@ -28,10 +28,10 @@ void main() {
       final disabledDateType = selectableLogic.getDayType(disabledDate);
       expect(disabledDateType, DayType.disabled);
 
-      final weekStart = DateTimeUtils
+      final weekStart = DatePickerUtils
           .getFirstDayOfWeek(selectedDate, firstDayOfWeekIndex);
 
-      final weekEnd = DateTimeUtils
+      final weekEnd = DatePickerUtils
           .getLastDayOfWeek(selectedDate, firstDayOfWeekIndex);
 
       final startPeriodDateType = selectableLogic.getDayType(weekStart);

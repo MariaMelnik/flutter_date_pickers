@@ -1,8 +1,7 @@
 import 'package:flutter_date_pickers/src/day_type.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
+import 'package:flutter_date_pickers/src/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'date_time_utils.dart';
 
 void main() {
   group("DayMultiSelectable test.", () {
@@ -20,7 +19,7 @@ void main() {
 
       // ignore: prefer_function_declarations_over_variables
       final selectablePredicate = (DateTime d)
-      => !DateTimeUtils.sameDate(d, disabledDate);
+      => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = DayMultiSelectable(
           selectedDates, firstDate, lastDate,

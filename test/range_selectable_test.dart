@@ -1,9 +1,9 @@
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/day_type.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_date_pickers/src/utils.dart';
 
-import 'date_time_utils.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("RangeSelectable test.", () {
@@ -19,7 +19,7 @@ void main() {
 
       // ignore: prefer_function_declarations_over_variables
       final selectablePredicate = (DateTime d)
-        => !DateTimeUtils.sameDate(d, disabledDate);
+        => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = RangeSelectable(
           selectedPeriod, firstDate, lastDate,
