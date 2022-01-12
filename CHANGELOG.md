@@ -65,4 +65,8 @@ Fixed MonthPicker (#70).\
 Changed way to instantiate MonthPicker. Now you need to use **MonthPicker.single** instead of **MonthPicker**.
 
 ## [0.2.7] - 21 November 2021
-Handled Daylight Savings Time during defining firstDayOfWeek and lastDayOfTheWeek (#79).\
+Handled Daylight Savings Time during defining firstDayOfWeek and lastDayOfTheWeek (#79).
+
+## [0.2.8] - 13 January 2022
+Fixed getting month type for month picker (#87).
+Fixed deprecated styles (#83).
