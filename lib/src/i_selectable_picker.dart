@@ -606,13 +606,14 @@ class MonthSelectable extends ISelectablePicker<DateTime> {
         DateTime(firstDate.year, firstDate.month);
 
     DateTime endOfTheLastDateMonth = DateTime(
-        lastDate.year,
-        lastDate.month + 1,
-        lastDate.day,
-        lastDate.hour,
-        lastDate.minute,
-        lastDate.second,
-        lastDate.millisecond - 1);
+      lastDate.year,
+      lastDate.month,
+      DatePickerUtils.getDaysInMonth(lastDate.year, lastDate.month),
+      23,
+      59,
+      59,
+      999,
+    );
 
     return month.isAfter(endOfTheLastDateMonth) ||
         month.isBefore(beginningOfTheFirstDateMonth);
