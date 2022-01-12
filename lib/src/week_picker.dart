@@ -7,8 +7,8 @@ import 'day_based_changable_picker.dart';
 import 'day_picker_selection.dart';
 import 'day_type.dart';
 import 'i_selectable_picker.dart';
-import 'styles/event_decoration.dart';
 import 'styles/date_picker_styles.dart';
+import 'styles/event_decoration.dart';
 import 'styles/layout_settings.dart';
 import 'typedefs.dart';
 

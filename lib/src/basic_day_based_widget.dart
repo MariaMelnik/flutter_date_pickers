@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl hide Locale;
 
 import 'date_picker_mixin.dart';
-import 'styles/date_picker_styles.dart';
 import 'day_type.dart';
-import 'styles/event_decoration.dart';
 import 'i_selectable_picker.dart';
+import 'styles/date_picker_styles.dart';
+import 'styles/event_decoration.dart';
 import 'styles/layout_settings.dart';
 import 'utils.dart';
-import 'package:intl/intl.dart' as intl hide Locale;
 
 /// Widget for date pickers based on days and cover entire month.
 /// Each cell of this picker is day.

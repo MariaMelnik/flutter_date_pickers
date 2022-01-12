@@ -32,9 +32,9 @@ class _RangePickerPageState extends State<RangePickerPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    selectedPeriodLastColor = Theme.of(context).accentColor;
-    selectedPeriodMiddleColor = Theme.of(context).accentColor;
-    selectedPeriodStartColor = Theme.of(context).accentColor;
+    selectedPeriodLastColor = Theme.of(context).colorScheme.secondary;
+    selectedPeriodMiddleColor = Theme.of(context).colorScheme.secondary;
+    selectedPeriodStartColor = Theme.of(context).colorScheme.secondary;
   }
 
   @override

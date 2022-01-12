@@ -94,16 +94,19 @@ class DatePickerStyles {
   /// Return new [DatePickerStyles] object where fields
   /// with null values set with defaults from theme.
   DatePickerStyles fulfillWithTheme(ThemeData theme) {
-    Color accentColor = theme.accentColor;
+    Color accentColor = theme.colorScheme.secondary;
 
     TextStyle? _displayedPeriodTitle =
         displayedPeriodTitle ?? theme.textTheme.subtitle1;
     TextStyle? _currentDateStyle = currentDateStyle ??
-        theme.textTheme.bodyText1?.copyWith(color: theme.accentColor);
+        theme.textTheme.bodyText1?.copyWith(color: theme.colorScheme.secondary);
     TextStyle? _disabledDateStyle = disabledDateStyle ??
         theme.textTheme.bodyText2?.copyWith(color: theme.disabledColor);
     TextStyle? _selectedDateStyle =
-        selectedDateStyle ?? theme.accentTextTheme.bodyText1;
+        selectedDateStyle ?? theme.textTheme.bodyText1?.copyWith(
+          color: theme.colorScheme.onSecondary,
+        );
+
     TextStyle? _defaultDateTextStyle =
         defaultDateTextStyle ?? theme.textTheme.bodyText2;
     BoxDecoration _selectedSingleDateDecoration =
@@ -220,7 +223,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
   /// where fields with null values set with defaults from given theme.
   @override
   DatePickerRangeStyles fulfillWithTheme(ThemeData theme) {
-    Color accentColor = theme.accentColor;
+    Color accentColor = theme.colorScheme.secondary;
 
     DatePickerStyles commonStyles = super.fulfillWithTheme(theme);
 

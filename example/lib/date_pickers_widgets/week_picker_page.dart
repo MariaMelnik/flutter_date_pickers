@@ -32,9 +32,9 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
     super.didChangeDependencies();
 
     // defaults for styles
-    selectedPeriodLastColor = Theme.of(context).accentColor;
-    selectedPeriodMiddleColor = Theme.of(context).accentColor;
-    selectedPeriodStartColor = Theme.of(context).accentColor;
+    selectedPeriodLastColor = Theme.of(context).colorScheme.secondary;
+    selectedPeriodMiddleColor = Theme.of(context).colorScheme.secondary;
+    selectedPeriodStartColor = Theme.of(context).colorScheme.secondary;
   }
 
   @override

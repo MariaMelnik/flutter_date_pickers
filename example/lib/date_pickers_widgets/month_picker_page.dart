@@ -22,10 +22,8 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    Color? bodyTextColor = Theme.of(context).accentTextTheme.bodyText1?.color;
-    if (bodyTextColor != null) selectedDateStyleColor = bodyTextColor;
-
-    selectedSingleDateDecorationColor = Theme.of(context).accentColor;
+    selectedDateStyleColor = Theme.of(context).colorScheme.onSecondary;
+    selectedSingleDateDecorationColor = Theme.of(context).colorScheme.secondary;
   }
 
   @override
@@ -33,7 +31,7 @@ class _MonthPickerPageState extends State<MonthPickerPage> {
     // add selected colors to default settings
     dp.DatePickerStyles styles = dp.DatePickerStyles(
         selectedDateStyle: Theme.of(context)
-            .accentTextTheme
+            .textTheme
             .bodyText1
             ?.copyWith(color: selectedDateStyleColor),
         selectedSingleDateDecoration: BoxDecoration(
