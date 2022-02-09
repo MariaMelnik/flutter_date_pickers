@@ -19,6 +19,7 @@ A set of date pickers:
 * `WeekPicker` for whole week
 * `RangePicker` for random range
 * `MonthPicker` for month
+* `YearPicker` for year
 
 ![](demoDatePickers2.gif)
 
