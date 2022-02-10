@@ -176,11 +176,11 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
 
   /// True if the earliest allowable year is displayed.
   bool get _isDisplayingFirstYearRange =>
-      _currentDisplayedYearRange.start.year == widget.firstDate.year;
+      _currentDisplayedYearRange == _yearRanges.first;
 
   /// True if the latest allowable year is displayed.
   bool get _isDisplayingLastYearRange =>
-      _currentDisplayedYearRange.end.year == widget.lastDate.year;
+      _currentDisplayedYearRange == _yearRanges.last;
 
   @override
   void initState() {
@@ -293,9 +293,6 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
       final DateTime fromDate =
           DateTime(widget.firstDate.year + i * (yearsPerPage - 1));
       DateTime toDate = DateTime(fromDate.year + (yearsPerPage - 1));
-      if (toDate.year > widget.lastDate.year) {
-        toDate = widget.lastDate;
-      }
 
       _yearRanges.add(DateTimeRange(
         start: fromDate,
@@ -508,12 +505,8 @@ class _YearPicker<T> extends StatelessWidget {
 /// Returns 2021 - 2022
 extension FormatYearDateRange on MaterialLocalizations {
   /// extension method for formatting date range
-  String getRangeYearText(DateTimeRange dateRange) {
-    if (dateRange.start.year == dateRange.end.year) {
-      return formatYear(dateRange.start);
-    }
-    return "${formatYear(dateRange.start)} - ${formatYear(dateRange.end)}";
-  }
+  String getRangeYearText(DateTimeRange dateRange) =>
+      "${formatYear(dateRange.start)} - ${formatYear(dateRange.end)}";
 }
 
 /// Extension for DateTime
@@ -594,7 +587,5 @@ class _YearCell<T> extends StatelessWidget {
   // Returns only year made with intl.DateFormat.MMM() for current [locale].
   // We can'r use [localizations] here because MaterialLocalizations doesn't
   // provide short year string.
-  String _getYearStr(DateTime date) {
-    return localizations.formatYear(date);
-  }
+  String _getYearStr(DateTime date) => localizations.formatYear(date);
 }
