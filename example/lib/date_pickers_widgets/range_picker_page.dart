@@ -18,7 +18,7 @@ class RangePickerPage extends StatefulWidget {
 }
 
 class _RangePickerPageState extends State<RangePickerPage> {
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 345));
+  DateTime _firstDate = DateTime.now().subtract(Duration(days: 3450));
   DateTime _lastDate = DateTime.now().add(Duration(days: 345));
   DatePeriod _selectedPeriod = DatePeriod(
       DateTime.now().subtract(Duration(days: 30)),
