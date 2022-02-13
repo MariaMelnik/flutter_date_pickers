@@ -11,33 +11,41 @@ import 'styles/date_picker_styles.dart';
 import 'styles/event_decoration.dart';
 import 'styles/layout_settings.dart';
 import 'typedefs.dart';
+import 'utils.dart';
 
 /// Date picker for selection a week.
 class WeekPicker extends StatelessWidget {
   /// Creates a month picker.
-  WeekPicker(
-      {Key? key,
-      required this.selectedDate,
-      required this.onChanged,
-      required this.firstDate,
-      required this.lastDate,
-      this.initiallyShowDate,
-      this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerStyles,
-      this.datePickerKeys,
-      this.selectableDayPredicate,
-      this.onSelectionError,
-      this.eventDecorationBuilder,
-      this.onMonthChanged})
-      : assert(!firstDate.isAfter(lastDate)),
-        assert(!lastDate.isBefore(firstDate)),
-        assert(!selectedDate.isBefore(firstDate)),
-        assert(!selectedDate.isAfter(lastDate)),
-        assert(initiallyShowDate == null
-            || !initiallyShowDate.isAfter(lastDate)),
-        assert(initiallyShowDate == null
-            || !initiallyShowDate.isBefore(firstDate)),
-        super(key: key);
+  WeekPicker({
+    Key? key,
+    required DateTime selectedDate,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    required this.onChanged,
+    DateTime? initiallyShowDate,
+    this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+    this.datePickerStyles,
+    this.datePickerKeys,
+    this.selectableDayPredicate,
+    this.onSelectionError,
+    this.eventDecorationBuilder,
+    this.onMonthChanged,
+  })  : firstDate = DatePickerUtils.startOfTheDay(firstDate),
+        lastDate = DatePickerUtils.endOfTheDay(lastDate),
+        selectedDate = DatePickerUtils.startOfTheDay(selectedDate),
+        initiallyShowDate = initiallyShowDate == null
+            ? null
+            : DatePickerUtils.startOfTheDay(initiallyShowDate),
+        super(key: key) {
+    assert(!this.firstDate.isAfter(this.lastDate));
+    assert(!this.lastDate.isBefore(this.firstDate));
+    assert(!this.selectedDate.isBefore(this.firstDate));
+    assert(!this.selectedDate.isAfter(this.lastDate));
+    assert(this.initiallyShowDate == null ||
+        !this.initiallyShowDate!.isAfter(this.lastDate));
+    assert(this.initiallyShowDate == null ||
+        !this.initiallyShowDate!.isBefore(this.firstDate));
+  }
 
   /// The currently selected date.
   ///

@@ -14,11 +14,14 @@ import 'utils.dart';
 /// T - is selection type.
 abstract class ISelectablePicker<T> {
   /// The earliest date the user is permitted to pick.
-  /// (only year, month and day matter, time doesn't matter)
+  ///
+  /// Time is the midnight. Otherwise [isDisabled] may return undesired result.
   final DateTime firstDate;
 
   /// The latest date the user is permitted to pick.
-  /// (only year, month and day matter, time doesn't matter)
+  ///
+  /// Time is the millisecond before next day midnight.
+  /// Otherwise [isDisabled] may return undesired result.
   final DateTime lastDate;
 
   /// Function returns if day can be selected or not.
@@ -36,9 +39,13 @@ abstract class ISelectablePicker<T> {
 
   /// Constructor with required fields that used in non-abstract methods
   /// ([isDisabled]).
-  ISelectablePicker(this.firstDate, this.lastDate,
-      {SelectableDayPredicate? selectableDayPredicate})
-      : _selectableDayPredicate =
+  ISelectablePicker(
+    DateTime firstDate,
+    DateTime lastDate, {
+    SelectableDayPredicate? selectableDayPredicate,
+  })  : firstDate = DatePickerUtils.startOfTheDay(firstDate),
+        lastDate = DatePickerUtils.endOfTheDay(lastDate),
+        _selectableDayPredicate =
             selectableDayPredicate ?? _defaultSelectableDayPredicate;
 
   /// If current selection exists and includes day/days that can't be selected
@@ -59,15 +66,10 @@ abstract class ISelectablePicker<T> {
   /// If [_selectableDayPredicate] is set checks it as well.
   @protected
   bool isDisabled(DateTime day) {
-    final DateTime beginOfTheFirstDay =
-        DatePickerUtils.startOfTheDay(firstDate);
-    final DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(lastDate);
     final bool customDisabled =
         _selectableDayPredicate != null ? !_selectableDayPredicate(day) : false;
 
-    return day.isAfter(endOfTheLastDay) ||
-        day.isBefore(beginOfTheFirstDay) ||
-        customDisabled;
+    return day.isAfter(lastDate) || day.isBefore(firstDate) || customDisabled;
   }
 
   /// Closes [onUpdateController].
@@ -374,7 +376,13 @@ class DayMultiSelectable extends ISelectablePicker<List<DateTime>> {
 /// Selection logic for [RangePicker].
 class RangeSelectable extends ISelectablePicker<DatePeriod> {
   /// Initially selected period.
+  ///
+  /// [selectedPeriod.start] time is midnight.
+  /// [selectedPeriod.end] time is millisecond before next day midnight.
   DatePeriod selectedPeriod;
+
+  /// If [selectedPeriod] has dates unavailable to select.
+  late bool _selectedPeriodIsBroken;
 
   @override
   bool get curSelectionIsCorrupted => _checkCurSelection();
@@ -390,21 +398,25 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
   /// If one or more days of the period are not selectable according to the
   /// [selectableDayPredicate] nothing will be returned as selection
   /// but [UnselectablePeriodException] will be thrown.
-  RangeSelectable(this.selectedPeriod, DateTime firstDate, DateTime lastDate,
+  RangeSelectable(
+      DatePeriod selectedPeriod, DateTime firstDate, DateTime lastDate,
       {SelectableDayPredicate? selectableDayPredicate})
-      : super(firstDate, lastDate,
-            selectableDayPredicate: selectableDayPredicate);
+      : selectedPeriod = DatePeriod(
+          DatePickerUtils.startOfTheDay(selectedPeriod.start),
+          DatePickerUtils.endOfTheDay(selectedPeriod.end),
+        ),
+        super(firstDate, lastDate,
+            selectableDayPredicate: selectableDayPredicate) {
+    _selectedPeriodIsBroken = _disabledDatesInPeriod(selectedPeriod).isNotEmpty;
+  }
 
   @override
   DayType getDayType(DateTime date) {
     DayType result;
 
-    bool selectedPeriodIsBroken =
-        _disabledDatesInPeriod(selectedPeriod).isNotEmpty;
-
     if (isDisabled(date)) {
       result = DayType.disabled;
-    } else if (_isDaySelected(date) && !selectedPeriodIsBroken) {
+    } else if (_isDaySelected(date) && !_selectedPeriodIsBroken) {
       if (DatePickerUtils.sameDate(date, selectedPeriod.start) &&
           DatePickerUtils.sameDate(date, selectedPeriod.end)) {
         result = DayType.single;
@@ -429,10 +441,14 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
     DatePeriod newPeriod = _getNewSelectedPeriod(selectedDate);
     List<DateTime> customDisabledDays = _disabledDatesInPeriod(newPeriod);
 
-    customDisabledDays.isEmpty
-        ? onUpdateController.add(newPeriod)
-        : onUpdateController.addError(
-            UnselectablePeriodException(customDisabledDays, newPeriod));
+    if (customDisabledDays.isEmpty) {
+      selectedPeriod = newPeriod;
+      _selectedPeriodIsBroken = false;
+      onUpdateController.add(newPeriod);
+    } else {
+      onUpdateController
+          .addError(UnselectablePeriodException(customDisabledDays, newPeriod));
+    }
   }
 
   // Returns new selected period according to tapped date.
@@ -529,9 +545,9 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
   }
 
   bool _isDaySelected(DateTime date) {
-    DateTime startOfTheStartDay =
-        DatePickerUtils.startOfTheDay(selectedPeriod.start);
-    DateTime endOfTheLastDay = DatePickerUtils.endOfTheDay(selectedPeriod.end);
+    DateTime startOfTheStartDay = selectedPeriod.start;
+    DateTime endOfTheLastDay = selectedPeriod.end;
+
     return !(date.isBefore(startOfTheStartDay) ||
         date.isAfter(endOfTheLastDay));
   }

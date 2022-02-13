@@ -18,8 +18,8 @@ void main() {
       final disabledDate = now.subtract(const Duration(days: 5));
 
       // ignore: prefer_function_declarations_over_variables
-      final selectablePredicate = (DateTime d)
-        => !DatePickerUtils.sameDate(d, disabledDate);
+      final selectablePredicate =
+          (DateTime d) => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = RangeSelectable(
           selectedPeriod, firstDate, lastDate,
@@ -41,15 +41,41 @@ void main() {
 
       // Count of the day period which is not start and not end.
       final middleDaysCount = periodDays - 2;
-      final middleDates = List.generate(middleDaysCount,
-              (i) => startPeriod.add(Duration(days: i + 1)));
+      final middleDates = List.generate(
+          middleDaysCount, (i) => startPeriod.add(Duration(days: i + 1)));
 
       for (DateTime date in middleDates) {
         final middlePeriodDateType = selectableLogic.getDayType(date);
         expect(middlePeriodDateType, DayType.middle,
             reason: "Incorrect DayType for the date ${date.toString()} "
-               "in period ${startPeriod.toString()} - ${endPeriod.toString()}");
+                "in period ${startPeriod.toString()} - ${endPeriod.toString()}");
       }
     });
+  });
+
+  test(
+      "firstDate's time is midnight "
+      "and lastDate's time is millisecond before the next day midnight", () {
+    final now = DateTime.now();
+    final startPeriod = now.subtract(const Duration(days: 3));
+    final endPeriod = now.add(const Duration(days: 3));
+    final selectedPeriod = DatePeriod(startPeriod, endPeriod);
+
+    final firstDate = now.subtract(const Duration(days: 10));
+    final lastDate = now.add(const Duration(days: 10));
+
+    final startOfTheFirstDate =
+        DateTime(firstDate.year, firstDate.month, firstDate.day);
+    final endOfTheLastDate =
+        DateTime(lastDate.year, lastDate.month, lastDate.day, 23, 59, 59, 999);
+
+    final selectableLogic = RangeSelectable(
+      selectedPeriod,
+      firstDate,
+      lastDate,
+    );
+
+    expect(selectableLogic.firstDate, startOfTheFirstDate);
+    expect(selectableLogic.lastDate, endOfTheLastDate);
   });
 }

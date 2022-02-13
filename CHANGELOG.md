@@ -70,3 +70,10 @@ Handled Daylight Savings Time during defining firstDayOfWeek and lastDayOfTheWee
 ## [0.2.8] - 13 January 2022
 Fixed getting month type for month picker (#87).
 Fixed deprecated styles (#83).
+
+## [0.2.9] - 13 February 2022
+Improved RangePicker performance.
+Changed selection time for day-based pickers:
+ For single date is midnight (00:00:00.000).
+ For start of the range is midnight (00:00:00.000).
+ For end of the range is millisecond before the next day midnight (23:59:59.999).
