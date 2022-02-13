@@ -381,6 +381,9 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
   /// [selectedPeriod.end] time is millisecond before next day midnight.
   DatePeriod selectedPeriod;
 
+  /// If [selectedPeriod] has dates unavailable to select.
+  late bool _selectedPeriodIsBroken;
+
   @override
   bool get curSelectionIsCorrupted => _checkCurSelection();
 
@@ -403,18 +406,17 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
           DatePickerUtils.endOfTheDay(selectedPeriod.end),
         ),
         super(firstDate, lastDate,
-            selectableDayPredicate: selectableDayPredicate);
+            selectableDayPredicate: selectableDayPredicate) {
+    _selectedPeriodIsBroken = _disabledDatesInPeriod(selectedPeriod).isNotEmpty;
+  }
 
   @override
   DayType getDayType(DateTime date) {
     DayType result;
 
-    bool selectedPeriodIsBroken =
-        _disabledDatesInPeriod(selectedPeriod).isNotEmpty;
-
     if (isDisabled(date)) {
       result = DayType.disabled;
-    } else if (_isDaySelected(date) && !selectedPeriodIsBroken) {
+    } else if (_isDaySelected(date) && !_selectedPeriodIsBroken) {
       if (DatePickerUtils.sameDate(date, selectedPeriod.start) &&
           DatePickerUtils.sameDate(date, selectedPeriod.end)) {
         result = DayType.single;
@@ -439,10 +441,14 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
     DatePeriod newPeriod = _getNewSelectedPeriod(selectedDate);
     List<DateTime> customDisabledDays = _disabledDatesInPeriod(newPeriod);
 
-    customDisabledDays.isEmpty
-        ? onUpdateController.add(newPeriod)
-        : onUpdateController.addError(
-            UnselectablePeriodException(customDisabledDays, newPeriod));
+    if (customDisabledDays.isEmpty) {
+      selectedPeriod = newPeriod;
+      _selectedPeriodIsBroken = false;
+      onUpdateController.add(newPeriod);
+    } else {
+      onUpdateController
+          .addError(UnselectablePeriodException(customDisabledDays, newPeriod));
+    }
   }
 
   // Returns new selected period according to tapped date.
