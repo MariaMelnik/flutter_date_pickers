@@ -10,11 +10,8 @@ class DaysPickerPage extends StatefulWidget {
   /// Custom events.
   final List<Event> events;
 
-  /// 
-  const DaysPickerPage({
-    Key? key,
-    this.events = const []
-  }) : super(key: key);
+  ///
+  const DaysPickerPage({Key? key, this.events = const []}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _DaysPickerPageState();
@@ -22,8 +19,8 @@ class DaysPickerPage extends StatefulWidget {
 
 class _DaysPickerPageState extends State<DaysPickerPage> {
   List<DateTime> _selectedDates = [];
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 45));
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 45));
 
   Color selectedDateStyleColor = Colors.blue;
   Color selectedSingleDateDecorationColor = Colors.red;
@@ -75,8 +72,7 @@ class _DaysPickerPageState extends State<DaysPickerPage> {
             datePickerLayoutSettings: dp.DatePickerLayoutSettings(
                 maxDayPickerRowCount: 2,
                 showPrevMonthEnd: true,
-                showNextMonthStart: true
-            ),
+                showNextMonthStart: true),
             selectableDayPredicate: _isSelectableCustom,
             eventDecorationBuilder: _eventDecorationBuilder,
           ),
@@ -161,26 +157,22 @@ class _DaysPickerPageState extends State<DaysPickerPage> {
   }
 
   // ignore: prefer_expression_function_bodies
-  bool _isSelectableCustom (DateTime day) {
+  bool _isSelectableCustom(DateTime day) {
     return day.weekday < 6;
   }
 
   dp.EventDecoration? _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events
-        .map<DateTime>((Event e) => e.date)
-        .toList();
+    List<DateTime> eventsDates =
+        widget.events.map<DateTime>((e) => e.date).toList();
 
-    bool isEventDate = eventsDates.any((DateTime d) =>
-    date.year == d.year
-        && date.month == d.month
-        && d.day == date.day);
+    bool isEventDate = eventsDates.any((d) =>
+        date.year == d.year && date.month == d.month && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
         border: Border.all(
           color: Colors.deepOrange,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(3.0))
-    );
+        borderRadius: BorderRadius.all(Radius.circular(3.0)));
 
     return isEventDate
         ? dp.EventDecoration(boxDecoration: roundedBorder)

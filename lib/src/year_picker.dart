@@ -8,11 +8,11 @@ import 'package:intl/intl.dart' as intl;
 import 'date_picker_keys.dart';
 import 'day_type.dart';
 import 'i_selectable_picker.dart';
-import 'month_picker_selection.dart';
 import 'semantic_sorting.dart';
 import 'styles/date_picker_styles.dart';
 import 'styles/layout_settings.dart';
 import 'utils.dart';
+import 'year_picker_selection.dart';
 
 const Locale _defaultLocale = Locale('en', 'US');
 
@@ -30,12 +30,12 @@ class YearPicker<T extends Object> extends StatefulWidget {
     required this.datePickerStyles,
   })  : assert(!firstDate.isAfter(lastDate)),
         assert(
-            selection.isEmpty || !selection.isBefore(firstDate),
+            !selection.isBefore(firstDate),
             'Selection must not be before first date. '
             'Earliest selection is: ${selection.earliest}. '
             'First date is: $firstDate'),
         assert(
-            selection.isEmpty || !selection.isAfter(lastDate),
+            !selection.isAfter(lastDate),
             'Selection must not be after last date. '
             'Latest selection is: ${selection.latest}. '
             'First date is: $lastDate'),
@@ -57,7 +57,7 @@ class YearPicker<T extends Object> extends StatefulWidget {
       DatePickerStyles? datePickerStyles,
       DatePickerKeys? datePickerKeys,
       SelectableDayPredicate? selectableDayPredicate,
-      ValueChanged<DateTime>? onMonthChanged}) {
+      ValueChanged<DateTime>? onYearChanged}) {
     assert(!firstDate.isAfter(lastDate));
     assert(!lastDate.isBefore(firstDate));
     assert(selectedDate.year >= firstDate.year);
@@ -67,7 +67,7 @@ class YearPicker<T extends Object> extends StatefulWidget {
     firstDate = firstDate.toFirstOfYear();
     lastDate = lastDate.toFirstOfYear();
 
-    final selection = MonthPickerSingleSelection(selectedDate);
+    final selection = YearPickerSingleSelection(selectedDate);
     final selectionLogic = MonthSelectable(
         selectedDate, firstDate.toFirstOfYear(), lastDate.toFirstOfYear(),
         selectableDayPredicate: selectableDayPredicate);
@@ -108,7 +108,7 @@ class YearPicker<T extends Object> extends StatefulWidget {
     lastDate = lastDate.toFirstOfYear();
     selectedDates = selectedDates.map((e) => e.toFirstOfYear()).toList();
 
-    final selection = MonthPickerMultiSelection(selectedDates);
+    final selection = YearPickerMultiSelection(selectedDates);
     final selectionLogic = MonthMultiSelectable(
         selectedDates, firstDate, lastDate,
         selectableDayPredicate: selectableDayPredicate);
@@ -128,7 +128,7 @@ class YearPicker<T extends Object> extends StatefulWidget {
   /// The currently selected date or dates.
   ///
   /// This date or dates are highlighted in the picker.
-  final MonthPickerSelection selection;
+  final YearPickerSelection selection;
 
   /// Called when the user picks a year.
   final ValueChanged<T> onChanged;
@@ -222,7 +222,7 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
+        width: widget.datePickerLayoutSettings.yearPickerPortraitWidth,
         height: widget.datePickerLayoutSettings.maxDayPickerHeight,
         child: Stack(
           children: <Widget>[
@@ -281,8 +281,7 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
   }
 
   void _initWidgetData() {
-    final initiallyShowDate =
-        widget.selection.isEmpty ? DateTime.now() : widget.selection.earliest;
+    final initiallyShowDate = widget.selection.earliest;
 
     // calculate year per page 12
     int yearsCount =

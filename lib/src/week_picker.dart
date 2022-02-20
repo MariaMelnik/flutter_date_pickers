@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'date_period.dart';
 import 'date_picker_keys.dart';
@@ -33,10 +32,12 @@ class WeekPicker extends StatelessWidget {
         assert(!lastDate.isBefore(firstDate)),
         assert(!selectedDate.isBefore(firstDate)),
         assert(!selectedDate.isAfter(lastDate)),
-        assert(initiallyShowDate == null
-            || !initiallyShowDate.isAfter(lastDate)),
-        assert(initiallyShowDate == null
-            || !initiallyShowDate.isBefore(firstDate)),
+        assert(
+          initiallyShowDate == null || !initiallyShowDate.isAfter(lastDate),
+        ),
+        assert(
+          initiallyShowDate == null || !initiallyShowDate.isBefore(firstDate),
+        ),
         super(key: key);
 
   /// The currently selected date.

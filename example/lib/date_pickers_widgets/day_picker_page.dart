@@ -14,7 +14,7 @@ class DayPickerPage extends StatefulWidget {
   ///
   const DayPickerPage({
     Key? key,
-    this.events = const []
+    this.events = const [],
   }) : super(key: key);
 
   @override
@@ -24,8 +24,8 @@ class DayPickerPage extends StatefulWidget {
 class _DayPickerPageState extends State<DayPickerPage> {
   DateTime _selectedDate = DateTime.now();
 
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 45));
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 45));
 
   Color selectedDateStyleColor = Colors.blue;
   Color selectedSingleDateDecorationColor = Colors.red;
@@ -42,20 +42,20 @@ class _DayPickerPageState extends State<DayPickerPage> {
   Widget build(BuildContext context) {
     // add selected colors to default settings
     dp.DatePickerRangeStyles styles = dp.DatePickerRangeStyles(
-        selectedDateStyle: Theme.of(context)
-            .textTheme
-            .bodyText1
-            ?.copyWith(color: selectedDateStyleColor),
-        selectedSingleDateDecoration: BoxDecoration(
-            color: selectedSingleDateDecorationColor,
-            shape: BoxShape.circle
+      selectedDateStyle: Theme.of(context)
+          .textTheme
+          .bodyText1
+          ?.copyWith(color: selectedDateStyleColor),
+      selectedSingleDateDecoration: BoxDecoration(
+        color: selectedSingleDateDecorationColor,
+        shape: BoxShape.circle,
+      ),
+      dayHeaderStyle: DayHeaderStyle(
+        textStyle: TextStyle(
+          color: Colors.red,
         ),
-        dayHeaderStyle: DayHeaderStyle(
-            textStyle: TextStyle(
-                color: Colors.red
-            )
-        ),
-        dayHeaderTitleBuilder: _dayHeaderTitleBuilder
+      ),
+      dayHeaderTitleBuilder: _dayHeaderTitleBuilder,
     );
 
     return Flex(
@@ -71,9 +71,9 @@ class _DayPickerPageState extends State<DayPickerPage> {
             lastDate: _lastDate,
             datePickerStyles: styles,
             datePickerLayoutSettings: dp.DatePickerLayoutSettings(
-                maxDayPickerRowCount: 2,
-                showPrevMonthEnd: true,
-                showNextMonthStart: true
+              maxDayPickerRowCount: 2,
+              showPrevMonthEnd: true,
+              showNextMonthStart: true,
             ),
             selectableDayPredicate: _isSelectableCustom,
             eventDecorationBuilder: _eventDecorationBuilder,
@@ -159,26 +159,22 @@ class _DayPickerPageState extends State<DayPickerPage> {
   }
 
   // ignore: prefer_expression_function_bodies
-  bool _isSelectableCustom (DateTime day) {
+  bool _isSelectableCustom(DateTime day) {
     return day.weekday < 6;
   }
 
   dp.EventDecoration? _eventDecorationBuilder(DateTime date) {
-    List<DateTime> eventsDates = widget.events
-        .map<DateTime>((Event e) => e.date)
-        .toList();
+    List<DateTime> eventsDates =
+        widget.events.map<DateTime>((e) => e.date).toList();
 
-    bool isEventDate = eventsDates.any((DateTime d) =>
-        date.year == d.year
-        && date.month == d.month
-        && d.day == date.day);
+    bool isEventDate = eventsDates.any((d) =>
+        date.year == d.year && date.month == d.month && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
         border: Border.all(
           color: Colors.deepOrange,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(3.0))
-    );
+        borderRadius: BorderRadius.all(Radius.circular(3.0)));
 
     return isEventDate
         ? dp.EventDecoration(boxDecoration: roundedBorder)
@@ -186,5 +182,6 @@ class _DayPickerPageState extends State<DayPickerPage> {
   }
 }
 
-String _dayHeaderTitleBuilder(int dayOfTheWeek, List<String> localizedHeaders)
-  => localizedHeaders[dayOfTheWeek].substring(0,3);
+String _dayHeaderTitleBuilder(
+        int dayOfTheWeek, List<String> localizedHeaders) =>
+    localizedHeaders[dayOfTheWeek].substring(0, 3);

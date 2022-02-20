@@ -2,7 +2,6 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/day_type.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -18,8 +17,8 @@ void main() {
       final disabledDate = now.subtract(const Duration(days: 5));
 
       // ignore: prefer_function_declarations_over_variables
-      final selectablePredicate = (DateTime d)
-        => !DatePickerUtils.sameDate(d, disabledDate);
+      final selectablePredicate =
+          (d) => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = RangeSelectable(
           selectedPeriod, firstDate, lastDate,
@@ -41,14 +40,15 @@ void main() {
 
       // Count of the day period which is not start and not end.
       final middleDaysCount = periodDays - 2;
-      final middleDates = List.generate(middleDaysCount,
-              (i) => startPeriod.add(Duration(days: i + 1)));
+      final middleDates = List.generate(
+          middleDaysCount, (i) => startPeriod.add(Duration(days: i + 1)));
 
       for (DateTime date in middleDates) {
         final middlePeriodDateType = selectableLogic.getDayType(date);
         expect(middlePeriodDateType, DayType.middle,
             reason: "Incorrect DayType for the date ${date.toString()} "
-               "in period ${startPeriod.toString()} - ${endPeriod.toString()}");
+                "in period"
+                " ${startPeriod.toString()} - ${endPeriod.toString()}");
       }
     });
   });

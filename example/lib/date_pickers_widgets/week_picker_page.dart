@@ -19,8 +19,8 @@ class WeekPickerPage extends StatefulWidget {
 
 class _WeekPickerPageState extends State<WeekPickerPage> {
   DateTime _selectedDate = DateTime.now();
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 45));
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 45));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 45));
   DatePeriod? _selectedPeriod;
 
   Color selectedPeriodStartColor = Colors.blue;
@@ -175,7 +175,7 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
 
   // select background color for the middle dates of the selected period
   void _showSelectedMiddleColorDialog() async {
-    Color newSelectedColor = await showDialog(
+    Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
               selectedColor: selectedPeriodMiddleColor,
@@ -207,9 +207,9 @@ class _WeekPickerPageState extends State<WeekPickerPage> {
 
   EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates =
-        widget.events.map<DateTime>((Event e) => e.date).toList();
+        widget.events.map<DateTime>((e) => e.date).toList();
 
-    bool isEventDate = eventsDates.any((DateTime d) =>
+    bool isEventDate = eventsDates.any((d) =>
         date.year == d.year && date.month == d.month && d.day == date.day);
 
     if (!isEventDate) return null;

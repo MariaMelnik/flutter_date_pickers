@@ -11,8 +11,8 @@ class MonthsPickerPage extends StatefulWidget {
 }
 
 class _MonthsPickerPageState extends State<MonthsPickerPage> {
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 350));
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 350));
   List<DateTime> _selectedDates = [DateTime.now()];
 
   Color selectedDateStyleColor = Colors.blue;
@@ -54,7 +54,7 @@ class _MonthsPickerPageState extends State<MonthsPickerPage> {
         Container(
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -99,8 +99,8 @@ class _MonthsPickerPageState extends State<MonthsPickerPage> {
     Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-          selectedColor: selectedDateStyleColor,
-        ));
+              selectedColor: selectedDateStyleColor,
+            ));
 
     if (newSelectedColor != null) {
       setState(() {
@@ -114,8 +114,8 @@ class _MonthsPickerPageState extends State<MonthsPickerPage> {
     Color? newSelectedColor = await showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-          selectedColor: selectedSingleDateDecorationColor,
-        ));
+              selectedColor: selectedSingleDateDecorationColor,
+            ));
 
     if (newSelectedColor != null) {
       setState(() {
