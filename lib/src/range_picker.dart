@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'date_period.dart';
 import 'date_picker_keys.dart';
@@ -10,33 +11,43 @@ import 'styles/date_picker_styles.dart';
 import 'styles/event_decoration.dart';
 import 'styles/layout_settings.dart';
 import 'typedefs.dart';
+import 'utils.dart';
 
 /// Date picker for range selection.
 class RangePicker extends StatelessWidget {
   /// Creates a range picker.
-  RangePicker(
-      {Key? key,
-      required this.selectedPeriod,
-      required this.onChanged,
-      required this.firstDate,
-      required this.lastDate,
-      this.initiallyShowDate,
-      this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerStyles,
-      this.datePickerKeys,
-      this.selectableDayPredicate,
-      this.onSelectionError,
-      this.eventDecorationBuilder,
-      this.onMonthChanged})
-      : assert(!firstDate.isAfter(lastDate)),
-        assert(!lastDate.isBefore(firstDate)),
-        assert(!selectedPeriod.start.isBefore(firstDate)),
-        assert(!selectedPeriod.end.isAfter(lastDate)),
-        assert(
-            initiallyShowDate == null || !initiallyShowDate.isAfter(lastDate)),
-        assert(initiallyShowDate == null ||
-            !initiallyShowDate.isBefore(firstDate)),
-        super(key: key);
+  RangePicker({
+    Key? key,
+    required DatePeriod selectedPeriod,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    required this.onChanged,
+    DateTime? initiallyShowDate,
+    this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+    this.datePickerStyles,
+    this.datePickerKeys,
+    this.selectableDayPredicate,
+    this.onSelectionError,
+    this.eventDecorationBuilder,
+    this.onMonthChanged,
+  })  : firstDate = DatePickerUtils.startOfTheDay(firstDate),
+        lastDate = DatePickerUtils.endOfTheDay(lastDate),
+        selectedPeriod = DatePeriod(
+            DatePickerUtils.startOfTheDay(selectedPeriod.start),
+            DatePickerUtils.endOfTheDay(selectedPeriod.end)),
+        initiallyShowDate = initiallyShowDate == null
+            ? null
+            : DatePickerUtils.startOfTheDay(initiallyShowDate),
+        super(key: key) {
+    assert(!this.firstDate.isAfter(this.lastDate));
+    assert(!this.lastDate.isBefore(this.firstDate));
+    assert(!this.selectedPeriod.start.isBefore(this.firstDate));
+    assert(!this.selectedPeriod.end.isAfter(this.lastDate));
+    assert(this.initiallyShowDate == null ||
+        !this.initiallyShowDate!.isAfter(this.lastDate));
+    assert(this.initiallyShowDate == null ||
+        !this.initiallyShowDate!.isBefore(this.firstDate));
+  }
 
   /// The currently selected period.
   ///

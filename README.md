@@ -74,11 +74,11 @@ Currently only for `DayPicker`, `WeekPicker` and `RangePicker`.
 
 ## What time I will get after selection?
 If one day selected:
- you will get start of the day (00:00:00) by default. If selected `firstDate` - you will get time of it.
+ you will get start of the day (00:00:00).
 
 If range/week selected:
- for start you will get start of the day (00:00:00) by default. If selected `firstDate` - you will get time of it.
- for end you will get end of the day (23:59:59.999) by default. If selected `lastDate` - you will get time of it.
+ for start you will get start of the day (00:00:00) by default.
+ for end you will get end of the day (23:59:59.999) by default.
 
 If month selected:
   you will get start (00:00:00) of the 1 day of month by default.

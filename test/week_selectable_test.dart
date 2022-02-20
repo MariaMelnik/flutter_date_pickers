@@ -52,4 +52,29 @@ void main() {
       }
     });
   });
+
+  test(
+      "firstDate's time is midnight "
+      "and lastDate's time is millisecond before the next day midnight", () {
+    final selectedDate = DateTime(2020, 10, 5); // Monday
+    final firstDayOfWeekIndex = 1; // Week starts from Monday
+
+    final firstDate = selectedDate.subtract(const Duration(days: 10));
+    final lastDate = selectedDate.add(const Duration(days: 10));
+
+    final startOfTheFirstDate =
+        DateTime(firstDate.year, firstDate.month, firstDate.day);
+    final endOfTheLastDate =
+        DateTime(lastDate.year, lastDate.month, lastDate.day, 23, 59, 59, 999);
+
+    final selectableLogic = WeekSelectable(
+      selectedDate,
+      firstDayOfWeekIndex,
+      firstDate,
+      lastDate,
+    );
+
+    expect(selectableLogic.firstDate, startOfTheFirstDate);
+    expect(selectableLogic.lastDate, endOfTheLastDate);
+  });
 }

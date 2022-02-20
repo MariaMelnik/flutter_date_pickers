@@ -2,6 +2,7 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/day_type.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -47,9 +48,34 @@ void main() {
         final middlePeriodDateType = selectableLogic.getDayType(date);
         expect(middlePeriodDateType, DayType.middle,
             reason: "Incorrect DayType for the date ${date.toString()} "
-                "in period"
-                " ${startPeriod.toString()} - ${endPeriod.toString()}");
+                "in period ${startPeriod.toString()} - ${endPeriod.toString()}");
       }
     });
+  });
+
+  test(
+      "firstDate's time is midnight "
+      "and lastDate's time is millisecond before the next day midnight", () {
+    final now = DateTime.now();
+    final startPeriod = now.subtract(const Duration(days: 3));
+    final endPeriod = now.add(const Duration(days: 3));
+    final selectedPeriod = DatePeriod(startPeriod, endPeriod);
+
+    final firstDate = now.subtract(const Duration(days: 10));
+    final lastDate = now.add(const Duration(days: 10));
+
+    final startOfTheFirstDate =
+        DateTime(firstDate.year, firstDate.month, firstDate.day);
+    final endOfTheLastDate =
+        DateTime(lastDate.year, lastDate.month, lastDate.day, 23, 59, 59, 999);
+
+    final selectableLogic = RangeSelectable(
+      selectedPeriod,
+      firstDate,
+      lastDate,
+    );
+
+    expect(selectableLogic.firstDate, startOfTheFirstDate);
+    expect(selectableLogic.lastDate, endOfTheLastDate);
   });
 }
