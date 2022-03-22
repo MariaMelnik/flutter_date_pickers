@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../range_picker.dart';
 import '../week_picker.dart';
 
@@ -86,10 +87,13 @@ class DatePickerStyles {
         assert(
             dayHeaderStyleBuilder == null ||
                 _validateDayHeaderStyleBuilder(dayHeaderStyleBuilder),
-            "dayHeaderStyleBuilder must return not null value from every weekday "
+            "dayHeaderStyleBuilder must return not null value "
+            "from every weekday "
             "(from 0 to 6)."),
-        assert(_validateFirstDayOfWeek(firstDayOfeWeekIndex),
-            "firstDayOfeWeekIndex must be null or in correct range (from 0 to 6).");
+        assert(
+            _validateFirstDayOfWeek(firstDayOfeWeekIndex),
+            "firstDayOfeWeekIndex must be null or in correct "
+            "range (from 0 to 6).");
 
   /// Return new [DatePickerStyles] object where fields
   /// with null values set with defaults from theme.
@@ -102,8 +106,8 @@ class DatePickerStyles {
         theme.textTheme.bodyText1?.copyWith(color: theme.colorScheme.secondary);
     TextStyle? _disabledDateStyle = disabledDateStyle ??
         theme.textTheme.bodyText2?.copyWith(color: theme.disabledColor);
-    TextStyle? _selectedDateStyle =
-        selectedDateStyle ?? theme.textTheme.bodyText1?.copyWith(
+    TextStyle? _selectedDateStyle = selectedDateStyle ??
+        theme.textTheme.bodyText1?.copyWith(
           color: theme.colorScheme.onSecondary,
         );
 

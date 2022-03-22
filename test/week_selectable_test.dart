@@ -15,7 +15,7 @@ void main() {
 
       // ignore: prefer_function_declarations_over_variables
       final selectablePredicate =
-          (DateTime d) => !DatePickerUtils.sameDate(d, disabledDate);
+          (d) => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = WeekSelectable(
           selectedDate, firstDayOfWeekIndex, firstDate, lastDate,

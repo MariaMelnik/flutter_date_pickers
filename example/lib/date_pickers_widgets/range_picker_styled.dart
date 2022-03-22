@@ -9,8 +9,12 @@ class RangePickerPageStyled extends StatefulWidget {
   /// Custom events.
   final List<Event> events;
 
+  /// Background image
+  final ImageProvider? circleImage;
+
   ///
-  const RangePickerPageStyled({Key? key, this.events = const []})
+  const RangePickerPageStyled(
+      {Key? key, this.circleImage, this.events = const []})
       : super(key: key);
 
   @override
@@ -18,8 +22,8 @@ class RangePickerPageStyled extends StatefulWidget {
 }
 
 class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 345));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 345));
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 345));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 345));
   DatePeriod _selectedPeriod = DatePeriod(
       DateTime.now().subtract(Duration(days: 4)),
       DateTime.now().add(Duration(days: 8)));
@@ -51,7 +55,8 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
   Widget build(BuildContext context) {
     Color middleBgColor = Color.fromRGBO(237, 237, 250, 1);
     DecorationImage circleImg = DecorationImage(
-        image: AssetImage('images/bg.png'), fit: BoxFit.contain);
+        image: widget.circleImage ?? AssetImage('images/bg.png'),
+        fit: BoxFit.contain);
 
     // add selected colors to default settings
     DatePickerRangeStyles styles = DatePickerRangeStyles(
@@ -124,16 +129,14 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
   Widget _selectedBlock() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _selectedPeriod != null
-              ? Column(children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                    child: Text("Selected period boundaries:"),
-                  ),
-                  Text(_selectedPeriod.start.toString()),
-                  Text(_selectedPeriod.end.toString()),
-                ])
-              : Container()
+          Column(children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+              child: Text("Selected period boundaries:"),
+            ),
+            Text(_selectedPeriod.start.toString()),
+            Text(_selectedPeriod.end.toString()),
+          ]),
         ],
       );
 
@@ -145,9 +148,9 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
 
   EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates =
-        widget.events.map<DateTime>((Event e) => e.date).toList();
+        widget.events.map<DateTime>((e) => e.date).toList();
 
-    bool isEventDate = eventsDates.any((DateTime d) =>
+    bool isEventDate = eventsDates.any((d) =>
         date.year == d.year && date.month == d.month && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
@@ -187,14 +190,6 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
     setState(() {
       _selectedPeriod = newPeriod;
     });
-  }
-
-  // 0 is Sunday, 6 is Saturday
-  DayHeaderStyle _dayHeaderStyleBuilder(int weekday) {
-    bool isWeekend = weekday == 0 || weekday == 6;
-
-    return DayHeaderStyle(
-        textStyle: TextStyle(color: isWeekend ? Colors.red : Colors.teal));
   }
 }
 

@@ -7,7 +7,5 @@ class DatePeriod {
   final DateTime end;
 
   ///
-  const DatePeriod(this.start, this.end)
-      : assert(start != null),
-        assert(end != null);
+  const DatePeriod(this.start, this.end);
 }

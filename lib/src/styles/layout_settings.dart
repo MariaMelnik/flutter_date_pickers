@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
 import '../day_picker.dart';
 import '../month_picker.dart';
 import '../range_picker.dart';
@@ -34,6 +35,9 @@ class DatePickerLayoutSettings {
   /// Width of the day based pickers.
   final double monthPickerPortraitWidth;
 
+  /// Width of the day based pickers.
+  final double yearPickerPortraitWidth;
+
   ///
   final int maxDayPickerRowCount;
 
@@ -51,7 +55,7 @@ class DatePickerLayoutSettings {
   ///
   /// false by default.
   final bool showPrevMonthEnd;
-    
+
   /// Hide Month navigation row
   /// false by default.
   final bool hideMonthNavigationRow;
@@ -77,15 +81,15 @@ class DatePickerLayoutSettings {
     this.pagesScrollDuration = _kPageScrollDuration,
     this.dayPickerRowHeight = _kDayPickerRowHeight,
     this.monthPickerPortraitWidth = _kMonthPickerPortraitWidth,
+    this.yearPickerPortraitWidth = _kMonthPickerPortraitWidth,
     this.maxDayPickerRowCount = _kMaxDayPickerRowCount,
     this.contentPadding = _kContentPadding,
     this.showNextMonthStart = false,
     this.showPrevMonthEnd = false,
     this.hideMonthNavigationRow = false,
-    this.scrollPhysics
+    this.scrollPhysics,
   });
 }
-
 
 class _DayPickerGridDelegate extends SliverGridDelegate {
   final double _dayPickerRowHeight;

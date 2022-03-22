@@ -11,8 +11,8 @@ class MonthPickerPage extends StatefulWidget {
 }
 
 class _MonthPickerPageState extends State<MonthPickerPage> {
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 350));
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 350));
   DateTime _selectedDate = DateTime.now();
 
   Color selectedDateStyleColor = Colors.blue;

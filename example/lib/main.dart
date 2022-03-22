@@ -7,7 +7,8 @@ import 'date_pickers_widgets/month_picker_page.dart';
 import 'date_pickers_widgets/months_picker_page.dart';
 import 'date_pickers_widgets/range_picker_page.dart';
 import 'date_pickers_widgets/week_picker_page.dart';
-
+import 'date_pickers_widgets/year_picker_page.dart';
+import 'date_pickers_widgets/years_picker_page.dart';
 import 'event.dart';
 
 void main() {
@@ -71,7 +72,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       events: events,
     ),
     MonthPickerPage(),
-    MonthsPickerPage()
+    MonthsPickerPage(),
+    YearPickerPage(),
+    YearsPickerPage()
   ];
 
   @override
@@ -104,6 +107,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 icon: Icon(Icons.date_range), label: "Month"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.date_range), label: "Months"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.date_range), label: "Year"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.date_range), label: "Years"),
           ],
           fixedColor: Colors.yellow,
           currentIndex: _selectedTab,

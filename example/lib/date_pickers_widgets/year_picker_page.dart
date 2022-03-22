@@ -4,16 +4,16 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart' as dp;
 import '../color_picker_dialog.dart';
 import '../color_selector_btn.dart';
 
-/// Page with the [dp.MonthPicker].
-class MonthsPickerPage extends StatefulWidget {
+/// Page with the [dp.YearPicker].
+class YearPickerPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MonthsPickerPageState();
+  State<StatefulWidget> createState() => _YearPickerPageState();
 }
 
-class _MonthsPickerPageState extends State<MonthsPickerPage> {
+class _YearPickerPageState extends State<YearPickerPage> {
   final DateTime _firstDate = DateTime.now().subtract(Duration(days: 350));
   final DateTime _lastDate = DateTime.now().add(Duration(days: 350));
-  List<DateTime> _selectedDates = [DateTime.now()];
+  DateTime _selectedDate = DateTime.now();
 
   Color selectedDateStyleColor = Colors.blue;
   Color selectedSingleDateDecorationColor = Colors.red;
@@ -43,8 +43,8 @@ class _MonthsPickerPageState extends State<MonthsPickerPage> {
           : Axis.horizontal,
       children: <Widget>[
         Expanded(
-          child: dp.MonthPicker.multi(
-            selectedDates: _selectedDates,
+          child: dp.YearPicker.single(
+            selectedDate: _selectedDate,
             onChanged: _onSelectedDateChanged,
             firstDate: _firstDate,
             lastDate: _lastDate,
@@ -85,7 +85,7 @@ class _MonthsPickerPageState extends State<MonthsPickerPage> {
                     ],
                   ),
                 ),
-                Text("Selected: $_selectedDates")
+                Text("Selected: $_selectedDate")
               ],
             ),
           ),
@@ -124,9 +124,9 @@ class _MonthsPickerPageState extends State<MonthsPickerPage> {
     }
   }
 
-  void _onSelectedDateChanged(List<DateTime> newDates) {
+  void _onSelectedDateChanged(DateTime newDate) {
     setState(() {
-      _selectedDates = newDates;
+      _selectedDate = newDate;
     });
   }
 }

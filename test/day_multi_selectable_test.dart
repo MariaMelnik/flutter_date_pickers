@@ -18,8 +18,8 @@ void main() {
       final disabledDate = now.subtract(const Duration(days: 5));
 
       // ignore: prefer_function_declarations_over_variables
-      final selectablePredicate = (DateTime d)
-      => !DatePickerUtils.sameDate(d, disabledDate);
+      final selectablePredicate =
+          (d) => !DatePickerUtils.sameDate(d, disabledDate);
 
       final selectableLogic = DayMultiSelectable(
           selectedDates, firstDate, lastDate,

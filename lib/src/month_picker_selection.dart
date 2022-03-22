@@ -2,7 +2,6 @@ import 'utils.dart';
 
 /// Base class for month based pickers selection.
 abstract class MonthPickerSelection {
-
   /// If this is before [dateTime].
   bool isBefore(DateTime dateTime);
 
@@ -30,13 +29,11 @@ abstract class MonthPickerSelection {
 /// See also:
 /// * [MonthPickerMultiSelection] - selection with one or many single dates.
 class MonthPickerSingleSelection extends MonthPickerSelection {
-
   /// Selected date.
   final DateTime selectedDate;
 
   /// Creates selection with only one selected date.
-  const MonthPickerSingleSelection(this.selectedDate)
-      : assert(selectedDate != null);
+  const MonthPickerSingleSelection(this.selectedDate);
 
   @override
   bool isAfter(DateTime dateTime) => selectedDate.isAfter(dateTime);
@@ -51,34 +48,30 @@ class MonthPickerSingleSelection extends MonthPickerSelection {
   DateTime get latest => selectedDate;
 
   @override
-  bool get isEmpty => selectedDate == null;
+  bool get isEmpty => false;
 
   @override
-  bool get isNotEmpty => selectedDate != null;
+  bool get isNotEmpty => true;
 }
-
 
 /// Selection with one or many single months.
 ///
 /// See also:
 /// * [MonthPickerSingleSelection] - selection with only one selected date.
 class MonthPickerMultiSelection extends MonthPickerSelection {
-
   /// List of the selected dates.
   final List<DateTime> selectedDates;
 
   /// Selection with one or many single dates.
-  MonthPickerMultiSelection(this.selectedDates)
-      : assert(selectedDates != null);
-
+  MonthPickerMultiSelection(this.selectedDates);
 
   @override
-  bool isAfter(DateTime dateTime)
-  => selectedDates.every((d) => d.isAfter(dateTime));
+  bool isAfter(DateTime dateTime) =>
+      selectedDates.every((d) => d.isAfter(dateTime));
 
   @override
-  bool isBefore(DateTime dateTime)
-  => selectedDates.every((d) => d.isBefore(dateTime));
+  bool isBefore(DateTime dateTime) =>
+      selectedDates.every((d) => d.isBefore(dateTime));
 
   @override
   DateTime get earliest => DatePickerUtils.getEarliestFromList(selectedDates);

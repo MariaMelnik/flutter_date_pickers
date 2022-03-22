@@ -18,8 +18,10 @@ class RangePickerPage extends StatefulWidget {
 }
 
 class _RangePickerPageState extends State<RangePickerPage> {
-  DateTime _firstDate = DateTime.now().subtract(Duration(days: 3450));
-  DateTime _lastDate = DateTime.now().add(Duration(days: 345));
+
+  final DateTime _firstDate = DateTime.now().subtract(Duration(days: 3450));
+  final DateTime _lastDate = DateTime.now().add(Duration(days: 345));
+
   DatePeriod _selectedPeriod = DatePeriod(
       DateTime.now().subtract(Duration(days: 350)),
       DateTime.now().subtract(Duration(days: 12)));
@@ -102,16 +104,14 @@ class _RangePickerPageState extends State<RangePickerPage> {
   Widget _selectedBlock() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _selectedPeriod != null
-              ? Column(children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                    child: Text("Selected period boundaries:"),
-                  ),
-                  Text(_selectedPeriod.start.toString()),
-                  Text(_selectedPeriod.end.toString()),
-                ])
-              : Container()
+          Column(children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+              child: Text("Selected period boundaries:"),
+            ),
+            Text(_selectedPeriod.start.toString()),
+            Text(_selectedPeriod.end.toString()),
+          ]),
         ],
       );
 
@@ -196,9 +196,9 @@ class _RangePickerPageState extends State<RangePickerPage> {
 
   EventDecoration? _eventDecorationBuilder(DateTime date) {
     List<DateTime> eventsDates =
-        widget.events.map<DateTime>((Event e) => e.date).toList();
+        widget.events.map<DateTime>((e) => e.date).toList();
 
-    bool isEventDate = eventsDates.any((DateTime d) =>
+    bool isEventDate = eventsDates.any((d) =>
         date.year == d.year && date.month == d.month && d.day == date.day);
 
     BoxDecoration roundedBorder = BoxDecoration(
@@ -250,8 +250,8 @@ class _RangePickerPageState extends State<RangePickerPage> {
   }
 }
 
-bool sameDate(DateTime first, DateTime second) {
-  return first.year == second.year &&
-      first.month == second.month &&
-      first.day == second.day;
-}
+/// Only check the date part and not the time
+bool sameDate(DateTime first, DateTime second) =>
+    first.year == second.year &&
+    first.month == second.month &&
+    first.day == second.day;

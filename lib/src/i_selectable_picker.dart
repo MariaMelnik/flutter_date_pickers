@@ -226,11 +226,6 @@ class WeekSelectable extends ISelectablePicker<DatePeriod> {
   // Returns if current selection contains disabled dates.
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    bool noSelection =
-        _firstDayOfSelectedWeek == null || _lastDayOfSelectedWeek == null;
-
-    if (noSelection) return false;
-
     DatePeriod selectedPeriod =
         DatePeriod(_firstDayOfSelectedWeek, _lastDayOfSelectedWeek);
     List<DateTime> disabledDates = _disabledDatesInPeriod(selectedPeriod);
@@ -292,7 +287,6 @@ class DaySelectable extends ISelectablePicker<DateTime> {
   //
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    if (selectedDate == null) return false;
     bool selectedIsBroken = _selectableDayPredicate(selectedDate);
 
     return selectedIsBroken;
@@ -366,7 +360,7 @@ class DayMultiSelectable extends ISelectablePicker<List<DateTime>> {
   //
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    if (selectedDates == null || selectedDates.isEmpty) return false;
+    if (selectedDates.isEmpty) return false;
     bool selectedIsBroken = selectedDates.every(_selectableDayPredicate);
 
     return selectedIsBroken;
@@ -523,7 +517,6 @@ class RangeSelectable extends ISelectablePicker<DatePeriod> {
   // Returns if current selection contains disabled dates.
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    if (selectedPeriod == null) return false;
     List<DateTime> disabledDates = _disabledDatesInPeriod(selectedPeriod);
 
     bool selectedPeriodIsBroken = disabledDates.isNotEmpty;
@@ -561,7 +554,8 @@ class MonthSelectable extends ISelectablePicker<DateTime> {
   @override
   bool get curSelectionIsCorrupted => _checkCurSelection();
 
-  /// Creates selection logic for [day_picker.MonthPicker] with single selection.
+  /// Creates selection logic for [day_picker.MonthPicker]
+  /// with single selection.
   ///
   /// Every date can be selected if it is between [firstDate] and [lastDate]
   /// and not unselectable according to the [selectableDayPredicate].
@@ -605,7 +599,6 @@ class MonthSelectable extends ISelectablePicker<DateTime> {
   //
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    if (selectedDate == null) return false;
     bool selectedIsBroken = _selectableDayPredicate(selectedDate);
 
     return selectedIsBroken;
@@ -706,7 +699,7 @@ class MonthMultiSelectable extends ISelectablePicker<List<DateTime>> {
   //
   // Returns false if there is no any selection.
   bool _checkCurSelection() {
-    if (selectedDates == null || selectedDates.isEmpty) return false;
+    if (selectedDates.isEmpty) return false;
     bool selectedIsBroken = selectedDates.every(_selectableDayPredicate);
 
     return selectedIsBroken;

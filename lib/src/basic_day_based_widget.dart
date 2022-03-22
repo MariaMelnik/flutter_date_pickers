@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl hide Locale;
+import 'package:intl/intl.dart' as intl;
 
 import 'date_picker_mixin.dart';
 import 'day_type.dart';
