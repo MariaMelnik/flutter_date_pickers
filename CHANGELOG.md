@@ -77,3 +77,6 @@ Changed selection time for day-based pickers:
  For single date is midnight (00:00:00.000).
  For start of the range is midnight (00:00:00.000).
  For end of the range is millisecond before the next day midnight (23:59:59.999).
+
+## [0.3.0] - 22 March 2022
+Added YearPicker.
