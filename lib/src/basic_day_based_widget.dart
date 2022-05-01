@@ -52,30 +52,34 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   /// it will be used for building weekday headers instead of localizations.
   final MaterialLocalizations localizations;
 
+  final int _firstDayOfWeekIndex;
+
   /// Creates main date picker view where every cell is day.
-  DayBasedPicker(
-      {Key? key,
-      required this.currentDate,
-      required this.firstDate,
-      required this.lastDate,
-      required this.displayedMonth,
-      required this.datePickerLayoutSettings,
-      required this.datePickerStyles,
-      required this.selectablePicker,
-      required this.localizations,
-      this.selectedPeriodKey,
-      this.eventDecorationBuilder})
-      : assert(!firstDate.isAfter(lastDate)),
+  DayBasedPicker({
+    Key? key,
+    required this.currentDate,
+    required this.firstDate,
+    required this.lastDate,
+    required this.displayedMonth,
+    required this.datePickerLayoutSettings,
+    required this.datePickerStyles,
+    required this.selectablePicker,
+    required this.localizations,
+    this.selectedPeriodKey,
+    this.eventDecorationBuilder,
+  })  : _firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
+            localizations.firstDayOfWeekIndex,
+        assert(!firstDate.isAfter(lastDate)),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> labels = <Widget>[];
 
-    List<Widget> headers = _buildHeaders(localizations, context);
-    List<Widget> daysBeforeMonthStart = _buildCellsBeforeStart(localizations);
-    List<Widget> monthDays = _buildMonthCells(localizations);
-    List<Widget> daysAfterMonthEnd = _buildCellsAfterEnd(localizations);
+    List<Widget> headers = _buildHeaders(context);
+    List<Widget> daysBeforeMonthStart = _buildCellsBeforeStart();
+    List<Widget> monthDays = _buildMonthCells();
+    List<Widget> daysAfterMonthEnd = _buildCellsAfterEnd();
 
     labels.addAll(headers);
     labels.addAll(daysBeforeMonthStart);
@@ -99,23 +103,16 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     );
   }
 
-  List<Widget> _buildHeaders(
-    MaterialLocalizations localizations,
-    BuildContext context,
-  ) {
-    final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
-        localizations.firstDayOfWeekIndex;
-
-    DayHeaderStyleBuilder dayHeaderStyleBuilder =
-        datePickerStyles.dayHeaderStyleBuilder ??
-            // ignore: avoid_types_on_closure_parameters
-            (int i) => datePickerStyles.dayHeaderStyle;
+  List<Widget> _buildHeaders(BuildContext context) {
+    final dayHeaderStyleBuilder = datePickerStyles.dayHeaderStyleBuilder ??
+        // ignore: avoid_types_on_closure_parameters
+        (int i) => datePickerStyles.dayHeaderStyle;
 
     final weekdayTitles = _getWeekdayTitles(context);
     List<Widget> headers = getDayHeaders(
       dayHeaderStyleBuilder,
       weekdayTitles,
-      firstDayOfWeekIndex,
+      _firstDayOfWeekIndex,
     );
 
     return headers;
@@ -143,15 +140,13 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     return weekdayTitles;
   }
 
-  List<Widget> _buildCellsBeforeStart(MaterialLocalizations localizations) {
+  List<Widget> _buildCellsBeforeStart() {
     List<Widget> result = [];
 
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
-    final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
-        localizations.firstDayOfWeekIndex;
     final int firstDayOffset =
-        computeFirstDayOffset(year, month, firstDayOfWeekIndex);
+        computeFirstDayOffset(year, month, _firstDayOfWeekIndex);
 
     final bool showDates = datePickerLayoutSettings.showPrevMonthEnd;
     if (showDates) {
@@ -174,7 +169,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     return result;
   }
 
-  List<Widget> _buildMonthCells(MaterialLocalizations localizations) {
+  List<Widget> _buildMonthCells() {
     List<Widget> result = [];
 
     final int year = displayedMonth.year;
@@ -189,17 +184,15 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
     return result;
   }
 
-  List<Widget> _buildCellsAfterEnd(MaterialLocalizations localizations) {
+  List<Widget> _buildCellsAfterEnd() {
     List<Widget> result = [];
     final bool showDates = datePickerLayoutSettings.showNextMonthStart;
     if (!showDates) return result;
 
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
-    final int firstDayOfWeekIndex = datePickerStyles.firstDayOfeWeekIndex ??
-        localizations.firstDayOfWeekIndex;
     final int firstDayOffset =
-        computeFirstDayOffset(year, month, firstDayOfWeekIndex);
+        computeFirstDayOffset(year, month, _firstDayOfWeekIndex);
     final int daysInMonth = DatePickerUtils.getDaysInMonth(year, month);
     final int totalFilledDays = firstDayOffset + daysInMonth;
 
@@ -223,8 +216,8 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
 
     Widget dayWidget = _DayCell(
       day: dayToBuild,
+      dayType: dayType,
       currentDate: currentDate,
-      selectablePicker: selectablePicker,
       datePickerStyles: datePickerStyles,
       eventDecorationBuilder: eventDecorationBuilder,
       localizations: localizations,
@@ -260,8 +253,8 @@ class _DayCell extends StatelessWidget {
   /// Day for this cell.
   final DateTime day;
 
-  /// Selection logic.
-  final ISelectablePicker selectablePicker;
+  /// Day type.
+  final DayType dayType;
 
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
@@ -280,7 +273,7 @@ class _DayCell extends StatelessWidget {
   const _DayCell(
       {Key? key,
       required this.day,
-      required this.selectablePicker,
+      required this.dayType,
       required this.datePickerStyles,
       required this.currentDate,
       required this.localizations,
@@ -289,8 +282,6 @@ class _DayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DayType dayType = selectablePicker.getDayType(day);
-
     BoxDecoration? decoration;
     TextStyle? itemStyle;
 

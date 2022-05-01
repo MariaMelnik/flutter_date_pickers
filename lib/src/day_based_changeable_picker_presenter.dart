@@ -154,7 +154,7 @@ class DayBasedChangeablePickerState {
   /// Tooltip for the next month icon.
   final String? nextTooltip;
 
-  /// Tooltip for the current month icon.
+  /// Currently selected month.
   final DateTime currentMonth;
 
   /// If selected month is the month contains last date user can select.

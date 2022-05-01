@@ -4,7 +4,6 @@ import 'styles/date_picker_styles.dart';
 
 ///
 mixin CommonDatePickerFunctions {
-
   /// Builds widgets showing abbreviated days of week. The first widget in the
   /// returned list corresponds to the first day of week for the current locale.
   ///
@@ -24,24 +23,24 @@ mixin CommonDatePickerFunctions {
   /// 4 5 6 7 8 9 10
   /// ```
   List<Widget> getDayHeaders(
-      DayHeaderStyleBuilder headerStyleBuilder,
-      List<String> narrowWeekdays,
-      int firstDayOfWeekIndex) {
-
+    DayHeaderStyleBuilder headerStyleBuilder,
+    List<String> weekdayTitles,
+    int firstDayOfWeekIndex,
+  ) {
     final List<Widget> result = <Widget>[];
 
     for (int i = firstDayOfWeekIndex; true; i = (i + 1) % 7) {
       DayHeaderStyle? headerStyle = headerStyleBuilder(i);
-      final String weekday = narrowWeekdays[i];
+      final String weekday = weekdayTitles[i];
 
       Widget header = ExcludeSemantics(
         child: Container(
           decoration: headerStyle?.decoration,
           child: Center(
-              child: Text(
-                  weekday,
-                  style: headerStyle?.textStyle
-              )
+            child: Text(
+              weekday,
+              style: headerStyle?.textStyle,
+            ),
           ),
         ),
       );
@@ -86,8 +85,7 @@ mixin CommonDatePickerFunctions {
   ///   into the [MaterialLocalizations.narrowWeekdays] list.
   /// - [MaterialLocalizations.narrowWeekdays] list provides localized names of
   ///   days of week, always starting with Sunday and ending with Saturday.
-  int computeFirstDayOffset(
-      int year, int month, int firstDayOfWeekFromSunday) {
+  int computeFirstDayOffset(int year, int month, int firstDayOfWeekFromSunday) {
     // 0-based day of week, with 0 representing Monday.
     final int weekdayFromMonday = DateTime(year, month).weekday - 1;
     // firstDayOfWeekFromSunday recomputed to be Monday-based

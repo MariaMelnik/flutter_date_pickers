@@ -16,5 +16,8 @@ enum DayType {
   disabled,
 
   /// not selected day (but not disabled)
-  notSelected
+  notSelected,
+
+  /// day from the end of previous month or start of the next month
+  dayOfAnotherMonth
 }
