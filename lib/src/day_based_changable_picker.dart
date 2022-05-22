@@ -315,7 +315,7 @@ class _DayBasedChangeablePickerState<T>
     // Give information about initial selection to presenter.
     // It should be done after first frame when PageView is already created.
     // Otherwise event from presenter will cause a error.
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((_) {
       _presenter.setSelectedDate(initSelection);
     });
   }
@@ -369,3 +369,13 @@ DateTime _getInitiallyShownDate(
   if (selection.isNotEmpty) return selection.earliest;
   return DateTime.now();
 }
+
+/// It needs to support both Flutter 3 and earlier versions .
+///
+/// This allows a value of type T or T?
+/// to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become
+/// non-nullable can still be used with `!` and `?`
+/// to support older versions of the API as well.
+T? _ambiguate<T>(T? value) => value;
