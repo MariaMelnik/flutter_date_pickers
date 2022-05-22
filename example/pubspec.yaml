@@ -22,10 +22,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_material_color_picker:
-    # null-safety fork
-    git:
-      url: git://github.com/Bwolfs2/flutter_material_color_picker.git
+  flutter_material_color_picker: ^1.1.0+2
   flutter_date_pickers:
     path: ../
 
@@ -51,7 +48,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  - images/
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
