@@ -80,3 +80,6 @@ Changed selection time for day-based pickers:
 
 ## [0.3.0] - 22 March 2022
 Added YearPicker.
+
+## [0.3.1] - 22 May 2022
+Fixed Flutter 3 warning (#93).
