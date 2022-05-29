@@ -40,8 +40,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overridden by selected styles
-  /// except days with dayType is [DayType.notSelected].
+  /// For selected days all event styles are overridden by selected styles.
   final EventDecorationBuilder? eventDecorationBuilder;
 
   /// Localizations used to get strings for prev/next button tooltips,
@@ -53,19 +52,19 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
   final MaterialLocalizations localizations;
 
   /// Creates main date picker view where every cell is day.
-  DayBasedPicker(
-      {Key? key,
-      required this.currentDate,
-      required this.firstDate,
-      required this.lastDate,
-      required this.displayedMonth,
-      required this.datePickerLayoutSettings,
-      required this.datePickerStyles,
-      required this.selectablePicker,
-      required this.localizations,
-      this.selectedPeriodKey,
-      this.eventDecorationBuilder})
-      : assert(!firstDate.isAfter(lastDate)),
+  DayBasedPicker({
+    Key? key,
+    required this.currentDate,
+    required this.firstDate,
+    required this.lastDate,
+    required this.displayedMonth,
+    required this.datePickerLayoutSettings,
+    required this.datePickerStyles,
+    required this.selectablePicker,
+    required this.localizations,
+    this.selectedPeriodKey,
+    this.eventDecorationBuilder,
+  })  : assert(!firstDate.isAfter(lastDate)),
         super(key: key);
 
   @override
@@ -271,21 +270,20 @@ class _DayCell extends StatelessWidget {
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overridden by selected styles
-  /// except days with dayType is [DayType.notSelected].
+  /// For selected days all event styles are overridden by selected styles.
   final EventDecorationBuilder? eventDecorationBuilder;
 
   final MaterialLocalizations localizations;
 
-  const _DayCell(
-      {Key? key,
-      required this.day,
-      required this.selectablePicker,
-      required this.datePickerStyles,
-      required this.currentDate,
-      required this.localizations,
-      this.eventDecorationBuilder})
-      : super(key: key);
+  const _DayCell({
+    Key? key,
+    required this.day,
+    required this.selectablePicker,
+    required this.datePickerStyles,
+    required this.currentDate,
+    required this.localizations,
+    this.eventDecorationBuilder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -307,10 +305,13 @@ class _DayCell extends StatelessWidget {
 
     // Merges decoration and textStyle with [EventDecoration].
     //
-    // Merges only in cases if [dayType] is DayType.notSelected.
+    // Merges only in cases if [dayType] is
+    // DayType.notSelected or DayType.disabled.
+    //
     // If day is current day it is also gets event decoration
     // instead of decoration for current date.
-    if (dayType == DayType.notSelected && eventDecorationBuilder != null) {
+    if ((dayType == DayType.notSelected || dayType == DayType.disabled) &&
+        eventDecorationBuilder != null) {
       EventDecoration? eDecoration = eventDecorationBuilder != null
           ? eventDecorationBuilder!.call(day)
           : null;
