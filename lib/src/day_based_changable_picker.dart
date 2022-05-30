@@ -61,29 +61,28 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overridden by selected styles
-  /// except days with dayType is [DayType.notSelected].
+  /// For selected days all event styles are overridden by selected styles.
   final EventDecorationBuilder? eventDecorationBuilder;
 
   /// Called when the user changes the month
   final ValueChanged<DateTime>? onMonthChanged;
 
   /// Create picker with option to change month.
-  DayBasedChangeablePicker(
-      {Key? key,
-      required this.selection,
-      required this.onChanged,
-      required this.firstDate,
-      required this.lastDate,
-      required this.datePickerLayoutSettings,
-      required this.datePickerStyles,
-      required this.selectablePicker,
-      DateTime? initiallyShownDate,
-      this.datePickerKeys,
-      this.onSelectionError,
-      this.eventDecorationBuilder,
-      this.onMonthChanged})
-      : initiallyShowDate =
+  DayBasedChangeablePicker({
+    Key? key,
+    required this.selection,
+    required this.onChanged,
+    required this.firstDate,
+    required this.lastDate,
+    required this.datePickerLayoutSettings,
+    required this.datePickerStyles,
+    required this.selectablePicker,
+    DateTime? initiallyShownDate,
+    this.datePickerKeys,
+    this.onSelectionError,
+    this.eventDecorationBuilder,
+    this.onMonthChanged,
+  })  : initiallyShowDate =
             _getInitiallyShownDate(initiallyShownDate, selection),
         super(key: key);
 

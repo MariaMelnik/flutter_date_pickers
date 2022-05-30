@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'date_picker_keys.dart';
 import 'day_based_changable_picker.dart';
 import 'day_picker_selection.dart';
-import 'day_type.dart';
 import 'i_selectable_picker.dart';
 import 'styles/date_picker_styles.dart';
 import 'styles/event_decoration.dart';
@@ -179,8 +178,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
 
   /// Builder to get event decoration for each date.
   ///
-  /// All event styles are overriden by selected styles
-  /// except days with dayType is [DayType.notSelected].
+  /// For selected days all event styles are overridden by selected styles.
   final EventDecorationBuilder? eventDecorationBuilder;
 
   // Called when the user changes the month.
