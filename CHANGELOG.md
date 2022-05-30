@@ -83,3 +83,6 @@ Added YearPicker.
 
 ## [0.3.1] - 22 May 2022
 Fixed Flutter 3 warning (#93).
+
+## [0.4.0] - 30 May 2022
+Made eventDecorationBuilder applicable for disabled dates (#62).
