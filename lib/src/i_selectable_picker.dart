@@ -58,9 +58,9 @@ abstract class ISelectablePicker<T> {
   /// Call when user tap on the day cell.
   void onDayTapped(DateTime selectedDate);
 
-  /// Returns if given day is disabled.
+  /// Returns true if given day is disabled.
   ///
-  /// Returns weather given day before the beginning of the [firstDate]
+  /// Returns whether the given day is before the beginning of the [firstDate]
   /// or after the end of the [lastDate].
   ///
   /// If [_selectableDayPredicate] is set checks it as well.
