@@ -66,7 +66,7 @@ abstract class ISelectablePicker<T> {
   /// If [_selectableDayPredicate] is set checks it as well.
   @protected
   bool isDisabled(DateTime day) {
-    final bool customDisabled = _selectableDayPredicate(day);
+    final bool customDisabled = !_selectableDayPredicate(day);
 
     return day.isAfter(lastDate) || day.isBefore(firstDate) || customDisabled;
   }
