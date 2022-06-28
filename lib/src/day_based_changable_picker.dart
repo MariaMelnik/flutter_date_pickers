@@ -9,7 +9,6 @@ import 'basic_day_based_widget.dart';
 import 'date_picker_keys.dart';
 import 'day_based_changeable_picker_presenter.dart';
 import 'day_picker_selection.dart';
-import 'day_type.dart';
 import 'i_selectable_picker.dart';
 import 'month_navigation_row.dart';
 import 'semantic_sorting.dart';
