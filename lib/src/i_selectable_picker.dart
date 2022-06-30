@@ -58,19 +58,15 @@ abstract class ISelectablePicker<T> {
   /// Call when user tap on the day cell.
   void onDayTapped(DateTime selectedDate);
 
-  /// Returns if given day is disabled.
+  /// Returns true if given day is disabled.
   ///
-  /// Returns weather given day before the beginning of the [firstDate]
+  /// Returns whether the given day is before the beginning of the [firstDate]
   /// or after the end of the [lastDate].
   ///
   /// If [_selectableDayPredicate] is set checks it as well.
   @protected
-  bool isDisabled(DateTime day) {
-    final bool customDisabled =
-        _selectableDayPredicate != null ? !_selectableDayPredicate(day) : false;
-
-    return day.isAfter(lastDate) || day.isBefore(firstDate) || customDisabled;
-  }
+  bool isDisabled(DateTime day) =>
+    day.isAfter(lastDate) || day.isBefore(firstDate) || !_selectableDayPredicate(day);
 
   /// Closes [onUpdateController].
   /// After it [onUpdateController] can't get new events.
