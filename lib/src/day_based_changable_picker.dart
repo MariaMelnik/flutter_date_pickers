@@ -179,6 +179,7 @@ class _DayBasedChangeablePickerState<T>
                         padding: widget.datePickerLayoutSettings.contentPadding,
                         child: _buildMonthNavigationRow()),
                   ),
+                  SizedBox( height: 40, width: double.infinity,),
             Expanded(
               child: Semantics(
                 sortKey: MonthPickerSortKey.calendar,
