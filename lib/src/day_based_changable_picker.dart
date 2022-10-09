@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -65,6 +66,8 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
 
   /// Called when the user changes the month
   final ValueChanged<DateTime>? onMonthChanged;
+   
+  final double? spacing;
 
   /// Create picker with option to change month.
   DayBasedChangeablePicker({
@@ -81,6 +84,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
     this.onSelectionError,
     this.eventDecorationBuilder,
     this.onMonthChanged,
+    this.spacing = 40.0,
   })  : initiallyShowDate =
             _getInitiallyShownDate(initiallyShownDate, selection),
         super(key: key);
@@ -166,28 +170,32 @@ class _DayBasedChangeablePickerState<T>
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return SizedBox(
-        width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
-        height: widget.datePickerLayoutSettings.maxDayPickerHeight,
-        child: Column(
-          children: <Widget>[
-            widget.datePickerLayoutSettings.hideMonthNavigationRow
-                ? const SizedBox()
-                : SizedBox(
-                    height: widget.datePickerLayoutSettings.dayPickerRowHeight,
-                    child: Padding(
-                        //match _DayPicker main layout padding
-                        padding: widget.datePickerLayoutSettings.contentPadding,
-                        child: _buildMonthNavigationRow()),
-                  ),
-                  SizedBox( height: 40, width: double.infinity,),
-            Expanded(
-              child: Semantics(
-                sortKey: MonthPickerSortKey.calendar,
-                child: _buildDayPickerPageView(),
-              ),
+      width: widget.datePickerLayoutSettings.monthPickerPortraitWidth,
+      height: widget.datePickerLayoutSettings.maxDayPickerHeight,
+      child: Column(
+        children: <Widget>[
+          widget.datePickerLayoutSettings.hideMonthNavigationRow
+              ? const SizedBox()
+              : SizedBox(
+                  height: widget.datePickerLayoutSettings.dayPickerRowHeight,
+                  child: Padding(
+                      //match _DayPicker main layout padding
+                      padding: widget.datePickerLayoutSettings.contentPadding,
+                      child: _buildMonthNavigationRow()),
+                ),
+          SizedBox(
+            height: widget.spacing,
+            width: double.infinity,
+          ),
+          Expanded(
+            child: Semantics(
+              sortKey: MonthPickerSortKey.calendar,
+              child: _buildDayPickerPageView(),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   @override
