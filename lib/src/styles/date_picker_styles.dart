@@ -26,6 +26,9 @@ class DatePickerStyles {
   /// Style for the numbers of disabled dates.
   final TextStyle? disabledDateStyle;
 
+  /// Style for weekend date.
+  final TextStyle? weekendDateStyle;
+
   /// Style for the number of selected date.
   final TextStyle? selectedDateStyle;
 
@@ -73,6 +76,7 @@ class DatePickerStyles {
       {this.displayedPeriodTitle,
       this.currentDateStyle,
       this.disabledDateStyle,
+      this.weekendDateStyle,
       this.selectedDateStyle,
       this.selectedSingleDateDecoration,
       this.defaultDateTextStyle,

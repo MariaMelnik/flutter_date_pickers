@@ -300,7 +300,11 @@ class _DayCell extends StatelessWidget {
     } else if (DatePickerUtils.sameDate(currentDate, day)) {
       itemStyle = datePickerStyles.currentDateStyle;
     } else {
-      itemStyle = datePickerStyles.defaultDateTextStyle;
+      if (day.weekday == 6 || day.weekday == 7) {
+        itemStyle = datePickerStyles.weekendDateStyle;
+      } else {
+        itemStyle = datePickerStyles.defaultDateTextStyle;
+      }
     }
 
     // Merges decoration and textStyle with [EventDecoration].
