@@ -110,6 +110,8 @@ class DatePickerStyles {
         theme.textTheme.bodyText1?.copyWith(color: theme.colorScheme.secondary);
     TextStyle? _disabledDateStyle = disabledDateStyle ??
         theme.textTheme.bodyText2?.copyWith(color: theme.disabledColor);
+    TextStyle? _weekendDateStyle = weekendDateStyle ??
+        theme.textTheme.bodyText2?.copyWith(color: theme.disabledColor);
     TextStyle? _selectedDateStyle = selectedDateStyle ??
         theme.textTheme.bodyText1?.copyWith(
           color: theme.colorScheme.onSecondary,
@@ -129,6 +131,7 @@ class DatePickerStyles {
     }
 
     return DatePickerStyles(
+        weekendDateStyle: _weekendDateStyle,
         disabledDateStyle: _disabledDateStyle,
         currentDateStyle: _currentDateStyle,
         displayedPeriodTitle: _displayedPeriodTitle,
@@ -286,6 +289,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
       selectedPeriodStartTextStyle: _selectedPeriodStartTextStyle,
       selectedPeriodMiddleTextStyle: _selectedPeriodMiddleTextStyle,
       selectedPeriodEndTextStyle: _selectedPeriodEndTextStyle,
+      weekendDateStyle: commonStyles.weekendDateStyle,
     );
   }
 
@@ -293,6 +297,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
   /// [WeekPicker]).
   DatePickerRangeStyles({
     TextStyle? displayedPeriodTitle,
+    TextStyle? weekendDateStyle,
     TextStyle? currentDateStyle,
     TextStyle? disabledDateStyle,
     TextStyle? selectedDateStyle,
@@ -322,6 +327,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
             dayHeaderTitleBuilder: dayHeaderTitleBuilder,
             nextIcon: nextIcon,
             prevIcon: prevIcon,
+            weekendDateStyle: weekendDateStyle,
             firstDayOfeWeekIndex: firstDayOfWeekIndex);
 
   @override
@@ -348,7 +354,8 @@ class DatePickerRangeStyles extends DatePickerStyles {
         other.dayHeaderTitleBuilder == dayHeaderTitleBuilder &&
         other.prevIcon == prevIcon &&
         other.nextIcon == nextIcon &&
-        other.firstDayOfeWeekIndex == firstDayOfeWeekIndex;
+        other.firstDayOfeWeekIndex == firstDayOfeWeekIndex &&
+        other.weekendDateStyle == weekendDateStyle;
   }
 
   @override
@@ -362,6 +369,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
       displayedPeriodTitle,
       currentDateStyle,
       disabledDateStyle,
+      weekendDateStyle,
       selectedDateStyle,
       defaultDateTextStyle,
       selectedSingleDateDecoration,
