@@ -225,6 +225,7 @@ class DayBasedPicker<T> extends StatelessWidget with CommonDatePickerFunctions {
       currentDate: currentDate,
       selectablePicker: selectablePicker,
       datePickerStyles: datePickerStyles,
+      contentMargin: datePickerLayoutSettings.cellContentMargin,
       eventDecorationBuilder: eventDecorationBuilder,
       localizations: localizations,
     );
@@ -265,6 +266,9 @@ class _DayCell extends StatelessWidget {
   /// Styles what can be customized by user
   final DatePickerRangeStyles datePickerStyles;
 
+  /// Margin of the cell content.
+  final EdgeInsetsGeometry contentMargin;
+
   /// The current date at the time the picker is displayed.
   final DateTime currentDate;
 
@@ -280,6 +284,7 @@ class _DayCell extends StatelessWidget {
     required this.day,
     required this.selectablePicker,
     required this.datePickerStyles,
+    required this.contentMargin,
     required this.currentDate,
     required this.localizations,
     this.eventDecorationBuilder,
@@ -327,6 +332,7 @@ class _DayCell extends StatelessWidget {
         dayType != DayType.disabled && dayType != DayType.notSelected;
 
     Widget dayWidget = Container(
+      margin: contentMargin,
       decoration: decoration,
       child: Center(
         child: Semantics(
