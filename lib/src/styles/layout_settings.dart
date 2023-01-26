@@ -14,7 +14,8 @@ const double _kDayPickerRowHeight = 42.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 const double _kMonthPickerPortraitWidth = 330.0;
 const EdgeInsetsGeometry _kContentPadding =
-    EdgeInsets.symmetric(horizontal: 8.0);
+  EdgeInsets.symmetric(horizontal: 8.0);
+const EdgeInsetsGeometry _kCellContentMargin = EdgeInsets.all(0);
 
 /// Settings for the layout of the [DayPicker], [WeekPicker], [RangePicker]
 /// and [MonthPicker].
@@ -43,6 +44,11 @@ class DatePickerLayoutSettings {
 
   /// Padding for the entire picker.
   final EdgeInsetsGeometry contentPadding;
+
+  /// Margin for decorated content of the cell.
+  ///
+  /// [_kCellContentMargin] by default.
+  final EdgeInsetsGeometry cellContentMargin;
 
   /// If the first dates from the next month should be shown
   /// to complete last week of the selected month.
@@ -84,6 +90,7 @@ class DatePickerLayoutSettings {
     this.yearPickerPortraitWidth = _kMonthPickerPortraitWidth,
     this.maxDayPickerRowCount = _kMaxDayPickerRowCount,
     this.contentPadding = _kContentPadding,
+    this.cellContentMargin = _kCellContentMargin,
     this.showNextMonthStart = false,
     this.showPrevMonthEnd = false,
     this.hideMonthNavigationRow = false,
@@ -95,8 +102,8 @@ class _DayPickerGridDelegate extends SliverGridDelegate {
   final double _dayPickerRowHeight;
   final int _maxDayPickerRowCount;
 
-  const _DayPickerGridDelegate(
-      this._dayPickerRowHeight, this._maxDayPickerRowCount);
+  const _DayPickerGridDelegate(this._dayPickerRowHeight,
+      this._maxDayPickerRowCount);
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
