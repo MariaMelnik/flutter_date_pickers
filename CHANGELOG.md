@@ -86,3 +86,6 @@ Fixed Flutter 3 warning (#93).
 
 ## [0.4.0] - 30 May 2022
 Made eventDecorationBuilder applicable for disabled dates (#62).
+
+## [0.4.1] - 26 Jan 2023
+Added DatePickerLayoutSettings.cellContentMargin for ability to margin decorations inside cell.
