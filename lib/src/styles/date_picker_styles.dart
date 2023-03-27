@@ -68,6 +68,9 @@ class DatePickerStyles {
   /// Can be null. In this case value from current locale will be used.
   final int? firstDayOfeWeekIndex;
 
+  /// Decoration for today's day if it is not selected.
+  final BoxDecoration? todayDayDecoration;
+
   /// Styles for date picker.
   DatePickerStyles(
       {this.displayedPeriodTitle,
@@ -81,7 +84,8 @@ class DatePickerStyles {
       this.dayHeaderTitleBuilder,
       this.firstDayOfeWeekIndex,
       this.prevIcon = const Icon(Icons.chevron_left),
-      this.nextIcon = const Icon(Icons.chevron_right)})
+      this.nextIcon = const Icon(Icons.chevron_right),
+      this.todayDayDecoration})
       : assert(!(dayHeaderStyle != null && dayHeaderStyleBuilder != null),
             "Should be only one from: dayHeaderStyleBuilder, dayHeaderStyle."),
         assert(
@@ -125,17 +129,19 @@ class DatePickerStyles {
     }
 
     return DatePickerStyles(
-        disabledDateStyle: _disabledDateStyle,
-        currentDateStyle: _currentDateStyle,
-        displayedPeriodTitle: _displayedPeriodTitle,
-        selectedDateStyle: _selectedDateStyle,
-        selectedSingleDateDecoration: _selectedSingleDateDecoration,
-        defaultDateTextStyle: _defaultDateTextStyle,
-        dayHeaderStyle: _dayHeaderStyle,
-        dayHeaderStyleBuilder: dayHeaderStyleBuilder,
-        dayHeaderTitleBuilder: dayHeaderTitleBuilder,
-        nextIcon: nextIcon,
-        prevIcon: prevIcon);
+      disabledDateStyle: _disabledDateStyle,
+      currentDateStyle: _currentDateStyle,
+      displayedPeriodTitle: _displayedPeriodTitle,
+      selectedDateStyle: _selectedDateStyle,
+      selectedSingleDateDecoration: _selectedSingleDateDecoration,
+      defaultDateTextStyle: _defaultDateTextStyle,
+      dayHeaderStyle: _dayHeaderStyle,
+      dayHeaderStyleBuilder: dayHeaderStyleBuilder,
+      dayHeaderTitleBuilder: dayHeaderTitleBuilder,
+      nextIcon: nextIcon,
+      prevIcon: prevIcon,
+      todayDayDecoration: todayDayDecoration,
+    );
   }
 
   @override
@@ -155,23 +161,26 @@ class DatePickerStyles {
         other.dayHeaderTitleBuilder == dayHeaderTitleBuilder &&
         other.prevIcon == prevIcon &&
         other.nextIcon == nextIcon &&
-        other.firstDayOfeWeekIndex == firstDayOfeWeekIndex;
+        other.firstDayOfeWeekIndex == firstDayOfeWeekIndex &&
+        other.todayDayDecoration == todayDayDecoration;
   }
 
   @override
   int get hashCode => hashValues(
-      displayedPeriodTitle,
-      currentDateStyle,
-      disabledDateStyle,
-      selectedDateStyle,
-      defaultDateTextStyle,
-      selectedSingleDateDecoration,
-      dayHeaderStyle,
-      dayHeaderStyleBuilder,
-      dayHeaderTitleBuilder,
-      prevIcon,
-      nextIcon,
-      firstDayOfeWeekIndex);
+        displayedPeriodTitle,
+        currentDateStyle,
+        disabledDateStyle,
+        selectedDateStyle,
+        defaultDateTextStyle,
+        selectedSingleDateDecoration,
+        dayHeaderStyle,
+        dayHeaderStyleBuilder,
+        dayHeaderTitleBuilder,
+        prevIcon,
+        nextIcon,
+        firstDayOfeWeekIndex,
+        todayDayDecoration,
+      );
 
   static bool _validateDayHeaderStyleBuilder(DayHeaderStyleBuilder builder) {
     List<int> weekdays = const [0, 1, 2, 3, 4, 5, 6];
@@ -282,6 +291,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
       selectedPeriodStartTextStyle: _selectedPeriodStartTextStyle,
       selectedPeriodMiddleTextStyle: _selectedPeriodMiddleTextStyle,
       selectedPeriodEndTextStyle: _selectedPeriodEndTextStyle,
+      todayDayDecoration: todayDayDecoration,
     );
   }
 
@@ -300,6 +310,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
     Widget nextIcon = const Icon(Icons.chevron_right),
     Widget prevIcon = const Icon(Icons.chevron_left),
     int? firstDayOfWeekIndex,
+    BoxDecoration? todayDayDecoration,
     this.selectedPeriodLastDecoration,
     this.selectedPeriodMiddleDecoration,
     this.selectedPeriodStartDecoration,
@@ -318,7 +329,8 @@ class DatePickerRangeStyles extends DatePickerStyles {
             dayHeaderTitleBuilder: dayHeaderTitleBuilder,
             nextIcon: nextIcon,
             prevIcon: prevIcon,
-            firstDayOfeWeekIndex: firstDayOfWeekIndex);
+            firstDayOfeWeekIndex: firstDayOfWeekIndex,
+            todayDayDecoration: todayDayDecoration);
 
   @override
   bool operator ==(Object other) {
@@ -344,29 +356,32 @@ class DatePickerRangeStyles extends DatePickerStyles {
         other.dayHeaderTitleBuilder == dayHeaderTitleBuilder &&
         other.prevIcon == prevIcon &&
         other.nextIcon == nextIcon &&
-        other.firstDayOfeWeekIndex == firstDayOfeWeekIndex;
+        other.firstDayOfeWeekIndex == firstDayOfeWeekIndex &&
+        other.todayDayDecoration == todayDayDecoration;
   }
 
   @override
   int get hashCode => hashValues(
-      selectedPeriodStartDecoration,
-      selectedPeriodStartTextStyle,
-      selectedPeriodLastDecoration,
-      selectedPeriodEndTextStyle,
-      selectedPeriodMiddleDecoration,
-      selectedPeriodMiddleTextStyle,
-      displayedPeriodTitle,
-      currentDateStyle,
-      disabledDateStyle,
-      selectedDateStyle,
-      defaultDateTextStyle,
-      selectedSingleDateDecoration,
-      dayHeaderStyle,
-      dayHeaderStyleBuilder,
-      dayHeaderTitleBuilder,
-      prevIcon,
-      nextIcon,
-      firstDayOfeWeekIndex);
+        selectedPeriodStartDecoration,
+        selectedPeriodStartTextStyle,
+        selectedPeriodLastDecoration,
+        selectedPeriodEndTextStyle,
+        selectedPeriodMiddleDecoration,
+        selectedPeriodMiddleTextStyle,
+        displayedPeriodTitle,
+        currentDateStyle,
+        disabledDateStyle,
+        selectedDateStyle,
+        defaultDateTextStyle,
+        selectedSingleDateDecoration,
+        dayHeaderStyle,
+        dayHeaderStyleBuilder,
+        dayHeaderTitleBuilder,
+        prevIcon,
+        nextIcon,
+        firstDayOfeWeekIndex,
+        todayDayDecoration,
+      );
 }
 
 /// User styles for the day header in date picker.

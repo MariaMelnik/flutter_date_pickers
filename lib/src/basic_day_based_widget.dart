@@ -323,6 +323,14 @@ class _DayCell extends StatelessWidget {
 
       decoration = eDecoration?.boxDecoration ?? decoration;
       itemStyle = eDecoration?.textStyle ?? itemStyle;
+
+      final isToday = day.year == currentDate.year &&
+          day.month == currentDate.month &&
+          day.day == currentDate.day;
+      final todayDayDecoration = datePickerStyles.todayDayDecoration;
+      if (isToday && todayDayDecoration != null) {
+        decoration = todayDayDecoration;
+      }
     }
 
     String semanticLabel = '${localizations.formatDecimal(day.day)}, '
