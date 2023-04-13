@@ -89,3 +89,6 @@ Made eventDecorationBuilder applicable for disabled dates (#62).
 
 ## [0.4.1] - 26 Jan 2023
 Added DatePickerLayoutSettings.cellContentMargin for ability to margin decorations inside cell.
+
+## [0.4.2] - 13 Apr 2023
+Used Material.maybeOf instead of Material.of to fix error.
