@@ -31,7 +31,7 @@ class IconBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isMaterial =  Material.of(context) != null;
+    bool isMaterial =  Material.maybeOf(context) != null;
 
     return isMaterial
       ? _materialBtn()
