@@ -234,7 +234,7 @@ class _DayBasedChangeablePickerState<T>
             onNextMonthTapped:
                 state.isLastMonth ? null : _presenter.gotoNextMonth,
             title: Text(
-              state.curMonthDis,
+              state.curMonthDis.capitalize(),
               key: widget.datePickerKeys?.selectedPeriodKeys,
               style: _resultStyles.displayedPeriodTitle,
             ),
@@ -377,3 +377,12 @@ DateTime _getInitiallyShownDate(
 /// non-nullable can still be used with `!` and `?`
 /// to support older versions of the API as well.
 T? _ambiguate<T>(T? value) => value;
+
+
+// ignore: public_member_api_docs
+extension StringExtension on String {
+    // ignore: prefer_expression_function_bodies, public_member_api_docs
+    String capitalize() {
+      return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+    }
+}
