@@ -183,7 +183,10 @@ class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
     super.didUpdateWidget(oldWidget);
     if (widget.selection != oldWidget.selection ||
         widget.selectionLogic != oldWidget.selectionLogic) {
-      _initWidgetData();
+      _changesSubscription?.cancel();
+      _changesSubscription = widget.selectionLogic.onUpdate
+          .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
+        ..onError((e) => print(e.toString()));
     }
   }
 
