@@ -24,7 +24,8 @@ class DayPicker<T extends Object> extends StatelessWidget {
       this.datePickerKeys,
       this.selectableDayPredicate,
       this.eventDecorationBuilder,
-      this.onMonthChanged})
+      this.onMonthChanged,
+      this.pageController})
       : super(key: key);
 
   /// Creates a day picker where only one single day can be selected.
@@ -44,7 +45,8 @@ class DayPicker<T extends Object> extends StatelessWidget {
       DatePickerKeys? datePickerKeys,
       SelectableDayPredicate? selectableDayPredicate,
       EventDecorationBuilder? eventDecorationBuilder,
-      ValueChanged<DateTime>? onMonthChanged}) {
+      ValueChanged<DateTime>? onMonthChanged,
+      PageController? pageController}) {
     final startOfTheFirstDate = DatePickerUtils.startOfTheDay(firstDate);
     final endOfTheLastDate = DatePickerUtils.endOfTheDay(lastDate);
     final startOfTheSelectedDate = DatePickerUtils.startOfTheDay(selectedDate);
@@ -82,6 +84,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
       datePickerKeys: datePickerKeys,
       datePickerStyles: datePickerStyles,
       datePickerLayoutSettings: datePickerLayoutSettings,
+      pageController: pageController,
     );
   }
 
@@ -188,6 +191,9 @@ class DayPicker<T extends Object> extends StatelessWidget {
   /// Logic to handle user's selections.
   final ISelectablePicker<T> selectionLogic;
 
+  /// Page controller so it can be handled outside
+  final PageController? pageController;
+
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
@@ -203,6 +209,7 @@ class DayPicker<T extends Object> extends StatelessWidget {
       datePickerKeys: datePickerKeys,
       eventDecorationBuilder: eventDecorationBuilder,
       onMonthChanged: onMonthChanged,
+      pageController: pageController,
     );
   }
 }

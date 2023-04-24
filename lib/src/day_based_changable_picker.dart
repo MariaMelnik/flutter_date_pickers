@@ -66,6 +66,10 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// Called when the user changes the month
   final ValueChanged<DateTime>? onMonthChanged;
 
+  /// Handles page switch
+  /// If null, then is created inside
+  final PageController? pageController;
+
   /// Create picker with option to change month.
   DayBasedChangeablePicker({
     Key? key,
@@ -81,6 +85,7 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
     this.onSelectionError,
     this.eventDecorationBuilder,
     this.onMonthChanged,
+    this.pageController,
   })  : initiallyShowDate =
             _getInitiallyShownDate(initiallyShownDate, selection),
         super(key: key);
@@ -116,7 +121,10 @@ class _DayBasedChangeablePickerState<T>
 
     // Initially display the pre-selected date.
     final int monthPage = _getInitPage();
-    _dayPickerController = PageController(initialPage: monthPage);
+    _dayPickerController = widget.pageController ??
+        PageController(
+          initialPage: monthPage,
+        );
 
     _changesSubscription = widget.selectablePicker.onUpdate
         .listen((newSelectedDate) => widget.onChanged(newSelectedDate))
