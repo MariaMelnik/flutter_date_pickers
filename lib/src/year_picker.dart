@@ -290,7 +290,7 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
     int pageCount = (yearsCount / yearsPerPage).ceil();
     for (int i = 0; i < pageCount; i++) {
       final DateTime fromDate =
-          DateTime(widget.firstDate.year + i * (yearsPerPage - 1));
+          DateTime(widget.firstDate.year + i * yearsPerPage);
       DateTime toDate = DateTime(fromDate.year + (yearsPerPage - 1));
 
       _yearRanges.add(DateTimeRange(
