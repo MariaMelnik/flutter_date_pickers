@@ -94,12 +94,9 @@ class MonthNavigationRow extends StatelessWidget {
         Container(
           padding: titlePadding,
           margin: titleMargin,
-          alignment: Alignment.center,
           decoration: titleDecoration,
-          child: Center(
-            child: ExcludeSemantics(
-              child: title,
-            ),
+          child: ExcludeSemantics(
+            child: title,
           ),
         ),
         Semantics(
