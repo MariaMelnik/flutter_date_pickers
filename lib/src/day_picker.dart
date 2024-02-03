@@ -11,21 +11,25 @@ import 'utils.dart';
 
 /// Date picker for selection one day.
 class DayPicker<T extends Object> extends StatelessWidget {
-  DayPicker._(
-      {Key? key,
-      required this.onChanged,
-      required this.firstDate,
-      required this.lastDate,
-      required this.selectionLogic,
-      required this.selection,
-      this.initiallyShowDate,
-      this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
-      this.datePickerStyles,
-      this.datePickerKeys,
-      this.selectableDayPredicate,
-      this.eventDecorationBuilder,
-      this.onMonthChanged})
-      : super(key: key);
+  DayPicker._({
+    Key? key,
+    required this.onChanged,
+    required this.firstDate,
+    required this.lastDate,
+    required this.selectionLogic,
+    required this.selection,
+    this.initiallyShowDate,
+    this.datePickerLayoutSettings = const DatePickerLayoutSettings(),
+    this.datePickerStyles,
+    this.datePickerKeys,
+    this.selectableDayPredicate,
+    this.eventDecorationBuilder,
+    this.onMonthChanged,
+    this.monthTitleMargin,
+    this.monthTitlePadding,
+    this.navigationMonthMainAxisAlignment,
+    this.navigationMonthTitleDecoration,
+  }) : super(key: key);
 
   /// Creates a day picker where only one single day can be selected.
   ///
@@ -33,6 +37,10 @@ class DayPicker<T extends Object> extends StatelessWidget {
   /// * [DayPicker.multi] - day picker where many single days can be selected.
   static DayPicker<DateTime> single(
       {Key? key,
+      BoxDecoration? navigationMonthTitleDecoration,
+      EdgeInsetsGeometry? monthTitleMargin,
+      EdgeInsetsGeometry? monthTitlePadding,
+      MainAxisAlignment? navigationMonthMainAxisAlignment,
       required DateTime selectedDate,
       required ValueChanged<DateTime> onChanged,
       required DateTime firstDate,
@@ -82,6 +90,10 @@ class DayPicker<T extends Object> extends StatelessWidget {
       datePickerKeys: datePickerKeys,
       datePickerStyles: datePickerStyles,
       datePickerLayoutSettings: datePickerLayoutSettings,
+      navigationMonthMainAxisAlignment: navigationMonthMainAxisAlignment,
+      monthTitlePadding: monthTitlePadding,
+      monthTitleMargin: monthTitleMargin,
+      navigationMonthTitleDecoration: navigationMonthTitleDecoration,
     );
   }
 
@@ -90,20 +102,25 @@ class DayPicker<T extends Object> extends StatelessWidget {
   /// See also:
   /// * [DayPicker.single] - day picker where only one single day
   /// can be selected.
-  static DayPicker<List<DateTime>> multi(
-      {Key? key,
-      required List<DateTime> selectedDates,
-      required ValueChanged<List<DateTime>> onChanged,
-      required DateTime firstDate,
-      required DateTime lastDate,
-      DatePickerLayoutSettings datePickerLayoutSettings =
-          const DatePickerLayoutSettings(),
-      DateTime? initiallyShowDate,
-      DatePickerRangeStyles? datePickerStyles,
-      DatePickerKeys? datePickerKeys,
-      SelectableDayPredicate? selectableDayPredicate,
-      EventDecorationBuilder? eventDecorationBuilder,
-      ValueChanged<DateTime>? onMonthChanged}) {
+  static DayPicker<List<DateTime>> multi({
+    Key? key,
+    required List<DateTime> selectedDates,
+    required ValueChanged<List<DateTime>> onChanged,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    DatePickerLayoutSettings datePickerLayoutSettings =
+        const DatePickerLayoutSettings(),
+    DateTime? initiallyShowDate,
+    DatePickerRangeStyles? datePickerStyles,
+    DatePickerKeys? datePickerKeys,
+    SelectableDayPredicate? selectableDayPredicate,
+    EventDecorationBuilder? eventDecorationBuilder,
+    ValueChanged<DateTime>? onMonthChanged,
+    EdgeInsetsGeometry? monthTitleMargin,
+    EdgeInsetsGeometry? monthTitlePadding,
+    MainAxisAlignment? navigationMonthMainAxisAlignment,
+    BoxDecoration? navigationMonthTitleDecoration,
+  }) {
     final startOfTheFirstDate = DatePickerUtils.startOfTheDay(firstDate);
     final endOfTheLastDate = DatePickerUtils.endOfTheDay(lastDate);
     final startOfTheInitiallyShowDate = initiallyShowDate == null
@@ -140,6 +157,10 @@ class DayPicker<T extends Object> extends StatelessWidget {
       datePickerKeys: datePickerKeys,
       datePickerStyles: datePickerStyles,
       datePickerLayoutSettings: datePickerLayoutSettings,
+      monthTitlePadding: monthTitlePadding,
+      monthTitleMargin: monthTitleMargin,
+      navigationMonthMainAxisAlignment: navigationMonthMainAxisAlignment,
+      navigationMonthTitleDecoration: navigationMonthTitleDecoration,
     );
   }
 
@@ -188,6 +209,18 @@ class DayPicker<T extends Object> extends StatelessWidget {
   /// Logic to handle user's selections.
   final ISelectablePicker<T> selectionLogic;
 
+  /// Margin for title.
+  final EdgeInsetsGeometry? monthTitleMargin;
+
+  /// Padding for title.
+  final EdgeInsetsGeometry? monthTitlePadding;
+
+  /// Month Navigation Row Main AxisAlignment.
+  final MainAxisAlignment? navigationMonthMainAxisAlignment;
+
+  /// Month Navigation Title Container decoration.
+  final BoxDecoration? navigationMonthTitleDecoration;
+
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
@@ -203,6 +236,10 @@ class DayPicker<T extends Object> extends StatelessWidget {
       datePickerKeys: datePickerKeys,
       eventDecorationBuilder: eventDecorationBuilder,
       onMonthChanged: onMonthChanged,
+      monthTitleMargin: monthTitleMargin,
+      monthTitlePadding: monthTitlePadding,
+      navigationMonthMainAxisAlignment: navigationMonthMainAxisAlignment,
+      navigationMonthTitleDecoration: navigationMonthTitleDecoration,
     );
   }
 }
