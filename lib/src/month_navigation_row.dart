@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'day_picker.dart' as day_picker;
 import 'icon_btn.dart';
 import 'range_picker.dart';
@@ -44,25 +45,41 @@ class MonthNavigationRow extends StatelessWidget {
   /// Usually [Text] widget.
   final Widget? title;
 
+  /// Margin for title.
+  final EdgeInsetsGeometry? titleMargin;
+
+  /// Padding for title.
+  final EdgeInsetsGeometry? titlePadding;
+
+  /// Month Navigation Row MainAxisAlignment.
+  final MainAxisAlignment? mainAxisAlignment;
+
+  /// Month Navigation Title Container decoration.
+  final BoxDecoration? titleDecoration;
+
   /// Creates month navigation row.
-  const MonthNavigationRow({
-    Key? key,
-    this.previousPageIconKey,
-    this.nextPageIconKey,
-    this.onNextMonthTapped,
-    this.onPreviousMonthTapped,
-    this.nextMonthTooltip,
-    this.previousMonthTooltip,
-    this.title,
-    required this.nextIcon,
-    required this.prevIcon
-  }) : super(key: key);
+  const MonthNavigationRow(
+      {Key? key,
+      this.previousPageIconKey,
+      this.nextPageIconKey,
+      this.onNextMonthTapped,
+      this.onPreviousMonthTapped,
+      this.nextMonthTooltip,
+      this.previousMonthTooltip,
+      this.title,
+      this.mainAxisAlignment,
+      this.titleMargin,
+      this.titlePadding,
+      this.titleDecoration,
+      required this.nextIcon,
+      required this.prevIcon})
+      : super(key: key);
 
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Semantics(
@@ -74,13 +91,14 @@ class MonthNavigationRow extends StatelessWidget {
             onTap: onPreviousMonthTapped,
           ),
         ),
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            child: Center(
-              child: ExcludeSemantics(
-                child: title,
-              ),
+        Container(
+          padding: titlePadding,
+          margin: titleMargin,
+          alignment: Alignment.center,
+          decoration: titleDecoration,
+          child: Center(
+            child: ExcludeSemantics(
+              child: title,
             ),
           ),
         ),

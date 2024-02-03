@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:intl/intl.dart' as intl;
 
 import 'basic_day_based_widget.dart';
@@ -66,6 +65,18 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
   /// Called when the user changes the month
   final ValueChanged<DateTime>? onMonthChanged;
 
+  /// Margin for title.
+  final EdgeInsetsGeometry? monthTitleMargin;
+
+  /// Padding for title.
+  final EdgeInsetsGeometry? monthTitlePadding;
+
+  /// Month Navigation Row Main AxisAlignment.
+  final MainAxisAlignment? navigationMonthMainAxisAlignment;
+
+  /// Month Navigation Title Container decoration.
+  final BoxDecoration? navigationMonthTitleDecoration;
+
   /// Create picker with option to change month.
   DayBasedChangeablePicker({
     Key? key,
@@ -81,6 +92,10 @@ class DayBasedChangeablePicker<T> extends StatefulWidget {
     this.onSelectionError,
     this.eventDecorationBuilder,
     this.onMonthChanged,
+    this.navigationMonthMainAxisAlignment,
+    this.monthTitleMargin,
+    this.monthTitlePadding,
+    this.navigationMonthTitleDecoration,
   })  : initiallyShowDate =
             _getInitiallyShownDate(initiallyShownDate, selection),
         super(key: key);
@@ -240,6 +255,10 @@ class _DayBasedChangeablePickerState<T>
             ),
             nextIcon: widget.datePickerStyles.nextIcon,
             prevIcon: widget.datePickerStyles.prevIcon,
+            titleMargin: widget.monthTitleMargin,
+            titlePadding: widget.monthTitlePadding,
+            mainAxisAlignment: widget.navigationMonthMainAxisAlignment,
+            titleDecoration: widget.navigationMonthTitleDecoration,
           );
         });
   }
