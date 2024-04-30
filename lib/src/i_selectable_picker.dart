@@ -1,3 +1,5 @@
+// ignore_for_file: comment_references
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -66,7 +68,9 @@ abstract class ISelectablePicker<T> {
   /// If [_selectableDayPredicate] is set checks it as well.
   @protected
   bool isDisabled(DateTime day) =>
-    day.isAfter(lastDate) || day.isBefore(firstDate) || !_selectableDayPredicate(day);
+      day.isAfter(lastDate) ||
+      day.isBefore(firstDate) ||
+      !_selectableDayPredicate(day);
 
   /// Closes [onUpdateController].
   /// After it [onUpdateController] can't get new events.

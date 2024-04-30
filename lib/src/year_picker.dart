@@ -202,22 +202,15 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    try {
-      locale = Localizations.localeOf(context);
+    locale = Localizations.localeOf(context);
 
-      MaterialLocalizations? curLocalizations =
-          Localizations.of<MaterialLocalizations>(
-              context, MaterialLocalizations);
-      if (curLocalizations != null && localizations != curLocalizations) {
-        localizations = curLocalizations;
-      }
+    MaterialLocalizations? curLocalizations =
+        Localizations.of<MaterialLocalizations>(context, MaterialLocalizations);
+    if (curLocalizations != null && localizations != curLocalizations) {
+      localizations = curLocalizations;
+    }
 
-      textDirection = Directionality.of(context);
-
-      // No MaterialLocalizations or Directionality or Locale was found
-      // and ".of" method throws error
-      // trying to cast null to MaterialLocalizations.
-    } on TypeError catch (_) {}
+    textDirection = Directionality.of(context);
   }
 
   @override

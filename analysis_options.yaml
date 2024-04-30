@@ -32,10 +32,8 @@ linter:
     prefer_iterable_whereType: true
     prefer_function_declarations_over_variables: true
     unnecessary_lambdas: true
-    prefer_equal_for_default_values: true
     avoid_init_to_null: true
     unnecessary_getters_setters: true
-    unnecessary_getters: true
     prefer_expression_function_bodies: true
     unnecessary_this: true
     unnecessary_const: true
@@ -51,11 +49,10 @@ linter:
     prefer_final_fields: true
     use_setters_to_change_properties: true
     avoid_setters_without_getters: true
-    avoid_returning_null: true
     avoid_returning_this: true
     type_annotate_public_apis: true
     prefer_typing_uninitialized_variables: true
-#    omit_local_variable_types: true
+    #    omit_local_variable_types: true
     avoid_types_on_closure_parameters: true
     avoid_return_types_on_setters: true
     prefer_generic_function_type_aliases: true
@@ -66,11 +63,9 @@ linter:
     avoid_equals_and_hash_code_on_mutable_classes: true
     avoid_null_checks_in_equality_operators: true
 
-
     # PEDANTIC
     # (duplicated rules are removed)
     always_declare_return_types: true
-    always_require_non_null_named_parameters: true
     annotate_overrides: true
     avoid_empty_else: true
     avoid_shadowing_type_parameters: true
@@ -83,7 +78,7 @@ linter:
     prefer_contains: true
     prefer_for_elements_to_map_fromIterable: true
     prefer_if_null_operators: true
-#    prefer_single_quotes: true
+    #    prefer_single_quotes: true
     prefer_spread_collections: true
     recursive_getters: true
     type_init_formals: true

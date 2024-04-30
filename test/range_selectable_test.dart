@@ -2,7 +2,6 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_date_pickers/src/day_type.dart';
 import 'package:flutter_date_pickers/src/i_selectable_picker.dart';
 import 'package:flutter_date_pickers/src/utils.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -48,7 +47,8 @@ void main() {
         final middlePeriodDateType = selectableLogic.getDayType(date);
         expect(middlePeriodDateType, DayType.middle,
             reason: "Incorrect DayType for the date ${date.toString()} "
-                "in period ${startPeriod.toString()} - ${endPeriod.toString()}");
+                "in period ${startPeriod.toString()} "
+                "- ${endPeriod.toString()}");
       }
     });
   });
