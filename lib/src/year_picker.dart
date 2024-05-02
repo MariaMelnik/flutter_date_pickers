@@ -211,6 +211,8 @@ class _YearPickerState<T extends Object> extends State<YearPicker<T>> {
     }
 
     textDirection = Directionality.of(context);
+
+    widget.selectionLogic.onDayTapped(widget.selection.earliest);
   }
 
   @override

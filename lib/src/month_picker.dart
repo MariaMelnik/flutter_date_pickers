@@ -200,6 +200,8 @@ class _MonthPickerState<T extends Object> extends State<MonthPicker<T>> {
     }
 
     textDirection = Directionality.of(context);
+
+    widget.selectionLogic.onDayTapped(widget.selection.earliest);
   }
 
   @override
