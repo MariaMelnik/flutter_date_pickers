@@ -1,8 +1,9 @@
+// ignore_for_file: comment_references
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:intl/intl.dart' as intl;
 
 import 'basic_day_based_widget.dart';
@@ -160,6 +161,8 @@ class _DayBasedChangeablePickerState<T>
 
     final ThemeData theme = Theme.of(context);
     _resultStyles = widget.datePickerStyles.fulfillWithTheme(theme);
+
+    widget.selectablePicker.onDayTapped(widget.selection.earliest);
   }
 
   @override
