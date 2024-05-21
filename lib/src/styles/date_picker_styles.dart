@@ -101,18 +101,18 @@ class DatePickerStyles {
     Color accentColor = theme.colorScheme.secondary;
 
     TextStyle? _displayedPeriodTitle =
-        displayedPeriodTitle ?? theme.textTheme.subtitle1;
+        displayedPeriodTitle ?? theme.textTheme.titleMedium;
     TextStyle? _currentDateStyle = currentDateStyle ??
-        theme.textTheme.bodyText1?.copyWith(color: theme.colorScheme.secondary);
+        theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.secondary);
     TextStyle? _disabledDateStyle = disabledDateStyle ??
-        theme.textTheme.bodyText2?.copyWith(color: theme.disabledColor);
+        theme.textTheme.bodyMedium?.copyWith(color: theme.disabledColor);
     TextStyle? _selectedDateStyle = selectedDateStyle ??
-        theme.textTheme.bodyText1?.copyWith(
+        theme.textTheme.bodyLarge?.copyWith(
           color: theme.colorScheme.onSecondary,
         );
 
     TextStyle? _defaultDateTextStyle =
-        defaultDateTextStyle ?? theme.textTheme.bodyText2;
+        defaultDateTextStyle ?? theme.textTheme.bodyMedium;
     BoxDecoration _selectedSingleDateDecoration =
         selectedSingleDateDecoration ??
             BoxDecoration(
@@ -121,7 +121,7 @@ class DatePickerStyles {
 
     DayHeaderStyle? _dayHeaderStyle = dayHeaderStyle;
     if (dayHeaderStyleBuilder == null && _dayHeaderStyle == null) {
-      _dayHeaderStyle = DayHeaderStyle(textStyle: theme.textTheme.caption);
+      _dayHeaderStyle = DayHeaderStyle(textStyle: theme.textTheme.bodySmall);
     }
 
     return DatePickerStyles(
@@ -159,7 +159,7 @@ class DatePickerStyles {
   }
 
   @override
-  int get hashCode => hashValues(
+  int get hashCode => Object.hash(
       displayedPeriodTitle,
       currentDateStyle,
       disabledDateStyle,
@@ -348,7 +348,7 @@ class DatePickerRangeStyles extends DatePickerStyles {
   }
 
   @override
-  int get hashCode => hashValues(
+  int get hashCode => Object.hash(
       selectedPeriodStartDecoration,
       selectedPeriodStartTextStyle,
       selectedPeriodLastDecoration,
@@ -395,5 +395,5 @@ class DayHeaderStyle {
   }
 
   @override
-  int get hashCode => hashValues(textStyle, decoration);
+  int get hashCode => Object.hash(textStyle, decoration);
 }
