@@ -92,3 +92,6 @@ Added DatePickerLayoutSettings.cellContentMargin for ability to margin decoratio
 
 ## [0.4.2] - 13 Apr 2023
 Used Material.maybeOf instead of Material.of to fix error.
+
+## [0.4.3] - 31 May 2024
+Supported Flutter 3.22 changes.
