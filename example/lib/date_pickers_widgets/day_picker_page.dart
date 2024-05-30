@@ -44,7 +44,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
     dp.DatePickerRangeStyles styles = dp.DatePickerRangeStyles(
       selectedDateStyle: Theme.of(context)
           .textTheme
-          .bodyText1
+          .bodyLarge
           ?.copyWith(color: selectedDateStyleColor),
       selectedSingleDateDecoration: BoxDecoration(
         color: selectedSingleDateDecorationColor,
@@ -88,7 +88,7 @@ class _DayPickerPageState extends State<DayPickerPage> {
               children: <Widget>[
                 Text(
                   "Selected date styles",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),

@@ -113,7 +113,7 @@ class _RangePickerPageStyledState extends State<RangePickerPageStyled> {
               children: <Widget>[
                 Text(
                   "Selected date styles",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 _selectedBlock()
               ],
