@@ -212,7 +212,6 @@ class _RangePickerPageState extends State<RangePickerPage> {
 
   // ignore: prefer_expression_function_bodies
   bool _isSelectableCustom(DateTime day) {
-    print('_isSelectableCustom: $day');
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
     DateTime tomorrow = now.add(Duration(days: 1));
